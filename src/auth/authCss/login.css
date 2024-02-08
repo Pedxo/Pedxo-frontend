@@ -1,0 +1,276 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');
+*{
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+  
+.Login div .inner-app{
+    background: #F7F6F2;
+    padding: 4em 0;
+}
+.Login div .inner-app .sub-app{
+    background: #FFF; 
+    display: flex;
+    justify-content: space-between; 
+    padding: 2.6em 1em;
+}
+.Login div .inner-app .sub-app .Logo-media-holder{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 600px;
+    gap: 4em;
+}
+.Login div .inner-app .sub-app .Logo-media-holder .media-han{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 150px;
+}
+.Login div .inner-app .sub-app .Logo-media-holder .media-han .icon{
+    text-decoration: none;
+    font-size: 18px;
+    color: #241F20;
+}
+.Login div .inner-app .sub-app .Logo-media-holder .logo .inner-logo{
+    /* border: 1px solid #000; */
+    width: 100%;
+}
+.Login div .inner-app .sub-app .form-holder{
+    width: 700px;
+}
+.Login div .inner-app .sub-app .form-holder .head{
+    display: none;
+}
+.Login div .inner-app .sub-app .form-holder form{
+    padding: 24px 16px;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+    width: 100%;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .email{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .email label{
+    font-family: 'Inter', sans-serif;
+    font-size: 30px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: #7F7D7D;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .email input[type=email]{
+    background: none;
+    width: 100%;
+    border: none; 
+    border-bottom: 1px solid black;
+    outline: none;
+    padding: 8px;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .email input[type=email]::placeholder{
+    text-transform: capitalize;
+    font-size: 14px;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .pass{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    height: 86px;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .pass label{
+    font-family: 'Inter', sans-serif;
+    font-size: 30px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: #7F7D7D;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .pass input[type=password]{
+    background: none;
+    width: 100%;
+    border: none; 
+    border-bottom: 1px solid black;
+    outline: none;
+    padding: 8px;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .pass input[type=password]::placeholder{
+    text-transform: capitalize;
+    font-size: 15px;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .pass input[type=text]{
+    background: none;
+    width: 100%;
+    border: none; 
+    border-bottom: 1px solid black;
+    outline: none;
+    padding: 8px;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .pass input[type=text]::placeholder{
+    text-transform: capitalize;
+    font-size: 15px;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .pass .togglebtn{
+    position: relative;
+    top: -2em;
+    left: 40em;
+}
+.Login div .inner-app .sub-app .form-holder form .user-input-holder .pass .togglebtn button{
+    border: none;
+    background: transparent;
+    color: #7F7D7D;
+    font-size: 20px;
+}
+.Login div .inner-app .sub-app .form-holder form .text-hol{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 14px;
+    width: 100%;
+    margin-top: 4px;
+}
+.Login div .inner-app .sub-app .form-holder form .text-hol .frg-txt{
+    margin-top: 12px;
+}
+.Login div .inner-app .sub-app .form-holder form .text-hol .frg-txt a{
+    font-family: 'Inter', sans-serif;
+    font-size: 19px;
+    text-decoration: none;
+    color: #593BFD;
+}
+.Login div .inner-app .sub-app .form-holder form .text-hol .sign-text{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 5px;
+    width: 100%;
+    margin-top: 4px;
+    font-size: 18px;
+    color: #4E4A4A;
+    letter-spacing: 2px;
+}
+.Login div .inner-app .sub-app .form-holder form .text-hol .sign-text p{
+    margin: 0px;
+}
+.Login div .inner-app .sub-app .form-holder form .text-hol .sign-text a{
+    font-family: 'Inter', sans-serif;
+    text-decoration: none;
+    color: #4E4A4A;
+    font-weight: 800;
+}
+.Login div .inner-app .sub-app .form-holder form .button button{
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    margin-top: 25px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    font-size: 20px;
+    padding: 14px 0;
+    background: #000;
+    color: #FFF;
+}
+
+@media only screen and (max-width: 1024px) {
+    .Login div .inner-app .sub-app .form-holder form .user-input-holder .pass .togglebtn{
+        left: 30em;
+    }
+}
+@media only screen and (max-width: 768px) {
+    .Login div .inner-app .sub-app{
+        flex-direction: row;
+    }
+    .Login div .inner-app .sub-app .Logo-media-holder .media-han{
+        position: static;
+    }
+    .Login div .inner-app .sub-app .Logo-media-holder{
+        width: 300px;
+    }
+    .Login div .inner-app .sub-app .form-holder{
+        width: 400px;
+    }
+    .Login div .inner-app .sub-app .form-holder .head{
+        display: none;
+    }
+    .Login div .inner-app .sub-app .form-holder form .text-hol .sign-text{
+        font-size: 16px;
+    }
+    .Login div .inner-app .sub-app .form-holder form .text-hol .frg-txt a{
+        font-size: 17px;
+    }
+    .Login div .inner-app .sub-app .form-holder form .user-input-holder .pass .togglebtn{
+        left: 21.3em;
+    }
+    .Login div .inner-app .sub-app .form-holder form .button button{
+        font-size: 23px;
+    }
+}
+@media only screen and (max-width: 700px) {
+    .Login div .inner-app .sub-app{
+        border: 1px solid #000;
+        flex-direction: column;
+    }
+    .Login div .inner-app .sub-app .Logo-media-holder .media-han{
+        position: absolute;
+        bottom: -4.5em;
+        margin: 18px 0;
+    }
+    .Login div .inner-app .sub-app .Logo-media-holder{
+        width: 100%;
+    }
+    .Login div .inner-app .sub-app .form-holder{
+        width: 100%;
+    }
+    .Login div .inner-app .sub-app .form-holder .heading{
+        margin: 20px 0;
+    }
+    .Login div .inner-app .sub-app .form-holder .heading .head{
+        display: block;
+    }
+    .Login div .inner-app .sub-app .form-holder .heading .head h2{
+        font-size: 45px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        color: #000000;
+    }
+    .Login div .inner-app .sub-app .form-holder form .user-input-holder .email label {
+        font-size: 24px;
+    }
+    .Login div .inner-app .sub-app .form-holder form .user-input-holder .pass label {
+        font-size: 24px;
+    }
+}
+@media only screen and (max-width: 375px) {
+    .Login div .inner-app .sub-app .form-holder form .user-input-holder .pass .togglebtn{
+        left: 18em;
+    }
+    .Login div .inner-app .sub-app .form-holder form .text-hol .sign-text {
+        font-size: 14px;
+    }
+}
+@media only screen and (max-width: 320px) {
+    .Login div .inner-app .sub-app .Logo-media-holder .media-han{
+        position: absolute;
+        bottom: -5em;
+    }
+    .Login div .inner-app .sub-app .form-holder form .user-input-holder .pass .togglebtn{
+        left: 14em;
+    }
+    .Login div .inner-app .sub-app .form-holder form .text-hol .frg-txt a {
+        font-size: 15px;
+    }
+    .Login div .inner-app .sub-app .form-holder form .text-hol .sign-text {
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+    .Login div .inner-app .sub-app .form-holder form .button button {
+        font-size: 24px;
+    }
+}
