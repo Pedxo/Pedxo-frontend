@@ -1,0 +1,303 @@
+.Login{
+    height: 100vh;
+}
+.Login .sub-login-holder .inner-app .sub-app{
+    height: 100vh;
+    overflow: hidden;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder{
+    padding: 65px;
+    background: var(--white);
+    height: fit-content;
+}
+
+
+/*
+
+    *
+        Heading Section Styling
+    *
+    
+*/
+
+
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .heading{
+    height: 71px;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .heading .first-text h4{
+    align-self: stretch;
+    color: var(--label);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: -0.64px;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .heading .second-text h6{
+    align-self: stretch;
+    color: var(--lightAsh);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+
+
+/*
+
+    *
+        User Input Styling
+    *
+    
+*/
+
+
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form{
+    height: fit-content;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder{
+    gap: 24px;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .email label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .email .in-ico input[type='email']{
+    height: 56px;
+    padding: 16px;
+    align-self: stretch;
+    border-radius: 6px;
+    border: 1px solid var(--login);
+    background: var(--white);
+    width: 100%;
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .email .in-ico input[type='email']::placeholder{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .email .in-ico input[type='email']:focus{
+    border: 1px solid var(--focus);
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .email .in-ico .fa-holder{
+    position: absolute;
+    bottom: 15px;
+    right: 11px;
+    cursor: pointer;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .email .in-ico .fa-holder .fa{
+    width: 20px;
+    height: 20px;
+    fill: var(--inputBorder);
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .email p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass .in-ico input[type='password'],
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass .in-ico input[type='text']{
+    height: 56px;
+    padding: 16px;
+    align-self: stretch;
+    border-radius: 6px;
+    font-size: 16px;
+    color: var(--text);
+    border: 1px solid var(--login);
+    background: var(--white);
+    width: 100%;
+    outline: none;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass .in-ico input[type='password']::placeholder,
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass .in-ico input[type='text']::placeholder{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass .in-ico input[type='password']:focus,
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass .in-ico input[type='text']:focus{
+    border: 1px solid var(--focus);
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass .in-ico .fa-holder{
+    position: absolute;
+    bottom: 15px;
+    right: 11px;
+    cursor: pointer;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass .in-ico .fa-holder .fa{
+    width: 20px;
+    height: 20px;
+    stroke: var(--inputBorder);
+    fill: none;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass .in-ico .fa-holder .fa2{
+    fill: var(--inputBorder);
+    stroke: none;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .user-input-holder .pass p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .text-hol .remem-text .remem{
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid var(--inputBorder);
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .text-hol .remem-text .remem.click{
+    border: none;
+    background: var(--backgroundPrimary);
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .text-hol .remem-text .remem .fa{
+    display: none;
+    height: 12px;
+    width: 12px;
+    color: var(--white);
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .text-hol .remem-text .remem .fa.show{
+    display: block;
+    height: 12px;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .text-hol .remem-text h4{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .text-hol .frg-txt a{
+    align-self: stretch;
+    color: var(--demoText);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-decoration: none;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .button-holder{
+    padding: 16px 24px;
+    gap: 10px;
+    border-radius: 8px;
+    background: var(--backgroundPrimary);
+    width: 100%;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .button-holder button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    border: none;
+    background: none;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .button-holder button .text{
+    color: var(--text);
+    text-align: center;
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .bottom .bottom-text p{
+    align-self: center;
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    letter-spacing: -0.06px;
+}
+.Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .bottom .bottom-text a{
+    align-self: stretch;
+    color: var(--demoText);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-decoration: none;
+}
+@media only screen and (max-width: 1024px) {
+    .Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder {
+        gap: 22px;
+    }
+}
+@media only screen and (max-width: 992px) {
+    .Login{
+        height: 100svh;
+    }
+    .Login .sub-login-holder .inner-app .sub-app{
+        height: 100svh;
+    }
+}
+@media only screen and (max-width: 900px) {
+    .Login,
+    .Login .sub-login-holder .inner-app .sub-app{
+        overflow: auto;
+    }
+    .Login .sub-login-holder .inner-app{
+        display: block;
+    }
+    .Login .sub-login-holder .inner-app .sub-app{
+        flex-direction: column;
+        justify-content: unset;
+        height: 100svh;
+    }
+    .Login .sub-login-holder .inner-app .sub-app .form-holder{
+        padding: 32px 16px;
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 425px) {
+    .Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .heading .first-text h4{
+        font-size: 28px;
+    }
+    .Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .heading .second-text h6{
+        font-size: 15px;
+    }
+}
+@media only screen and (max-width: 320px) {
+    .Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .text-hol .remem-text .remem{
+        width: 20px;
+        height: 20px;
+    }
+    .Login .sub-login-holder .inner-app .sub-app .form-holder .sub-form-holder .inner-form-holder .main-form .text-hol .remem-text h4{
+        font-size: 11px;
+        align-self: center;
+    }
+}

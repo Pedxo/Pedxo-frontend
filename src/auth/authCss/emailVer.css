@@ -1,0 +1,161 @@
+.emailVer {
+    height: 100vh;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol{
+    height: 100vh;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol{
+    padding: 65px;
+    height: fit-content;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol{
+    gap: 8px;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol{
+    flex: 1 0 0;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-text h2{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: -0.64px;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-text p{
+    color: var(--lightAsh);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .bsd p{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 13px;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .bsd .deb{
+    align-self: stretch;
+    color: var(--demoText);
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: none;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .email-hol label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .email-hol .in-ico input[type='number']{
+    height: 45px;
+    padding: 5px;
+    align-self: stretch;
+    border-radius: 6px;
+    border: 2px solid var(--login);
+    background: var(--white);
+    width: 20%;
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+    text-align: center;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .email-hol .in-ico input[type='number']::-webkit-inner-spin-button,
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .email-hol .in-ico input[type='number']::-webkit-outer-spin-button{
+    display: none;
+    appearance: none;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .email-hol .in-ico input[type='number']:focus{
+    border: 1px solid var(--focus);
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .email-hol p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .emv-pass-hol-form-hol-btn .link-hol{
+    padding: 16px 24px;
+    gap: 10px;
+    border-radius: 8px;
+    background: var(--back);
+    text-decoration: none;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .emv-pass-hol-form-hol-btn .link-hol p{
+    color: var(--lightBlack);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .emv-pass-hol-form-hol-btn .button{
+    padding: 16px 24px;
+    gap: 10px;
+    border-radius: 8px;
+    background: var(--backgroundPrimary);
+    cursor: pointer;
+}
+.emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .emv-pass-hol-form-hol-btn .button button{
+    flex: 1 0 0;
+    color: var(--lightBlack);
+    text-align: center;
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+    border: none;
+    outline: none;
+    width: 100%;
+    background: none;
+}
+@media only screen and (max-width: 992px) {
+    .emailVer{
+        height: 100svh;
+    }
+    .emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol{
+        height: 100svh;
+    }
+    .emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-form-hol .main-form .email-hol .in-ico input[type='number']{
+        height: 45px;
+    }
+}
+@media only screen and (max-width: 900px) {
+    .emailVer .sub-emailVer-holder .emv-pass-hol {
+        display: block;
+    }
+    .emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol{
+        flex-direction: column;
+        justify-content: unset !important;
+        height: 100svh;
+    }
+    .emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol {
+        padding: 32px 16px;
+        width: 100%;
+    }
+    .emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol{
+        padding: 0;
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 425px) {
+    .emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol {
+        height: 482px;
+    }
+    .emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-text h2{
+        font-size: 24px;
+        font-weight: 600;
+    }
+    .emailVer .sub-emailVer-holder .emv-pass-hol .sub-emv-pass-hol .in-emv-pass-hol .in-sub-emv-pass-hol .emv-hol .emv-pass-hol-text p{
+        font-size: 14px;
+    }
+}

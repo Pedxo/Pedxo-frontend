@@ -1,0 +1,656 @@
+.demo{
+    background: var(--backgroundPrimary);
+}
+.demo .sub-demo .inner-demo .demo-holder{
+    margin: 8em 0;
+    gap: 60px;
+}
+.demo .sub-demo .inner-demo .demo-holder .demo-heading{
+    width: 448px;
+    gap: 12px;
+}
+.demo .sub-demo .inner-demo .demo-holder .demo-heading .demo-first-heading h4{
+    color: var(--lightBlack);
+    font-size: 56px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%;
+    letter-spacing: -2.24px;
+}
+.demo .sub-demo .inner-demo .demo-holder .demo-heading .demo-second-heading h6{
+    color: var(--innerBlack);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder{
+    width: 1008px;
+    padding: 64px 32px;
+    gap: 32px;
+    border-radius: 14px;
+    background: var(--white);
+    box-shadow: 0px 10.596px 15.894px -2.649px rgba(16, 25, 40, 0.08), 0px 2.649px 3.973px -1.324px rgba(16, 25, 40, 0.03);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .name-field-holder,
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .job-field-holder{
+    gap: 8px;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .name-field-holder p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .name-field-holder label,
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .job-field-holder label{
+    align-self: stretch;
+    color: var(--lightBlack);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .name-field-holder input[type='text'],
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .job-field-holder input[type='text']{
+    width: 100%;
+    height: 56px;
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--inputBorder);
+    background: var(--white);
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .name-field-holder input[type='text']:focus,
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .job-field-holder input[type='text']:focus{
+    border: 1px solid var(--focus);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .name-field-holder input[type='text']::placeholder,
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .job-field-holder input[type='text']::placeholder{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .job-field-holder{
+    flex: 1 0 0;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .job-field-holder p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .company-field-holder,
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .email-field-holder{
+    gap: 4px;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .company-field-holder{
+    height: 80px;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .company-field-holder label{
+    align-self: stretch;
+    color: var(--lightBlack);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .company-field-holder input[type='text'],
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .email-field-holder .ico input[type='email']{
+    width: 100%;
+    height: 56px;
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--inputBorder);
+    background: var(--white);
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .company-field-holder input[type='text']:focus,
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .email-field-holder .ico input[type='email']:focus{
+    border: 1px solid var(--focus);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .company-field-holder input[type='text']::placeholder,
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .email-field-holder .ico input[type='email']::placeholder{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .email-field-holder label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .email-field-holder .ico .mail{
+    position: absolute;
+    bottom: 17px;
+    right: 10px;
+    fill: var(--footerText);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .email-field-holder .ico .mail.focus{
+    fill: var(--focus);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .second-input-field-holder .email-field-holder p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+
+
+
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .number-field-holder{
+    height: 80px;
+    gap: 4px;
+    flex: 1 0 0;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .number-field-holder label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .number-field-holder input[type='tel']{ 
+    height: 56px;
+    padding: 16px;
+    gap: 12px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    border: 1px solid var(--inputBorder);
+    background: var(--white);
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .number-field-holder input[type='tel']::-webkit-inner-spin-button,
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .number-field-holder input[type='tel']::-webkit-outer-spin-button{
+    -webkit-appearance: none;
+    margin: 0;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .number-field-holder input[type='tel']:focus{
+    border: 1px solid var(--focus);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .number-field-holder input[type='tel']::placeholder{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .number-field-holder p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder{
+    gap: 4px;
+    flex: 1 0 0;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder{
+    gap: 4px;
+    user-select: none;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder .count-input{
+    height: 56px;
+    padding: 20px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--inputBorder);
+    background: var(--white);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder .count-input .input{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder .count-input .option{
+    color: var(--text);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder .count-input .fa{
+    color: var(--footerText);
+    font-size: 14px;
+    cursor: pointer;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder .select-box{
+    border-radius: 0px 0px 8px 8px;
+    background: var(--white);
+    box-shadow: 0px 10.596px 15.894px -2.649px rgba(16, 25, 40, 0.08), 0px 2.649px 3.973px -1.324px rgba(16, 25, 40, 0.03);
+    margin: 5px 0;
+    overflow: hidden;
+    transition: all 0.3s linear;
+    opacity: 0;
+    max-height: 0px;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder .select-box.open{
+    max-height: 1000px;
+    opacity: 1;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder .select-box .select-list{
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder .select-box .select-list .list{
+    padding: 9px 20px;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.5s linear;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder .select-box .select-list .list:hover{
+    background: var(--backgroundPrimary);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder .select-box .select-list .list p{
+    flex: 1 0 0;
+    color: var(--text);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%; 
+    margin: 4px 0;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder .count-input-holder p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+
+
+
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder{
+    gap: 4px;
+    flex: 1 0 0;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder{
+    gap: 4px;
+    user-select: none;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder .social-input{
+    height: 56px;
+    padding: 20px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--inputBorder);
+    background: var(--white);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder .social-input .input{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder .social-input .option{
+    color: var(--text);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder .social-input .fa{
+    color: var(--footerText);
+    font-size: 14px;
+    cursor: pointer;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder .social-box{
+    border-radius: 0px 0px 8px 8px;
+    background: var(--white);
+    box-shadow: 0px 10.596px 15.894px -2.649px rgba(16, 25, 40, 0.08), 0px 2.649px 3.973px -1.324px rgba(16, 25, 40, 0.03);
+    margin: 5px 0;
+    overflow: hidden;
+    transition: all 0.5s linear;
+    opacity: 0;
+    max-height: 0px;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder .social-box.open{
+    opacity: 1;
+    max-height: 1000px;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder .social-box .social-list{
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder .social-box .social-list .list{
+    padding: 9px 20px;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.9s linear;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder .social-box .social-list .list:hover{
+    background: var(--backgroundPrimary);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder .social-box .social-list .list p{
+    flex: 1 0 0;
+    color: var(--text);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%; 
+    margin: 4px 0;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder .social-input-holder p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .date-field-holder{
+    height: 80px;
+    gap: 4px;
+    flex: 1 0 0;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .date-field-holder label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .date-field-holder input[type='datetime-local']{
+    height: 56px;
+    padding: 16px;
+    gap: 12px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    border: 1px solid var(--inputBorder);
+    background: var(--white);
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .date-field-holder input[type='datetime-local']:focus{
+    border: 1px solid var(--backgroundPrimary);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .date-field-holder input[type='datetime-local']::placeholder{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .date-field-holder p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+
+
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .other-field .other-content label{
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .other-field .other-content input{
+    height: 56px;
+    border: 1px solid var(--inputBorder);
+    background: var(--white);
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .other-field .other-content input:focus{
+    border: 1px solid var(--focus);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .other-field .other-content input::placeholder{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .other-field .other-content p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+
+
+
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .submit-item-holder .submit-des h6{
+    color: var(--text);
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    align-self: stretch;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .submit-item-holder .submit-button-link-holder .submit-button{
+    height: 55px;
+    padding: 16px 24px;
+    gap: 10px;
+    border-radius: 8px;
+    background: var(--backgroundPrimary);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .submit-item-holder .submit-button-link-holder .submit-button button{
+    border: none;
+    cursor: pointer;
+    background: none;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .submit-item-holder .submit-button-link-holder .submit-button button .pa{
+    color: var(--lightBlack);
+    text-align: center;
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .submit-item-holder .submit-button-link-holder .submit-link .pa{
+    color: var(--text);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    letter-spacing: -0.06px;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .submit-item-holder .submit-button-link-holder .submit-link .link{
+    padding: 4px 0px;
+    gap: 8px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.00);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .submit-item-holder .submit-button-link-holder .submit-link .link{
+    color: var(--demoText);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-decoration: none;
+}
+
+.active{
+    color: var(--backgroundPrimary);
+    cursor: pointer;
+}
+
+
+
+/*
+
+    *
+        Success style
+    *
+    
+*/
+
+
+.demo .sub-demo .inner-demo .demo-holder .form-holder .success-message .success-hold{
+    gap: 20px;
+    flex: 1 0 0;
+    width: 700px;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .success-message .success-hold .success{
+    padding: 10px;
+    gap: 10px;
+    border-radius: 100px;
+    background: rgba(52, 168, 83, 0.05);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .success-message .success-hold .success .fa{
+    height: 100px;
+    width: 101px;
+    stroke: var(--success);
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .success-message .success-hold .success-text .text{
+    color: var(--lightAsh);
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .success-message .success-hold .success-text .text span{
+    color: var(--button);
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .success-message .success-hold .success-info .info{
+    color: var(--text);
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+.demo .sub-demo .inner-demo .demo-holder .form-holder .success-message .success-hold .success-info .info span{
+    font-weight: 600;
+}
+
+@media only screen and (max-width: 1120px) {
+    .demo .sub-demo .inner-demo .demo-holder .form-holder{
+        width: 99%;
+    }
+}
+@media only screen and (max-width: 999px) {
+    .demo .sub-demo .inner-demo .demo-holder .form-holder{
+        width: 840px;
+    }
+}
+@media only screen and (max-width: 900px) {
+    .demo{
+        background: var(--white);
+    }
+    .demo .sub-demo .inner-demo{
+        margin: 0;
+        padding: 70px 10px !important;
+        max-width: 100%;
+    }
+    .demo .sub-demo .inner-demo .demo-holder{
+        margin: 0;
+        width: 100%;
+        gap: 20px;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .demo-heading {
+        width: 100%;
+        gap: 15px;
+        margin-top: 35px;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .demo-heading .demo-first-heading h4 {
+        font-size: 32px;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .demo-heading .demo-second-heading h6 {
+        font-size: 14px;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .form-holder{
+        width: 100%;
+        padding: 0px;
+        border-radius: 0px;
+        background: transparent;
+        box-shadow: none;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder,
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder,
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder {
+        flex-direction: column;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .name-field-holder,
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .first-input-field-holder .job-field-holder {
+        width: 100%;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .number-field-holder,
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .third-input-field-holder .count-field-holder {
+        width: 100%;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .name-field-holder,
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .input-holder .fourth-input-field-holder .date-field-holder {
+        width: 100%;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .submit-item-holder {
+        gap: 25px;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .success-message .success-hold{
+        width: 100%;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .success-message .success-hold .success-text .text{
+        font-size: 18px;
+    }
+    .demo .sub-demo .inner-demo .demo-holder .form-holder .success-message .success-hold .success-info .info{
+        font-size: 14px;
+    } 
+}

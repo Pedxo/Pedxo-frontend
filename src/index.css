@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');
+
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+:root {
+  --backgroundPrimary:hsl(44, 99%, 63%);
+  --backgroundSecondary:hsl(44, 100%, 96%);
+  --white: hsl(0, 0%, 100%);
+  --lightBlack: hsl(222, 13%, 19%);
+  --text: hsl(218, 13%, 33%);
+  --innerblack: hsl(219, 13%, 25%);
+  --lightAsh: hsl(219, 13%, 46%);
+  --buttonText: hsl(246, 100%, 96%);
+  --button: hsl(246, 100%, 64%); 
+  --icons: hsl(38, 90%, 19%);
+  --iconsHolder: hsl(44, 100%, 89%);
+  --faq: hsl(220, 11%, 95%);
+  --black: hsl(0, 0%, 0%);
+  --subText: hsl(217, 11%, 64%);
+  --span: hsl(220, 11%, 57%);
+  --faqText: hsl(219, 13%, 42%);
+  --footerText: hsl(218, 15%, 65%);
+  --hr: hsl(218, 17%, 91%);
+  --gradient: hsl(42, 92%, 69%);
+  --gradient2: hsl(41, 76%, 74%);
+  --inputBorder: hsl(220, 11%, 83%);
+  --label: hsl(218, 43%, 11%);
+  --demoText: hsl(44, 57%, 45%);
+  --danger: hsl(0, 100%, 60%);
+  --focus: hsl(44, 100%, 83%);
+  --login: hsl(218, 16%, 84%);
+  --back: hsl(0, 4%, 95%);
+  --sub: hsl(252, 45%, 2%);
+  --success: hsl(136, 53%, 43%, 1);
+  --black2: hsl(240, 9%, 2%, 1);
+}
+
+body{
+  font-family: 'Inter', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+}
+
+@media only screen and (max-width: 1000px) {
+  body{
+    height: 100svh;
+  }
+}
+
+html{
+  height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+p, h1, h2, h3, h4, h5, h6, ul{
+  margin: 0 !important;
+}

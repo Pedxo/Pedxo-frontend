@@ -1,0 +1,447 @@
+.header--holder{
+    z-index: 999;
+    height: 80px;
+    width: 100%;
+}
+.header--holder .inner-header{
+    align-self: stretch;
+    height: inherit;
+}
+.header--holder .inner-header .main-header{
+    align-self: stretch;
+    height: inherit;
+}
+.header--holder .inner-header .main-header .header-content{
+    height: inherit;
+}
+.header--holder .inner-header .main-header .header-content .logo{
+    width: 95px;
+    height: 49.745px;
+}
+.header--holder .inner-header .main-header .header-content .logo .logo-name .link{
+    color: var(--innerblack);
+    text-align: center;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: -0.64px;
+    text-decoration: none;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .toggle-bar{
+    gap: 3px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .toggle-bar .bar{
+    height: 3px;
+    width: 25px;
+    background: var(--lightBlack);
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .toggle-bar .bar-2{
+    width: 15px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .toggle-bar .bar-3{
+    width: 20px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .inner-logo{
+    height: 54px;
+    padding: 10px 16px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .inner-logo .lgo h4{
+    color: var( --faqText);
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: -0.4px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content{
+    gap: 24px;
+    align-self: stretch;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .links-holder {
+    gap: 24px;
+    align-self: stretch;
+    list-style: none;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .links-holder .nav-content-link .list{
+    color: var(--black2);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+    letter-spacing: -0.4px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .links-holder .nav-content-link .list:hover{
+    color: var(--faq);
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link{
+    gap: 8px;
+    z-index: 1;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .first-link{
+    gap: 8px;
+    color: var(--black2);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+    letter-spacing: -0.4px;
+    cursor: pointer;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .first-link p{
+    color: var(--black2);
+    text-align: center;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .first-link:hover,
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .first-link p:hover{
+    color: var(--faq);
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .first-link .fa{
+    cursor: pointer;
+    z-index: 2;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .dropdown{
+    width: 165px;
+    padding: 8px;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), 
+                linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), 
+                linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), #2B2F38;
+    top: 40px;
+    left: -22px;
+    right: 0;
+    border-radius: 4px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .dropdown .dropdown-link{
+    padding: 4px 8px;
+    gap: 8px;
+    align-self: stretch;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .dropdown .dropdown-link a{
+    flex: 1 0 0;
+    color: var(--backgroundSecondary);
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+    text-decoration: none;
+    cursor: pointer;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .dropdown .dropdown-link a:hover{
+    color: var(--backgroundPrimary);
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .second-con-link{
+    padding: 12px 24px;
+    gap: 8px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link{
+    gap: 8px;
+    z-index: 1;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link{
+    gap: 8px;
+    color: var(--black2);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+    letter-spacing: -0.4px;
+    cursor: pointer;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link .user-info .sub-info .img-con{
+    height: 40px;
+    width: 40px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link .user-info .sub-info .img-hld{
+    height: inherit;
+    width: inherit;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link .user-info .sub-info .active{
+    height: 10px;
+    width: 10px;
+    right: 0;
+    left: 28px;
+    bottom: 0;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link .user-info .sub-info .active .active-indicator{
+    height: inherit;
+    width: inherit;
+    background: var(--success);
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-contentt .nav-sub-content-link .first-link p{
+    color: var(--black2);
+    text-align: center;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link:hover,
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link p:hover{
+    color: var(--faq);
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link .fa{
+    cursor: pointer;
+    z-index: 2;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown{
+    width: 165px;
+    padding: 8px;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), 
+                linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), 
+                linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), #2B2F38;
+    top: 40px;
+    left: -20px;
+    right: 0;
+    border-radius: 4px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown hr{
+    width: 100%;
+    color: var(--backgroundSecondary);
+    margin: 2px 0px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown .dropdown-link{
+    padding: 4px 8px;
+    gap: 8px;
+    align-self: stretch;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown .dropdown-link a,
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown .dropdown-link p{
+    flex: 1 0 0;
+    color: var(--backgroundSecondary);
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+    text-decoration: none;
+    cursor: pointer;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown .dropdown-link a:hover{
+    color: var(--backgroundPrimary);
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .second-con-link .login-link p{
+    color: var(--black2);
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+    letter-spacing: -0.4px;
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .button-link{
+    padding: 12px 24px;
+    gap: 10px;
+    border-radius: 50px;
+    background: var(--button);
+}
+.header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .button-link .book p{
+    color: var(--buttonText);
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+    letter-spacing: -0.4px;
+}
+
+.header--holder .inner-header .header--scroll{
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), 
+                linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), 
+                linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), #2B2F38;
+}
+.header--holder .inner-header .header--scroll .header-content .logo .logo-name .link{
+    color: var(--backgroundSecondary);
+}
+.header--holder .inner-header .header--scroll .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .first-link,
+.header--holder .inner-header .header--scroll .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .first-link p,
+.header--holder .inner-header .header--scroll .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .links-holder .nav-content-link .list{
+    color: var(--backgroundSecondary);
+}
+.header--holder .inner-header .header--scroll .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link,
+.header--holder .inner-header .header--scroll .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link p{
+    color: var(--backgroundSecondary);
+}
+.header--holder .inner-header .header--scroll .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .second-con-link .login-link p{
+    color: var(--backgroundSecondary);
+}
+.header--holder .inner-header .header--scroll .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .button-link{
+    background: var(--backgroundSecondary);
+}
+.header--holder .inner-header .header--scroll .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .button-link .book p{
+    color: var(--lightBlack);
+}
+.header--holder .inner-header .header--scroll .header-content .nav-holder .toggle-bar .bar {
+    background: var(--backgroundSecondary);
+}
+@media only screen and (min-width: 993px) {
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content,
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .links-holder,
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content{
+        flex-direction: row !important;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content{
+        padding-right: 1.5rem !important;
+        padding-left: 1.5rem !important;
+    }
+}
+@media only screen and (max-width: 992px) {
+    .header--holder{
+        height: 60px;
+    }
+    .header--holder .inner-header{
+        background: var(--backgroundPrimary);
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold,
+    .header--holder .inner-header .header--scroll .header-content .nav-holder .nav-content-hold  {
+        position: fixed;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), 
+        linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), 
+        linear-gradient(0deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.20) 100%), #2B2F38;
+        top: 0px;
+        left: 0;
+        bottom: 0;
+        height: 100vh;
+        width: 100%;
+        flex-direction: column;
+        gap: 7px;
+        z-index: 999;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold  .nav-content{
+        height: 100%;
+        gap: 2px;
+        z-index: 999;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content{
+        width: 100%;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content,
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .links-holder{
+        gap: 5px;
+        border-radius: 0px;
+        background: transparent;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold.navb{
+        display: none;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .links-holder .nav-content-link {
+        width: 100%;
+        color: var(--label);
+        padding: 0;
+        margin: 0;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .links-holder .nav-content-link .list{
+        color: var(--backgroundSecondary);
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 120%;
+        letter-spacing: -0.4px;
+        max-width: 100%;
+        padding: 4px 16px;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .links-holder .nav-content-link .list:hover{
+        color: var(--label);
+        background: var(--backgroundSecondary);
+        width: 100%;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link {
+        height: fit-content;
+        width: 100%;
+        gap: 0px;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .first-link{
+        color: var(--backgroundSecondary);
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 120%;
+        letter-spacing: -0.4px;
+        padding: 8px 16px;
+        width: 100%;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .first-link p{
+        color: var(--backgroundSecondary);
+        text-align: center;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .dropdown{
+        position: relative !important;
+        width: 100%;
+        background: var(--innerblack);
+        top: 0;
+        left: 0;
+        border-radius: 0px;
+        padding: 0;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .dropdown .dropdown-link{
+        padding: 0;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .dropdown .dropdown-link a{
+        color: var(--faq);
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 120%;
+        letter-spacing: -0.4px;
+        padding: 6px 16px;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-first-content .nav-sub-content-link .dropdown .dropdown-link a:hover{
+        color: var(--lightBlack);
+        background: var(--faq);
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .second-con-link{
+        border: 2px solid var(--backgroundSecondary);
+        border-radius: 10px;
+        width: 100%;
+        height: 50px;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link {
+        height: fit-content;
+        width: 100%;
+        gap: 0px;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link{
+        color: var(--backgroundSecondary);
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 120%;
+        letter-spacing: -0.4px;
+        padding: 8px 0px;
+        width: 100%;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .first-link p{
+        color: var(--backgroundSecondary);
+        text-align: center;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown{
+        position: relative !important;
+        width: 100%;
+        background: var(--innerblack);
+        top: 0;
+        left: 0;
+        border-radius: 0px;
+        padding: 0;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown .dropdown-link{
+        padding: 0;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown .dropdown-link a,
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown .dropdown-link p{
+        color: var(--faq);
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 120%;
+        letter-spacing: -0.4px;
+        padding: 7px 16px;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .nav-sub-content-link .dropdown .dropdown-link a:hover{
+        color: var(--lightBlack);
+        background: var(--faq);
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .second-con-link .login-link p{
+        color: var(--backgroundSecondary);
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content {
+        width: 100%;
+        padding: 8px 16px;
+    }
+    .header--holder .inner-header .main-header .header-content .nav-holder .nav-content-hold .nav-content .nav-second-content .button-link{
+        border-radius: 10px;
+        width: 100%;
+        height: 50px;
+    }
+}

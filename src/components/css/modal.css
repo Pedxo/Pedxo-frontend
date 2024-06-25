@@ -1,0 +1,92 @@
+.success-holder{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex: 1 0 0;
+    bottom: 0;
+    top: 0;
+    z-index: 300;
+    background: rgba(0, 0, 0, 0.251);
+    width: 100%;
+    right: 0;
+    height: 100%;
+    transition: all 0.5s ease-in;
+}
+.success-holder .sub-holder{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--white);
+    height: 250px;
+    border-radius: 15px;
+    transition: all 0.5s ease-in;
+}
+.success-holder .sub-holder .success{
+    display: flex;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 50%;
+    height: 100px;
+    width: 101px;
+    background: rgba(52, 168, 83, 0.05);
+}
+.success-holder .sub-holder .success .fa{
+    height: 100px;
+    width: 101px;
+    stroke: var(--success);
+}
+.success-holder .sub-holder .error{
+    display: flex;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 50%;
+    height: 100px;
+    width: 101px;
+    background: rgba(168, 52, 52, 0.05);
+}
+.success-holder .sub-holder .error .fa{
+    height: 100px;
+    width: 101px;
+    stroke: var(--danger);
+}
+.success-holder .sub-holder .success-text-holder{
+    width: 540px;
+}
+.success-holder .sub-holder .success-text-holder .text{
+    color: var(--lightAsh);
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+@media only screen and (max-width: 900px) {
+    .success-holder{
+        padding: 0 1.5em;
+    }
+    .success-holder .sub-holder{
+        width: 100%;
+    }
+    .success-holder .sub-holder .success-text-holder{
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 425px) {
+    .success-holder .sub-holder .error .fa,
+    .success-holder .sub-holder .success .fa{
+        height: 70px;
+        width: 70px;
+    }
+    .success-holder .sub-holder .success-text-holder .text{
+        font-size: 17px;
+    }
+}

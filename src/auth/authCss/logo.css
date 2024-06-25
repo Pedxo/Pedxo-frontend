@@ -1,0 +1,63 @@
+.Logo-content-holder{
+    background: var(--backgroundPrimary);
+    height: 100%;
+}
+.Logo-content-holder .logo-content{
+    height: 100%;
+    padding: 50px;
+    flex-shrink: 0;
+}
+.Logo-content-holder .logo-content .logo .link{
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: -1.6px;
+}
+.Logo-content-holder .logo-content .logo .link a{
+    color: var(--lightBlack);
+    text-decoration: none;
+}
+.Logo-content-holder .logo-content .content h2{
+    width: 100%;
+    color: var(--lightBlack);
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: -1.6px;
+}
+.Logo-content-holder .logo-content .content h2 span{
+    color: var(--lightAsh);
+}
+@media only screen and (max-width: 1024px) {
+    .Logo-content-holder .logo-content .logo .link a,
+    .Logo-content-holder .logo-content .content h2{
+        font-size: 32px;
+    }
+}
+@media only screen and (max-width: 900px) {
+    .Logo-content-holder{
+        width: 100%;
+        height: fit-content !important;
+    }
+    .Logo-content-holder .logo-content{
+        padding: 4px 20px;
+    }
+    .Logo-content-holder .logo-content .content{
+        display: none !important;
+    }
+}
+@media only screen and (max-width: 768px) {
+    .Logo-content-holder .logo-content{
+        padding: 4px 20px;
+    }
+}
+@media only screen and (max-width: 425px) {
+    .Logo-content-holder .logo-content{
+        padding: 8px 16px;
+    }
+    .Logo-content-holder .logo-content .logo .link{
+        font-size: 32px;
+    }
+}

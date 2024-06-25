@@ -1,0 +1,156 @@
+.forget {
+    height: 100vh;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol{
+    height: 100vh;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol{
+    padding: 65px;
+    height: fit-content;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol{
+    gap: 8px;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol{
+    flex: 1 0 0;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-text h2{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: -0.64px;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-text p{
+    color: var(--lightAsh);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .email-hol label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .email-hol .in-ico input[type='email']{
+    height: 56px;
+    padding: 16px;
+    align-self: stretch;
+    border-radius: 6px;
+    border: 1px solid var(--login);
+    background: var(--white);
+    width: 100%;
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .email-hol .in-ico input[type='email']::placeholder{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .email-hol .in-ico input[type='email']:focus{
+    border: 1px solid var(--focus);
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .email-hol .in-ico .fa-holder{
+    position: absolute;
+    bottom: 17px;
+    right: 11px;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .email-hol .in-ico .fa-holder .fa{
+    width: 20px;
+    height: 20px;
+    fill: var(--inputBorder);
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .email-hol p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .frg-pass-hol-form-hol-btn .link-hol{
+    padding: 16px 24px;
+    gap: 10px;
+    border-radius: 8px;
+    background: var(--back);
+    text-decoration: none;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .frg-pass-hol-form-hol-btn .link-hol p{
+    color: var(--lightBlack);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .frg-pass-hol-form-hol-btn .button{
+    padding: 16px 24px;
+    gap: 10px;
+    border-radius: 8px;
+    background: var(--backgroundPrimary);
+    cursor: pointer;
+}
+.forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-form-hol .main-form .frg-pass-hol-form-hol-btn .button button{
+    flex: 1 0 0;
+    color: var(--lightBlack);
+    text-align: center;
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+    border: none;
+    width: 100%;
+    background: none;
+}
+@media only screen and (max-width: 992px) {
+    .forget{
+        height: 100svh;
+    }
+    .forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol{
+        height: 100svh;
+    }
+}
+@media only screen and (max-width: 900px) {
+    .forget .sub-forget-holder .frg-pass-hol {
+        display: block;
+    }
+    .forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol{
+        flex-direction: column;
+        justify-content: unset !important;
+        height: 100svh;
+    }
+    .forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol {
+        padding: 32px 16px;
+        width: 100%;
+    }
+    .forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol{
+        padding: 0;
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 425px) {
+    .forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol {
+        height: 482px;
+    }
+    .forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-text h2{
+        font-size: 24px;
+        font-weight: 600;
+    }
+    .forget .sub-forget-holder .frg-pass-hol .sub-frg-pass-hol .in-frg-pass-hol .in-sub-frg-pass-hol .frg-hol .frg-pass-hol-text p{
+        font-size: 14px;
+    }
+}

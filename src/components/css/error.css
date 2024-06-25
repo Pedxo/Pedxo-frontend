@@ -1,0 +1,38 @@
+.Oops-holder .sub-holder{
+    align-items: center;
+    height: 100%;
+}
+.Oops-holder .sub-holder .text{
+    font-weight: 500;
+    line-height: 145%;
+    letter-spacing: -0.8px;
+}
+.Oops-holder .sub-holder .link{
+    background: var(--backgroundPrimary);
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 145%;
+    letter-spacing: -0.8px;
+    text-decoration: none;
+    width: 400px;
+    height: 50px;
+    border-radius: 10px;
+    color: var(--innerblack);
+}
+.Oops-holder .sub-holder .link:hover{
+    opacity: 70%;
+}
+@media only screen and (max-width: 900px) {
+    .Oops-holder .sub-holder .text{
+        font-size: 19px;
+    }
+}
+@media only screen and (max-width: 425px) {
+    .Oops-holder .sub-holder{
+        margin-top: 1.2em;
+    }
+    .Oops-holder .sub-holder .link{
+        width: 100%;
+    }
+}

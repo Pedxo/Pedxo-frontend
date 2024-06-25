@@ -1,0 +1,195 @@
+.footer{
+    padding: 0px 112px;
+    background: var(--backgroundSecondary);
+    height: 100%;
+}
+.footer .footer-container{
+    height: fit-content;
+    padding: 64px 0px;
+    gap: 64px;
+}
+.footer .footer-container .footer-content .texts-link-holder{
+    width: 455px;
+}
+.footer .footer-container .footer-content .first-footer-content{
+    padding: 0px 55px 28px 0px;
+    gap: 57px;
+}
+.footer .footer-container .footer-content .first-footer-content .first-content-logo{
+    width: 369px;
+}
+.footer .footer-container .footer-content .first-footer-content .first-content-logo h3{
+    color: var(--innerBlack);
+    font-size: 56px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 100%;
+    letter-spacing: -2.24px;
+}
+.footer .footer-container .footer-content .first-footer-content .first-content-ctc h5{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+.footer .footer-container .footer-content .first-footer-content .first-content-ctc .link{
+    color: var(--lightAsh);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-decoration-line: underline;
+}
+.footer .footer-container .footer-content .second-footer-content{
+    flex: 1 0 0;
+}
+.footer .footer-container .footer-content .second-footer-content .heading h4{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+.footer .footer-container .footer-content .second-footer-content .nav-links .nav-links-holder .nav-links-content{
+    list-style: none;
+    padding: 0;
+}
+.footer .footer-container .footer-content .second-footer-content .nav-links .nav-links-holder .nav-links-content .link{
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    align-self: stretch;
+}
+.footer .footer-container .footer-content .second-footer-content .nav-links .nav-links-holder .nav-links-content .link a{
+    color: var(--lightAsh);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    text-decoration: none;
+}
+.footer .footer-container .footer-content .third-footer-content{
+    flex: 1 0 0;
+}
+.footer .footer-container .footer-content .third-footer-content .heading h4{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+.footer .footer-container .footer-content .third-footer-content .nav-links .nav-links-holder .nav-links-content{
+    list-style: none;
+    padding: 0;
+}
+.footer .footer-container .footer-content .third-footer-content .nav-links .nav-links-holder .nav-links-content .link{
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    align-self: stretch;
+}
+.footer .footer-container .footer-content .third-footer-content .nav-links .nav-links-holder .nav-links-content .link a{
+    color: var(--lightAsh);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    text-decoration: none;
+}
+.footer .footer-container .footer-content .fourth-footer-content{
+    flex: 1 0 0;
+}
+.footer .footer-container .footer-content .fourth-footer-content .heading h4{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%; 
+}
+.footer .footer-container .footer-content .fourth-footer-content .social-icons{
+    height: 24px;
+}
+.footer .footer-container .footer-content .fourth-footer-content .social-icons .icon{
+    width: 24px;
+    height: 24px;
+    text-decoration: none;
+    color: var(--innerBlack);
+    font-size: 24px;
+}
+.footer .footer-container .sub-footer-content .hr-con{
+    height: 10px;
+}
+.footer .footer-container .sub-footer-content .hr-con hr{
+    color: var(--footerText);
+}
+.footer .footer-container .sub-footer-content .sub-footer-item{
+    height: 20px;
+}
+.footer .footer-container .sub-footer-content .sub-footer-item .footer-pol h5{
+    color: var(--lightAsh);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+}
+.footer .footer-container .sub-footer-content .sub-footer-item .footer-rights h5{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+@media only screen and (max-width: 1200px) {
+    .footer{
+        height: 100%;
+        padding: 0px 40px;
+    }
+    .footer .footer-container .footer-content .first-footer-content {
+        padding: 0px 0px 28px 0px;
+    }
+}
+@media only screen and (max-width: 992px) {
+    .footer{
+        height: 100%;
+        padding: 0px 32px;
+    }
+    .footer .footer-container .footer-content .first-footer-content .first-content-logo{
+        width: 100%;
+    }
+    .footer .footer-container .footer-content .texts-link-holder{
+        width: 100%;
+    }
+    .footer .footer-container{
+        height: 100%;
+    }
+    .footer .footer-container .footer-content .first-footer-content{
+        gap: 30px;
+    }
+    .footer .footer-container .footer-content .first-footer-content .first-content-ctc{
+        display: flex;
+        gap: 5px;
+    }
+    .footer .footer-container .footer-content{
+        flex-direction: column;
+    }
+}
+@media only screen and (max-width: 425px) {
+    .footer .footer-container .sub-footer-content .sub-footer-item {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .footer .footer-container .sub-footer-content .sub-footer-item .footer-pol h5 {
+        font-size: 15px;
+    }
+}
+@media only screen and (max-width: 375px) {
+    .footer .footer-container .footer-content .second-footer-content .nav-links .nav-links-holder .nav-links-content .link {
+        font-size: 15px;
+    }
+    .footer .footer-container .footer-content .third-footer-content .nav-links .nav-links-holder .nav-links-content .link {
+        font-size: 15px;
+    }
+}

@@ -1,0 +1,300 @@
+.reset {
+    height: 100vh;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol{
+    height: 100vh;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol{
+    padding: 65px;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol{
+    padding: 30px 24px;
+    gap: 8px;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol{
+    gap: 22px;
+    flex: 1 0 0;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .heading h4{
+    color: var(--label);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: -0.56px;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .heading h6{
+    color: var(--lightAsh);
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .in-ico input[type='text'],
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .in-ico input[type='password']{
+    height: 56px;
+    padding: 16px;
+    align-self: stretch;
+    border-radius: 6px;
+    border: 1px solid var(--login);
+    background: var(--white);
+    width: 100%;
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .in-ico input[type='text']::placeholder,
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .in-ico input[type='password']::placeholder{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .in-ico input[type='text']:focus,
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .in-ico input[type='password']:focus{
+    border: 1px solid var(--focus);
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .in-ico .icon{
+    position: absolute;
+    bottom: 17px;
+    right: 11px;
+    cursor: pointer;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .in-ico .icon .fa{
+    width: 20px;
+    height: 20px;
+    fill: var(--inputBorder);
+    cursor: pointer;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .in-ico .icon .fa2{
+    fill: var(--inputBorder);
+    stroke: none;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+.signup .signup-inner-app .inner-app .sub-app .form-section .form-holder .inner-form-holder .form-input-holder .inputs .password-confirm-holder .pass p{
+    color: var(--danger);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .hide-box{
+    display: none;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .show-box{
+    display: block;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .password-validator-box .inner-validator-box .validator1 p{
+    color: var(--danger);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .password-validator-box .inner-validator-box .validator1 .fa{
+    font-size: 13px;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .password-validator-box .inner-validator-box .validator1 .hide{
+    display: none;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .password-validator-box .inner-validator-box .validator1 .show{
+    display: block;
+    color: var(--footerText);
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .password-validator-box .inner-validator-box .wrong{
+    color: var(--danger);
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-1 .password-validator-box .inner-validator-box .right p{
+    color: var(--footerText);
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 label{
+    align-self: stretch;
+    color: var(--label);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    text-transform: uppercase;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 .in-ico input[type='text'],
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 .in-ico input[type='password']{
+    height: 56px;
+    padding: 16px;
+    align-self: stretch;
+    border-radius: 6px;
+    border: 1px solid var(--login);
+    background: var(--white);
+    width: 100%;
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 .in-ico input[type='text']::placeholder,
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 .in-ico input[type='password']::placeholder{
+    color: var(--footerText);
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 .in-ico input[type='text']:focus,
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 .in-ico input[type='password']:focus{
+    border: 1px solid var(--focus);
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 .in-ico .icon{
+    position: absolute;
+    bottom: 17px;
+    right: 11px;
+    cursor: pointer;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 .in-ico .icon .fa{
+    width: 20px;
+    height: 20px;
+    fill: var(--inputBorder);
+    cursor: pointer;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 .in-ico .icon .fa2{
+    fill: var(--inputBorder);
+    stroke: none;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-input-holder .form-inp-2 p{
+    text-transform: capitalize;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 500;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-button{
+    padding: 16px 24px;
+    gap: 10px;
+    border-radius: 8px;
+    background: var(--backgroundPrimary);
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-button button{
+    gap: 8px;
+    border: none;
+    background: none;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .form-button button .text{
+    color: var(--text);
+    text-align: center;
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .link-holder{
+    padding: 16px 24px;
+    gap: 10px;
+    border-radius: 8px;
+    background: var(--back);
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .link-holder .link{
+    gap: 8px;
+    border: none;
+    background: none;
+    text-decoration: none;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .in-sub-rst-pas-cmp-hol .sub-form-holder .form .link-holder .link .text{
+    color: var(--text);
+    text-align: center;
+    font-feature-settings: 'cv04' on, 'cv03' on, 'cv01' on;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 145%;
+    text-transform: capitalize;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .success-hold{
+    gap: 20px;
+    flex: 1 0 0;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .success-hold .success{
+    padding: 10px;
+    gap: 10px;
+    border-radius: 100px;
+    background: rgba(52, 168, 83, 0.05);
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .success-hold .success .fa{
+    height: 100px;
+    width: 101px;
+    stroke: var(--success);
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .success-hold .success-text{
+    width: 540px;
+}
+.reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .success-hold .success-text p{
+    color: var(--lightAsh);
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+@media only screen and (max-width: 992px) {
+    .reset{
+        height: 100svh;
+    }
+    .reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol{
+        height: 100svh;
+    }
+}
+@media only screen and (max-width: 900px) {
+    .rst-pas-hol{
+        display: block;
+    }
+    .reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol{
+        flex-direction: column;
+        justify-content: unset;
+        height: 100svh;
+    }
+    .reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol{
+        padding: 32px 16px;
+        width: 100%;
+    }
+    .reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol{
+        width: 100%;
+        padding: 0;
+    }
+}
+@media only screen and (max-width: 425px) {
+    .reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol{
+        height: 482px;
+    }
+    .reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .success-hold .success .fa{
+        height: 80px;
+        width: 80px;
+    }
+    .reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .success-hold .success-text{
+        width: 100%;
+    }
+    .reset .sub-reset-holder .rst-pas-hol .in-rst-pas-hol .sub-rst-pas-hol .sub-rst-pas-cmp-hol .success-hold .success-text p{
+        font-size: 18px;
+    }
+}
