@@ -1,3 +1,3 @@
 #Pedxo
 
-Pedxo is an agency that help our clients build their dream companies paltform.
+Pedxo hires and manages developers on behalf of international clients.
