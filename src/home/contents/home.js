@@ -254,7 +254,7 @@ export const Home = () => {
                     </div>
                 </div>
             </section>
-            <section className='d-flex align-items-center justify-content-center metrix col-12'>
+            <section className='d-flex align-items-center justify-content-center bg-update metrix col-12'>
                 <div className='d-flex align-items-center justify-content-center col-12 flex-lg-row flex-column m-0 container'>
                     <div className='d-flex flex-lg-row flex-column align-items-center justify-content-center col-12 metrix-holder-con'>
                         <div className='d-flex flex-column gap-lg-2 gap-0 justify-content-center justify-content-lg-between metrix-dev'>
@@ -385,7 +385,7 @@ export const Home = () => {
             <section className='position-relative overflow-hidden p-5 w-100 services' id='services'>
                 <div className='sub-service-holder bg-transparent'>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1052 500" fill="none" className='position-relative svg-design'>
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M837.008 122.85C794.743 133.036 761.249 153.249 714.781 203.656C679.537 241.887 676.755 285.46 672.199 356.819L672.065 358.923C667.635 428.252 660.222 517.324 582.762 595.846C498.371 681.393 405.813 692.729 332.123 701.754C321.478 703.057 311.226 704.313 301.45 705.737C261.445 711.564 227.218 719.602 194.599 738.583C162.476 757.276 128.026 788.926 92.6082 848L0 788.902C43.3253 716.64 90.3106 670.29 141.102 640.733C191.399 611.465 241.567 601.004 286.226 594.498C298.578 592.699 310.409 591.155 321.796 589.668C395.115 580.097 449.997 572.932 506.443 515.713C552.674 468.848 559.139 418.351 563.408 351.534C563.664 347.531 563.908 343.429 564.157 339.237C567.86 276.886 572.741 194.721 635.876 126.234C692.341 64.9836 743.588 29.9974 812.238 13.4533C873.653 -1.34719 947.31 -0.547472 1043.68 0.498852C1046.76 0.532329 1049.87 0.566057 1053 0.599537L1051.87 112.936C945.211 111.795 884.542 111.395 837.008 122.85Z" fill="#E7BB3F"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M837.008 122.85C794.743 133.036 761.249 153.249 714.781 203.656C679.537 241.887 676.755 285.46 672.199 356.819L672.065 358.923C667.635 428.252 660.222 517.324 582.762 595.846C498.371 681.393 405.813 692.729 332.123 701.754C321.478 703.057 311.226 704.313 301.45 705.737C261.445 711.564 227.218 719.602 194.599 738.583C162.476 757.276 128.026 788.926 92.6082 848L0 788.902C43.3253 716.64 90.3106 670.29 141.102 640.733C191.399 611.465 241.567 601.004 286.226 594.498C298.578 592.699 310.409 591.155 321.796 589.668C395.115 580.097 449.997 572.932 506.443 515.713C552.674 468.848 559.139 418.351 563.408 351.534C563.664 347.531 563.908 343.429 564.157 339.237C567.86 276.886 572.741 194.721 635.876 126.234C692.341 64.9836 743.588 29.9974 812.238 13.4533C873.653 -1.34719 947.31 -0.547472 1043.68 0.498852C1046.76 0.532329 1049.87 0.566057 1053 0.599537L1051.87 112.936C945.211 111.795 884.542 111.395 837.008 122.85Z" fill="#00408017"/>
                     </svg>
                     <div className='position-absolute overflow-hidden start-0 top-0 col-12 services-holder'>
                         <div className='services-content-holder'>
