@@ -231,7 +231,7 @@ export const Home = () => {
                         <div className='position-absolute d-flex align-items-center justify-content-center top-0 start-0 col-12 h-100 hero-text-holder'>
                             <div className='d-inline-flex flex-column align-items-center gap-4 hero-text-con'>
                                 <div className='d-flex flex-column align-items-center gap-3 col-12 hero-text-hld'>
-                                    <div className='heading'>
+                                    <div className='heading initial-heading'>
                                         <h4>Technical <br /> partner-as-a-service.</h4>
                                     </div>
                                     <div className='col-12 col-lg-7 par'>

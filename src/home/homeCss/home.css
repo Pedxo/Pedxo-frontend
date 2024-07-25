@@ -38,11 +38,11 @@
     z-index: 4;
 }
 .hero .sub-hero-sec .inner-hero-sec .hero-text-holder .hero-text-con .hero-text-hld .heading h4{
-    background: linear-gradient(0deg, var(--black) 0, var(--black) 100%),
-                linear-gradient(0deg, var(--black) 0, var(--black) 100%),
-                linear-gradient(0deg, var(--black) 0, var(--black) 100%),
-                linear-gradient(0deg, var(--black) 0, var(--black) 100%),
-                linear-gradient(0deg, var(--black) 0, var(--black) 100%), #2B2F38;
+    background: linear-gradient(0deg, var(--white) 0, var(--white) 100%),
+                linear-gradient(0deg, var(--white) 0, var(--white) 100%),
+                linear-gradient(0deg, var(--white) 0, var(--white) 100%),
+                linear-gradient(0deg, var(--white) 0, var(--white) 100%),
+                linear-gradient(0deg, var(--white) 0, var(--white) 100%), #2B2F38;
     -webkit-background-clip: text;
     color: transparent;
     text-align: center;
@@ -53,7 +53,7 @@
     letter-spacing: -2.24px;
 }
 .hero .sub-hero-sec .inner-hero-sec .hero-text-holder .hero-text-con .hero-text-hld .par p{
-    color: var(--innerBlack);
+    color: var(--white);
     text-align: center;
     font-size: 16px;
     font-style: normal;
@@ -91,10 +91,10 @@
     height: 60px;
     padding: 12px 24px;
     border-radius: 50px !important;
-    border: 2px solid var(--lightBlack);
+    border: 2px solid var(--white);
 }
 .hero .sub-hero-sec .inner-hero-sec .hero-text-holder .hero-text-con .hero-links-hld .second-link .link{
-    color: var(--lightBlack);
+    color: var(--white);
     text-align: center;
     font-size: 20px;
     font-style: normal;
