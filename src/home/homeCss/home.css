@@ -103,8 +103,22 @@
     letter-spacing: -0.4px;
     text-decoration: none;
 }
+.howitworks .work-box {
+    border: 1px solid #10192808;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.custom-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 1.5rem;
+}
 
 
+.howitworks{
+    background-color: #F4F3F3;
+}
 /*
     *
         Metrix Section
@@ -259,8 +273,16 @@
     padding: 12px 13px 12px 13px;
     text-decoration: none;
 }
+.payroll{
+    background-color: #24CAFF29;
+}
+.vertical-line{
+    width: 2px;
+    height: 100px;
+    background-color: #667185;
+}
 .about-sec .sub-abt-sec .row .abt-img-hld{
-    height: 370px;
+    /* height: 370px; */
 }
 .about-sec .sub-abt-sec .row .abt-img-hld .img-sec{
     height: inherit;
@@ -278,7 +300,7 @@
 */
 
 .remote-work{
-    background: var(--backgroundSecondary);
+    background: #fff;
 }
 .remote-work .sub-remote-work .inner-remote-work.container {
     max-width: 100% !important;
@@ -767,7 +789,7 @@
         font-size: 16px;
     }
     .about-sec .sub-abt-sec .row .abt-img-hld {
-        height: 340px;
+        /* height: 340px; */
         width: 375px;
     }
 
@@ -876,6 +898,7 @@
 
     .about-sec.p-5 {
         padding: 64px 16px !important;
+        
     }
     .about-sec .sub-abt-sec {
         padding: 0;
@@ -900,7 +923,7 @@
         font-size: 14px;
     }
     .about-sec .sub-abt-sec .row .abt-img-hld {
-        height: 350px;
+        /* height: 350px; */
         width: 40% !important;
         padding: 0;
         margin: 0;
@@ -1087,12 +1110,21 @@
         font-size: 16px;
         letter-spacing: -0.32px;
     }
+    .payroll br {
+        content: " ";
+      }
+      .payroll br::after {
+        content: " ";
+      }
 }
 @media only screen and (max-width: 908px) {
     .services .sub-service-holder .svg-design {
         right: -260px;
         top: -210px;
         width: 600px;
+    }
+    .custom-grid {
+        grid-template-columns: 1fr;
     }
 }
 @media only screen and (max-width: 900px) {
@@ -1149,7 +1181,7 @@
     }
 
     .about-sec .sub-abt-sec .row{
-        flex-direction: column-reverse !important;
+        /* flex-direction: column-reverse !important; */
         margin: 0;
         gap: 76px;
     }
@@ -1157,7 +1189,7 @@
         width: 100% !important;
     }
     .about-sec .sub-abt-sec .row .abt-img-hld {
-        height: 300px;
+        /* height: 300px; */
         width: 100% !important;
     }
 
