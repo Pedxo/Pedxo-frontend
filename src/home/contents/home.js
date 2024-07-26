@@ -119,9 +119,9 @@ export const Home = () => {
     ];
 
     const testimonals = [
-        {info: "“As a seasoned sales professional, I've used various platforms to explore job opportunities in the past, but none have impressed me as much as this one. The platform's user-friendly interface, coupled with its extensive network of employers, made it stand out from the crowd.”", name: 'Ngozi Onwuka', role: 'Sales Manager'},
-        {info: "“This platform streamlined our hiring process, delivering top talent efficiently. Its intuitive interface and personalized job matches were game-changers. Thanks to this platform, I landed my dream job at a reputable tech company, and I couldn't be happier with the outcome.”", name: 'Chika Okoro', role: 'Marketing Manager'},
-        {info: "“Managing recruitment processes for a large organization can be quite daunting, but this platform has been a game-changer for us. The robust suite of tools and features provided has significantly streamlined our hiring operations and improved our overall efficiency.”", name: 'Ibrahim Abubakar', role: ' Human Resources Manager'},
+        {info: "“As a seasoned sales professional, I've used various platforms to explore job opportunities in the past, but none have impressed me as much as this one. The platform's user-friendly interface, coupled with its extensive network of employers, made it stand out from the crowd.”", name: 'Steve Benson', role: 'Sales Manager'},
+        {info: "“This platform streamlined our hiring process, delivering top talent efficiently. Its intuitive interface and personalized job matches were game-changers. Thanks to this platform, I landed my dream job at a reputable tech company, and I couldn't be happier with the outcome.”", name: 'Patrick Davison', role: 'Marketing Manager'},
+        {info: "“Managing recruitment processes for a large organization can be quite daunting, but this platform has been a game-changer for us. The robust suite of tools and features provided has significantly streamlined our hiring operations and improved our overall efficiency.”", name: 'Pete George', role: ' Human Resources Manager'},
         {info: "“Transitioning to a new role in the finance industry can be quite challenging, especially when navigating through countless job listings and competing with other qualified candidates. However, this platform made the job search process a breeze for me.”", name: 'Temitope Adekunle', role: 'Financial Analyst'},
     ];
 
@@ -232,10 +232,10 @@ export const Home = () => {
                             <div className='d-inline-flex flex-column align-items-center gap-4 hero-text-con'>
                                 <div className='d-flex flex-column align-items-center gap-3 col-12 hero-text-hld'>
                                     <div className='heading initial-heading'>
-                                        <h4>Technical <br /> partner-as-a-service.</h4>
+                                    <h4>Hire And Manage Foreign<br />Developers With Ease</h4>
                                     </div>
                                     <div className='col-12 col-lg-7 par'>
-                                        <p>Pedxo work as your in house developers to help build up your MVP, eliminating the need for you to hire an external engineering team.</p>
+                                        <p>Effortlessly hire and manage top-tier senior remote developers globally. We handle all HR and EOR services, ensuring seamless team integration.</p>
                                     </div>
                                 </div>
                                 <div className='d-flex align-items-center justify-content-center gap-4 flex-lg-row flex-column col-12 p-lg-0 py-1 px-2 hero-links-hld'>
@@ -300,8 +300,8 @@ export const Home = () => {
 
                             <div className='d-flex flex-column justify-content-left gap-3 abt-info-sec'>
                                 <div className='abt-info-title'>
-                                <h2>Work with <span>Cost-effective</span> Remote Devs</h2>
-                                    <p className='abt-info-par my-3'>Building SaaS shouldn’t be expensive and complicated in today's era. Pedxo let’s you hire highly recommended remote developers from regional locations, keeping your projects moving without requiring a significant payroll expenditure </p>
+                                <h2>What Sets Us Apart</h2>
+                                    <p className='abt-info-par my-3 t-color'>Expand your team without the hassle. Our EOR service simplifies global hiring, ensuring compliance and seamless integration with your business.</p>
                                 </div>
         
                                 <div className='d-flex mb-3 gap-3 abt-info-btn-hld'>
@@ -321,8 +321,8 @@ export const Home = () => {
                         </div>
                         <div className='abt-img-hld mt-lg-5 col-4 col-lg-4 d-flex items-center justify-content-center'>
                          <div className='abt-info-title'>
-                          <h2>Seamless Employer of Record (EOR)</h2>
-                          <p className='abt-info-par mt-3'>Let Pedxo hire your full-time devs and negotiate contract terms on your behalf in regional locations. With Pedxo, you don't need to worry about the challenges of managing talent in these areas.</p>
+                          <h2>Comprehensive Payroll Solutions</h2>
+                          <p className='abt-info-par mt-3 t-color'>From accurate payroll processing to timely payments, we manage everything, ensuring your remote team is always taken care of.</p>
                          </div>
                     </div>
 
@@ -334,13 +334,13 @@ export const Home = () => {
             <section className='payroll p-lg-5 py-5 p-3  d-flex flex-column-reverse flex-sm-row justify-content-between align-items-center gap-lg-0 gap-5'>
 
 <div>
-    <h3 className='mb-2'>Payroll Solutions for Your International Devs</h3>
-    <p>Pay your hard working dev team in their local currencies, <br/> easily, quickly and no hassle.</p>
+    <h3 className='mb-2'>Global Expertise</h3>
+    <p className='t-color'>Leverage our global network and expertise to hire the <br/> best developers from anywhere, without worrying about <br/> local laws and regulations.</p>
 </div>
       <div className='vertical-line d-lg-block d-none'></div>
 <div>
-    <h3 className='mb-2'>International Contractors</h3>
-    <p>Pay, manage and onboard contractors in regional <br/> locations using Pedxo. Avoid the risks of hiring <br/> incompetent talent and manage your international <br/> workforce in one place.</p>
+    <h3 className='mb-2'>Seamless & fast Onboarding</h3>
+    <p className='t-color'>We provide a smooth onboarding experience,<br/>getting your new hires up to speed quickly and <br/> efficiently, no matter where they are located.</p>
 </div>      </section>
             {/* payroll-section-end */}
             <section className='remote-work p-5'>
@@ -358,12 +358,12 @@ export const Home = () => {
                             <div className='d-flex flex-column gap-5 second-content'>
                                 <div className='d-flex align-items-center gap-3 second-content-heading flex-lg-row flex-column overflow-hidden'>
                                     <div className='col-12 col-xl-7 col-lg-9'>
-                                        <h2>"Dedicated Support"</h2>
-                                        <p className='fs-6 fw-normal mt-2 mt-lg-3'>Our team of experts is here 24/7 to support you and your remote <br/> developers, ensuring any issues are swiftly resolved <br/> and operations run</p>
+                                        <h2 className='t-head'>Dedicated Support</h2>
+                                        <p className='fs-6 fw-normal mt-2 mt-lg-3 t-color'>Our team of experts is here 24/7 to support you and your remote developers, <br/> ensuring any issues are swiftly resolved and operations run smoothly.</p>
                                     </div>
                                     <div className='col-12 col-xl-8 col-lg-9 mt-4 mt-lg-0'>
-                                    <h2>Focus on Growth</h2>
-                                    <p className='fs-6 fw-normal mt-2 mt-lg-3'>With our EOR and payroll services, you can <br/> concentrate on what matters most: growing <br/> your business and driving innovation.</p>
+                                    <h2 className='t-head'>Focus on Growth</h2>
+                                    <p className='fs-6 fw-normal mt-2 mt-lg-3 t-color'>With our EOR and payroll services, you can <br/> concentrate on what matters most: growing <br/> your business and driving innovation.</p>
                                     </div>
                                 </div>
                                 <div className='second-content-items'>
@@ -440,7 +440,8 @@ export const Home = () => {
   <path d="M53.5 52L55 50.5L46.8571 42.3571H53.9286V40.2143H43.2143V50.9286H45.3571V43.8571L53.5 52ZM25 50.5L26.5 52L34.6429 43.8571V50.9286H36.7857V40.2143H26.0714V42.3571H33.1429L25 50.5ZM41.0714 22H38.9286V32.9286L34 28L32.5 29.5L40 37L47.5 29.5L46 28L41.0714 32.9286V22Z" fill="#004080"/>
 </svg>
                     <h4 class="my-3">Client Request</h4>
-                    <p>The Client(employer) Specifies the talent they need.</p>
+                    <p className='t-color'>The Client (employer) specifies the
+                    role they need to fill and the country from which they want to hire</p>
                 
             </div>
             <div class=" work-box py-4 px-3">
@@ -450,7 +451,7 @@ export const Home = () => {
   <path d="M53.44 42.7273L46.8182 36.1818L53.44 29.6364L55 31.1745L49.9382 36.1818L55 41.1891L53.44 42.7273ZM46.8182 52.5455H44.6364V47.0909C44.6364 45.6443 44.0617 44.2569 43.0388 43.234C42.0158 42.211 40.6285 41.6364 39.1818 41.6364H32.6364C31.1897 41.6364 29.8023 42.211 28.7794 43.234C27.7565 44.2569 27.1818 45.6443 27.1818 47.0909V52.5455H25V47.0909C25 45.0656 25.8045 43.1233 27.2366 41.6912C28.6687 40.2591 30.6111 39.4545 32.6364 39.4545H39.1818C41.2071 39.4545 43.1494 40.2591 44.5815 41.6912C46.0136 43.1233 46.8182 45.0656 46.8182 47.0909V52.5455ZM35.9091 24.1818C36.9879 24.1818 38.0425 24.5017 38.9395 25.1011C39.8365 25.7004 40.5356 26.5523 40.9484 27.549C41.3613 28.5457 41.4693 29.6424 41.2588 30.7005C41.0484 31.7586 40.5289 32.7305 39.766 33.4933C39.0032 34.2561 38.0313 34.7756 36.9732 34.9861C35.9151 35.1966 34.8184 35.0885 33.8217 34.6757C32.825 34.2629 31.9732 33.5637 31.3738 32.6667C30.7744 31.7698 30.4545 30.7152 30.4545 29.6364C30.4545 28.1897 31.0292 26.8023 32.0521 25.7794C33.0751 24.7565 34.4625 24.1818 35.9091 24.1818ZM35.9091 22C34.3988 22 32.9223 22.4479 31.6666 23.287C30.4108 24.1261 29.432 25.3187 28.854 26.7141C28.276 28.1094 28.1248 29.6448 28.4195 31.1261C28.7141 32.6075 29.4414 33.9681 30.5094 35.0361C31.5773 36.1041 32.938 36.8313 34.4193 37.126C35.9006 37.4206 37.436 37.2694 38.8314 36.6914C40.2268 36.1135 41.4194 35.1347 42.2585 33.8789C43.0976 32.6231 43.5455 31.1467 43.5455 29.6364C43.5455 27.6111 42.7409 25.6687 41.3088 24.2366C39.8767 22.8045 37.9344 22 35.9091 22Z" fill="#004080"/>
 </svg>
                     <h4 class="my-3">Service Provider Role</h4>
-                    <p>Pedxo handles the contract negotiation, paperwork, and onboarding of the talent on behalf of the client</p>
+                    <p className='t-color'>Pedxo handles the contract documents, paperwork, and onboarding of the talent on behalf of our clients and according to their requirements</p>
                 
             </div>
             <div class=" work-box py-4 px-3">
@@ -460,7 +461,7 @@ export const Home = () => {
   <path d="M51.8672 42.3411C58.1888 34.3251 56.4816 26.3763 51.9408 23.5907C47.6496 20.9587 43.904 22.0195 41.6544 23.7091L40 24.9475M51.8672 42.3411C50.3504 44.2659 48.3712 46.1923 45.856 48.0531C43.384 49.8851 42.1472 50.8003 40 50.8003C37.8528 50.8003 36.6176 49.8851 34.144 48.0531C21.1552 38.4403 22.4288 27.0451 28.0592 23.5907C32.3504 20.9587 36.096 22.0195 38.3456 23.7091L40 24.9475M51.8672 42.3411L43.0272 32.3123C42.8516 32.1138 42.6114 31.984 42.3493 31.946C42.0871 31.9079 41.8199 31.964 41.5952 32.1043L38.0976 34.2899C37.4117 34.7238 36.5845 34.8756 35.7892 34.7137C34.9939 34.5517 34.2921 34.0884 33.8305 33.4208C33.369 32.7532 33.1835 31.9329 33.3129 31.1317C33.4423 30.3304 33.8765 29.6103 34.5248 29.1219L40 24.9475" stroke="#004080" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
                     <h4 class="my-3">Administrative Support</h4>
-                    <p>The service provider, Pedxo, will manage the talent’s payroll and Employer of Record (EOR) responsibilities</p>
+                    <p className='t-color'>The EOR service provider, Pedxo, will handle the administrative burden of managing a foreign workforce and their payroll responsibilities.</p>
         
             </div>
             <div class=" work-box py-4 px-3">
@@ -471,8 +472,8 @@ export const Home = () => {
   <path d="M53.3594 42.0065H45.7172V40.3184C45.7172 40.0158 45.597 39.7257 45.3831 39.5118C45.1692 39.2979 44.8791 39.1777 44.5766 39.1777C44.274 39.1777 43.9839 39.2979 43.77 39.5118C43.5561 39.7257 43.4359 40.0158 43.4359 40.3184V42.0065H35.1094C34.8069 42.0065 34.5167 42.1267 34.3028 42.3406C34.0889 42.5545 33.9688 42.8446 33.9688 43.1471V54.5534C33.9688 54.8559 34.0889 55.146 34.3028 55.3599C34.5167 55.5738 34.8069 55.694 35.1094 55.694H53.3594C53.6619 55.694 53.952 55.5738 54.1659 55.3599C54.3798 55.146 54.5 54.8559 54.5 54.5534V43.1471C54.5 42.8446 54.3798 42.5545 54.1659 42.3406C53.952 42.1267 53.6619 42.0065 53.3594 42.0065ZM52.2188 53.4127H36.25V44.2877H43.4359V44.7554C43.4359 45.0579 43.5561 45.348 43.77 45.5619C43.9839 45.7758 44.274 45.896 44.5766 45.896C44.8791 45.896 45.1692 45.7758 45.3831 45.5619C45.597 45.348 45.7172 45.0579 45.7172 44.7554V44.2877H52.2188V53.4127Z" fill="#004080"/>
   <path d="M40.5958 48.1886H47.3939V49.7855H40.5958V48.1886ZM28.0831 30.8739C24.9252 30.9268 21.8221 31.7074 19.0152 33.1552C18.7099 33.3164 18.4542 33.5576 18.2754 33.853C18.0966 34.1483 18.0014 34.4867 18 34.8319V38.3679C18 38.6704 18.1202 38.9605 18.3341 39.1744C18.548 39.3883 18.8381 39.5085 19.1406 39.5085C19.4431 39.5085 19.7333 39.3883 19.9472 39.1744C20.1611 38.9605 20.2812 38.6704 20.2812 38.3679V35.06C22.9632 33.7251 25.9325 33.0709 28.9272 33.1552C28.5357 32.4402 28.2513 31.6716 28.0831 30.8739ZM53.4848 33.1438C50.9673 31.8232 48.2005 31.046 45.3636 30.8625C45.1959 31.6587 44.9156 32.4268 44.5309 33.1438C47.2034 33.2081 49.8287 33.8625 52.2187 35.06V38.3679C52.2187 38.6704 52.3389 38.9605 52.5528 39.1744C52.7667 39.3883 53.0569 39.5085 53.3594 39.5085C53.6619 39.5085 53.952 39.3883 54.1659 39.1744C54.3798 38.9605 54.5 38.6704 54.5 38.3679V34.8319C54.5007 34.4847 54.4065 34.144 54.2276 33.8464C54.0487 33.5489 53.7918 33.3059 53.4848 33.1438ZM27.8778 29.0147V28.2505C26.9843 28.1309 26.1713 27.6713 25.608 26.9674C25.0448 26.2635 24.7748 25.3695 24.8542 24.4715C24.9335 23.5734 25.3562 22.7406 26.0341 22.1464C26.7121 21.5522 27.5931 21.2423 28.4937 21.2813C29.4306 21.2796 30.331 21.6439 31.0031 22.2965C31.5964 21.8077 32.2477 21.394 32.9422 21.0646C32.1661 20.1722 31.1379 19.536 29.993 19.2397C28.8481 18.9434 27.6403 19.0009 26.5287 19.4048C25.4172 19.8086 24.4541 20.5398 23.7665 21.502C23.0788 22.4641 22.6988 23.612 22.6766 24.7944C22.7005 26.2416 23.2631 27.6279 24.2544 28.6825C25.2457 29.7371 26.5946 30.3842 28.0375 30.4975C27.9406 30.009 27.8872 29.5127 27.8778 29.0147ZM43.972 19C43.1882 19.0002 42.4122 19.1567 41.6896 19.4602C40.9669 19.7638 40.312 20.2084 39.7631 20.768C40.5335 21.0491 41.2624 21.4328 41.9303 21.9086C42.4628 21.539 43.0856 21.3208 43.7324 21.2773C44.3792 21.2338 45.0256 21.3667 45.6028 21.6617C46.18 21.9568 46.6663 22.4029 47.0098 22.9526C47.3534 23.5023 47.5413 24.1349 47.5536 24.783C47.5464 25.4487 47.3508 26.0988 46.9895 26.6579C46.6282 27.2171 46.1159 27.6625 45.5119 27.9425C45.5582 28.2942 45.5811 28.6486 45.5803 29.0033C45.5767 29.4618 45.5386 29.9193 45.4662 30.3721C46.7088 30.0526 47.811 29.3313 48.6011 28.3205C49.3912 27.3097 49.8249 26.066 49.8348 24.783C49.8198 23.2401 49.1947 21.7658 48.0962 20.6823C46.9977 19.5987 45.515 18.9939 43.972 19Z" fill="#004080"/>
 </svg>
-                    <h4 class="my-3">The talent will work for the client</h4>
-                    <p>The talent will work for the client</p>
+                    <h4 class="my-3">Talent Employment</h4>
+                    <p className='t-color'>In this partnership, the employer (client) is still in charge of the employee's day-to-day operations -- such as tasks, meetings, performance reviews, and termination decisions</p>
         
             </div>
         </div>

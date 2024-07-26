@@ -119,6 +119,12 @@
 .howitworks{
     background-color: #F4F3F3;
 }
+.t-color{
+    color: #48505E;
+}
+.t-head{
+    color: #23C5FF;
+}
 /*
     *
         Metrix Section
@@ -318,7 +324,7 @@
     line-height: 24px;
 }
 .remote-work .sub-remote-work .inner-remote-work .remote-work-content .second-content .second-content-heading h2{
-    color: var(--lightBlack);
+    /* color: var(--lightBlack); */
     font-size: 47px;
     font-style: normal;
     font-weight: 500;
