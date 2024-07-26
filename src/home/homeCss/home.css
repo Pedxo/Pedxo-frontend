@@ -358,7 +358,7 @@
     padding: 20px;
 }
 .remote-work .sub-remote-work .inner-remote-work .remote-work-content .second-content .second-content-items .sub-content .heading .fa{
-    fill: var(--icons);
+    fill: #0A3D61;
     stroke: var(--icons); 
     stroke-width: 0.1px;
     height: 40px;
