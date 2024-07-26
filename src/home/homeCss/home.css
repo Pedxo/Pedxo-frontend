@@ -1122,6 +1122,13 @@
       .payroll br::after {
         content: " ";
       }
+      
+    .about-sec br {
+        content: " ";
+      }
+      .about-sec br::after {
+        content: " ";
+      }
 }
 @media only screen and (max-width: 908px) {
     .services .sub-service-holder .svg-design {
