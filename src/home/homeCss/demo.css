@@ -514,7 +514,7 @@
     background: rgba(255, 255, 255, 0.00);
 }
 .demo .sub-demo .inner-demo .demo-holder .form-holder .inner-form .form .submit-item-holder .submit-button-link-holder .submit-link .link{
-    color: var(--demoText);
+    color: #004080;
     font-size: 14px;
     font-style: normal;
     font-weight: 500;

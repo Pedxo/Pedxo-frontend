@@ -351,7 +351,7 @@
     display: flex;
     flex-direction: column;
     background: var(--white);
-    height: 370px;
+    height: 395px;
     width: 370px;
     border-radius: 15px;
     gap: 15px;
@@ -390,14 +390,14 @@
 }
 .remote-work .sub-remote-work .inner-remote-work .remote-work-content .second-content .second-content-items .sub-content .paragraph .par-icon{
     height: 40px;
-    background: var(--iconsHolder);
+    background: #00408059;
     z-index: 2;
 }
 .remote-work .sub-remote-work .inner-remote-work .remote-work-content .second-content .second-content-items .sub-content .paragraph .par-icon .fa{
     font-size: 18px;
     width: 32px;
     height: 32px;
-    fill:  var(--icons);
+    fill:  #FFFFFF;
 }
 
 

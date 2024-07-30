@@ -5,7 +5,7 @@ import { Outsource } from './home/forms/outsource';
 import { Job } from './home/contents/jobs';
 import { Work } from './home/forms/work';
 import { Hire } from './home/forms/hire';
-import { Maintainance } from './components/maintainance';
+// import { Maintainance } from './components/maintainance';
 import { Missing } from './components/missing';
 import { Settings } from './accounts/settings';
 import { DashBoard } from './accounts/dashboard'
@@ -29,14 +29,14 @@ function App() {
             <Route path='/request-a-demo' element={ <Demo /> }></Route>
             <Route path='/outsource' element={ <Outsource /> }></Route>
             
-            <Route element={<Maintainance />}>
+            <Route element={<Demo />}>
               <Route path='/jobs' element={ <Job /> }></Route>
               <Route path='/work' element={ <Work /> }></Route>
               <Route path='/hire' element={ <Hire /> }></Route>
             </Route>
             
             <Route element={<ProtectRoute />}>
-              <Route element={<Maintainance />}>
+              <Route element={<Demo />}>
                 <Route path='/dashboard' element={ <DashBoard /> }></Route>
                 <Route path='/setting' element={ <Settings /> }></Route>
               </Route>
