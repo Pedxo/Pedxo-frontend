@@ -174,7 +174,7 @@ export const Home = () => {
 
         }, 10);
 
-        document.title = 'Tech-outsourcing, HR and MVP development company';
+        document.title = 'HR, EOR and payroll provider for remote dev teams I Pedxo';
 
         return () => {
             clearInterval(dCount);
