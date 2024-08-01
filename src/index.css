@@ -7,17 +7,17 @@
 }
 
 :root {
-  --backgroundPrimary:hsl(44, 99%, 63%);
-  --backgroundSecondary:hsl(44, 100%, 96%);
+  --backgroundPrimary: hsl(196, 100%, 57%);
+  --backgroundSecondary:hsl(197, 83%, 91%);
   --white: hsl(0, 0%, 100%);
   --lightBlack: hsl(222, 13%, 19%);
   --text: hsl(218, 13%, 33%);
   --innerblack: hsl(219, 13%, 25%);
   --lightAsh: hsl(219, 13%, 46%);
   --buttonText: hsl(246, 100%, 96%);
-  --button: hsl(246, 100%, 64%); 
+  --button: hsl(210, 100%, 25%); 
   --icons: hsl(38, 90%, 19%);
-  --iconsHolder: hsl(44, 100%, 89%);
+  --iconsHolder: hsl(197, 83%, 91%);
   --faq: hsl(220, 11%, 95%);
   --black: hsl(0, 0%, 0%);
   --subText: hsl(217, 11%, 64%);

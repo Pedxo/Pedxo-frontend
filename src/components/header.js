@@ -8,7 +8,8 @@ import { Link, Outlet } from "react-router-dom";
 import user from  '../Img/user.png';
 
 export const Header = () => {
-    const [openServices, setOpenService] = useState(false);
+    const [openServices, setOpenServices] = useState(false);
+    const [openResources, setOpenResources] = useState(false);
     const [loginServices, setLoginService] = useState(false);
     const [scroll, setScroll] = useState(false);
     const [nav, setNav] = useState(false);
@@ -29,11 +30,15 @@ export const Header = () => {
         setNav(false);
         document.body.style.overflow = 'auto';
     };
-
     const toggleServices = () => {
-        setOpenService(!openServices)
+        setOpenServices(!openServices);
+        setOpenResources(false); // Close the other dropdown when this one is opened
     };
 
+    const toggleResources = () => {
+        setOpenResources(!openResources);
+        setOpenServices(false); // Close the other dropdown when this one is opened
+    };
     const loginToggleServices = () => {
         setLoginService(!loginServices)
     };
@@ -144,8 +149,26 @@ export const Header = () => {
                                             </li>
                                             <div className={openServices ? "position-absolute d-flex flex-column align-items-start dropdown" : "position-relative d-none dropdown"}>
                                                 <li className="d-flex align-items-start dropdown-link">
-                                                    <Link to="/hire">Hire Engineer</Link>
+                                                    <Link to="/hire">Hire a Developer</Link>
                                                 </li>
+                                                <li className="d-flex align-items-start dropdown-link">
+                                                    <Link to="/outsource"> Employer of Record</Link>
+                                                </li>
+                                                <li className="d-flex align-items-start dropdown-link">
+                                                    <Link to="/jobs">Payroll for Dev teams</Link>
+                                                </li>
+                                            </div>
+                                        </div>
+                                        <div className="d-flex align-items-center justify-content-center flex-column flex-xl-row links-holder">
+                                            <a href="/#faq" className="text-decoration-none nav-content-link">
+                                                <li className="list">FAQ's</li>
+                                            </a>
+                                            <div className="position-relative d-flex align-items-start flex-column nav-sub-content-link">
+                                            <li className="d-flex align-items-center text-center justify-content-between first-link" onClick={toggleResources}>
+                                                <p>Resources</p>
+                                                {openResources ? <FaChevronUp className="position-relative fa" /> : <FaChevronDown className="position-relative fa" />}
+                                            </li>
+                                            <div className={openResources ? "position-absolute d-flex flex-column align-items-start dropdown" : "position-relative d-none dropdown"}>
                                                 <li className="d-flex align-items-start dropdown-link">
                                                     <Link to="/outsource">Build your MVP</Link>
                                                 </li>
@@ -154,13 +177,6 @@ export const Header = () => {
                                                 </li>
                                             </div>
                                         </div>
-                                        <div className="d-flex align-items-center justify-content-center flex-column flex-xl-row links-holder">
-                                            <a href="/#faq" className="text-decoration-none nav-content-link">
-                                                <li className="list">FAQ's</li>
-                                            </a>
-                                            <Link to="mailto:support@pedxo.com" className="text-decoration-none nav-content-link">
-                                                <li className="list">Contact Us</li>
-                                            </Link>
                                         </div>
                                     </div>
                                     <div className="d-flex flex-column-reverse flex-xl-row align-items-center gap-3 nav-second-content">
