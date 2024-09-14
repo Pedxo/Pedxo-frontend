@@ -1,3 +1,3 @@
 #Pedxo
 
-Pedxo hires and manages developers on behalf of international clients.
+Pedxo hires and manages remote developers on behalf of international clients.
