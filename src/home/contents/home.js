@@ -232,10 +232,10 @@ export const Home = () => {
                             <div className='d-inline-flex flex-column align-items-center gap-4 hero-text-con'>
                                 <div className='d-flex flex-column align-items-center gap-3 col-12 hero-text-hld'>
                                     <div className='heading initial-heading'>
-                                    <h4>Hire And Manage Foreign<br />Developers With Ease</h4>
+                                    <h4>Onboard And Manage Remote <br/> Devs With Ease</h4>
                                     </div>
                                     <div className='col-12 col-lg-7 par'>
-                                        <p>Effortlessly hire and manage top-tier senior remote developers globally. We handle all HR and EOR services, ensuring seamless team integration.</p>
+                                        <p>Effortlessly hire and run international contractors in one <br /> platform. We handle HR and EOR services, ensuring seamless <br /> team integration. </p>
                                     </div>
                                 </div>
                                 <div className='d-flex align-items-center justify-content-center gap-4 flex-lg-row flex-column col-12 p-lg-0 py-1 px-2 hero-links-hld'>
