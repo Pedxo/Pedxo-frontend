@@ -2,8 +2,8 @@
 
 Our software helps clients to hire and manage their engineers remotely (CLM).
 
-Features includes: 
+Features include: 
 Contract creation and 
-managment,
-personlized enginner recommendation, automated onboarding,
+agreement managment,
+personlized enginner recommendation, automated hiring,
 payroll and compensation managment.
