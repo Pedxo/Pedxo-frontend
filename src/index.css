@@ -17,6 +17,11 @@
   }
 }
 
+.manrope-font {
+  font-family: "Manrope", sans-serif;
+  font-optical-sizing: auto;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px; 
 }

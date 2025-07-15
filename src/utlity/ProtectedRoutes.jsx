@@ -1,16 +1,19 @@
-import Loader from "../components/Loader";
-import { useToken } from "../features/useToken";
-import { Navigate } from "react-router-dom";
+import Loader from '../components/Loader'
+import { useToken } from '../features/useToken'
+import { Navigate, useLocation } from 'react-router-dom'
 
 function ProtectedRoute({ children }) {
-  const { data: accessToken, isLoading } = useToken();
+  const { data: accessToken, isLoading, error } = useToken()
+  const location = useLocation()
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <Loader />
 
-  if (!accessToken) return <Navigate to="/login" replace />;
+  if (error || !accessToken) {
+    // Pass the current location to the login page so we can redirect back after login
+    return <Navigate to='/login' state={{ from: location }} replace />
+  }
 
-  if(accessToken)return children;
-  
+  return children
 }
 
-export default ProtectedRoute;
+export default ProtectedRoute

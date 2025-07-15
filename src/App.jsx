@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import {
   AccountVerification,
@@ -15,51 +15,57 @@ import {
   Payroll,
   ResetPasswordOtp,
   SignUp,
+  StaticPage,
   Teams,
-} from "./pages";
-import ProtectedRoutes from "./utlity/ProtectedRoutes";
-import PageNotFound from "./pages/PageNotFound";
-import AppLayout from "./components/AppLayout";
-import { SideBarProvider } from "./context/SideBarContext";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { UserProvider } from "./context/UserContext";
+} from './pages'
+import ProtectedRoutes from './utlity/ProtectedRoutes'
+import PageNotFound from './pages/PageNotFound'
+import AppLayout from './components/AppLayout'
+import { SideBarProvider } from './context/SideBarContext'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { UserProvider } from './context/UserContext'
 
 const queryClient = new QueryClient({
   defaultOptions: {
     retry: 1,
     refetchOnWindowFocus: false,
   },
-});
+})
 
 const router = createBrowserRouter([
   //This does all better than putting Error Element
   {
-    path: "*",
+    path: '*',
     element: <PageNotFound />,
   },
   {
-    path: "/signup",
-    element: <SignUp />,
+    path: '/',
+    element: <StaticPage />, // Accessible to all
   },
   {
-    path: "/account-verification",
-    element: <AccountVerification />,
+    path: '/signup',
+    element: <SignUp />, // Accessible to all
   },
   {
-    path: "/login",
-    element: <Login />,
+    path: '/account-verification',
+    element: <AccountVerification />, // Accessible to all
   },
   {
-    path: "/reset-password-otp",
-    element: <ResetPasswordOtp />,
+    path: '/login',
+    element: <Login />, // Accessible to all
   },
   {
-    path: "/forgot-password",
-    element: <ForgotPassword />,
+    path: '/reset-password-otp',
+    element: <ResetPasswordOtp />, // Accessible to all
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPassword />, // Accessible to all
   },
 
+  // Protected routes group
   {
-    path: "/",
+    path: '/dashboard',
     element: (
       <ProtectedRoutes>
         <UserProvider>
@@ -74,55 +80,52 @@ const router = createBrowserRouter([
         index: true,
         element: <Overview />,
       },
-
       {
-        path: "add-developer",
+        path: 'add-developer',
         element: <AddDeveloper />,
       },
       {
-        path: "create-contract",
+        path: 'create-contract',
         element: <CreateContract />,
       },
       {
-        path: "teams",
+        path: 'teams',
         element: <Teams />,
       },
       {
-        path: "payroll",
+        path: 'payroll',
         element: <Payroll />,
       },
-
       {
-        path: "expenses",
+        path: 'expenses',
         element: <Expenses />,
       },
       {
-        path: "agreements",
+        path: 'agreements',
         element: <Agreements />,
       },
       {
-        path: "full-time-form",
+        path: 'full-time-form',
         element: <FullTimeContract />,
       },
-
       {
-        path: "gig-based-form",
+        path: 'gig-based-form',
         element: <GigBasedContract />,
       },
       {
-        path: "agreements/:id",
+        path: 'agreements/:id',
         element: <AgreementContract />,
       },
     ],
   },
-]);
+])
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router}></RouterProvider>;
+      <RouterProvider router={router}></RouterProvider>
     </QueryClientProvider>
-  );
+  )
 }
 
-export default App;
+export default App

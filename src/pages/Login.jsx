@@ -23,7 +23,7 @@ const Login = () => {
     onSubmit: (values, { setSubmitting }) => {
       login(values, {
         onSuccess: () => {
-          navigate("/");
+          navigate("/dashboard");
         },
 
         onSettled: () => setSubmitting(false),

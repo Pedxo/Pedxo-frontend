@@ -8,10 +8,10 @@ export function useToken() {
     queryKey: ["token"],
     queryFn: async () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
-      if (!storedUser) {
-        navigate("/login");
-        throw new Error("No user data found");
-      }
+      // if (!storedUser) {
+      //   // navigate("/login");
+      //   throw new Error("No user data found");
+      // }
 
       const { refreshTokenExpiration, accessTokenExpiration } = storedUser;
 
