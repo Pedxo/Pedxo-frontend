@@ -53,42 +53,42 @@ const ActionButtons = () => (
 
 const DemoContainer = () => {
   const [hasError, setHasError] = useState(false)
-  const youtubeUrl = 'https://youtu.be/WhLFwXSJo5I?SI=5jQ8Y37YfdjBQnRy'
+  const youtubeUrl =
+    'https://youtu.be/WhLFwXSJo5I?si=5jQ8Y37YfdjBQnRy' // ↞ same link, just lower‑case “si”
 
   return (
     <RevealAnimation
       delay={0.8}
       direction='up'
       duration={1}
-      className='xl:w-[990px] md:w-[500px] w-full md:p-8 p-4 rounded-[14.14px] md:h-[401px] xl:h-[501px] h-[300px] bg-lightPrimary'
+      className='w-full max-w-[990px] p-4 md:p-8 bg-lightPrimary rounded-[14.14px]'
     >
-      <div className='bg-white w-full h-full rounded-lg overflow-hidden relative'>
+      {/* Keep the player in a proportion‑box so it scales nicely */}
+      <div className='relative w-full aspect-video rounded-lg overflow-hidden bg-white'>
         {hasError ? (
-          <div className='w-full h-full flex items-center justify-center bg-gray-100'>
+          <div className='flex h-full w-full items-center justify-center bg-gray-100'>
             <p className='text-gray-500'>Video could not be loaded</p>
           </div>
         ) : (
           <ReactPlayer
-            src={youtubeUrl}
+            src={youtubeUrl}              /* ✅ correct prop */
             width='100%'
             height='100%'
-            controls={true}
-            playing={true}
-            muted={true}
-            loop={true}
+            controls
+            playing
+            muted
+            loop
+            className='absolute top-0 left-0' /* fills the wrapper */
             onError={() => setHasError(true)}
             config={{
+              youtube: { playerVars: { modestbranding: 1 } },
+              /* extra options, if you need them */
               file: {
-                forceVideo: true,
                 attributes: {
                   controlsList: 'nodownload',
                   disablePictureInPicture: true,
                 },
               },
-            }}
-            style={{
-              borderRadius: '8px',
-              overflow: 'hidden',
             }}
           />
         )}

@@ -15,7 +15,7 @@ const GradientBorder = ({ position = 'left' }) => (
         background: 'linear-gradient(to top, var(--primary), #fff)',
       }}
       transition={{ duration: 1, delay: position === 'left' ? 0.2 : 0.4 }}
-      className={`w-[44px] md:h-[210px] h-[100px] ${
+      className={`w-[14px] sm:w-[44px] md:h-[210px] h-[100px] ${
         position === 'left' ? 'mb-8 mt-auto' : 'mt-8 mb-auto'
       }`}
       style={{
@@ -47,7 +47,7 @@ const StudioImageContainer = () => (
 
 export const GoogleAiStudioSection = () => {
   return (
-    <MaxScreenWrapper className='max-w-[1138px] w-full relative flex md:gap-6 gap-4 md:px-0 px-3 items-stretch'>
+    <MaxScreenWrapper className='max-w-[1138px] w-full relative flex md:gap-6 gap-2 md:px-0 px-3 items-stretch'>
       {/* Left gradient (bottom aligned) */}
       <div className='flex flex-col justify-end'>
         <GradientBorder position='left' />
