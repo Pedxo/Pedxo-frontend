@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import Call from '../../assets/svg/call.svg'
+import Call from '../../assets/svg/Call.svg'
 import Expert from '../../assets/svg/Expert.svg'
 import HumanTask from '../../assets/svg/HumanTask.svg'
 import { cn } from '../../utlity/helper'
