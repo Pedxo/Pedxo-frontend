@@ -18,7 +18,7 @@ import {
   StaticPage,
   Teams,
 } from './pages'
-import ProtectedRoutes from './utlity/ProtectedRoutes'
+import ProtectedRoutes from './ProtectedRoutes'
 import PageNotFound from './pages/PageNotFound'
 import AppLayout from './components/AppLayout'
 import { SideBarProvider } from './context/SideBarContext'

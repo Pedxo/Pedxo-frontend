@@ -36,7 +36,7 @@ const Teams = () => {
         <div className=" hidden lg:flex items-center gap-4">
           <Button
             link
-            linkTo={"/add-developer"}
+            linkTo={"/dashboard/add-developer"}
             type={"primary"}
             iconLeft={<FaUserPlus size={18} />}
           >
@@ -44,7 +44,7 @@ const Teams = () => {
           </Button>
           <Button
             link
-            linkTo={"/add-developer"}
+            linkTo={"/dashboard/add-developer"}
             size="large"
             type={"secondary"}
             iconLeft={<CreateContractIcon />}

@@ -2,23 +2,36 @@ import "../stepperForms/forms.css";
 import dropdownarrow from "../../assets/svg/dropdownarrow.svg";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import { useState, useEffect } from "react";
 import useCompensation from "../../features/contracts/useCompensation";
 import CustomForm from "../../ui/CustomForm";
 import Button from "../Button";
 
-const FormTwo = ({ nextStep, savedState }) => {
+const FormThree = ({ nextStep, savedState }) => {
   const { updatePayment, isUpdating } = useCompensation();
+  const [hasChanges, setHasChanges] = useState(false);
+
   const validationSchema = Yup.object({
     paymentRate: Yup.number().required("Amount is required"),
     paymentFrequency: Yup.string().required("Payment frequency is required"),
   });
+
+  const initialValues = {
+    paymentFrequency: savedState.paymentFrequency || "",
+    paymentRate: savedState.paymentRate || "",
+  };
+
   const formik = useFormik({
     validationSchema,
-    initialValues: {
-      paymentFrequency: savedState.paymentFrequency || "",
-      paymentRate: savedState.paymentRate || "",
-    },
+    initialValues,
+    enableReinitialize: true,
     onSubmit: (values, { setSubmitting }) => {
+      if (!hasChanges) {
+        nextStep();
+        setSubmitting(false);
+        return;
+      }
+
       updatePayment(values, {
         onSuccess: () => {
           nextStep();
@@ -29,6 +42,15 @@ const FormTwo = ({ nextStep, savedState }) => {
       });
     },
   });
+
+  // Check for changes between current values and initial values
+  useEffect(() => {
+    const changesDetected = Object.keys(initialValues).some(
+      (key) => formik.values[key] !== initialValues[key]
+    );
+    setHasChanges(changesDetected);
+  }, [formik.values, initialValues]);
+
   return (
     <div className="flex flex-col gap-[18px]">
       <div className="text-lg font-semibold leading-normal">
@@ -51,15 +73,6 @@ const FormTwo = ({ nextStep, savedState }) => {
             )}
           </div>
           <div className="relative flex items-center">
-            {/* <div
-              className=""
-              style={{
-                backgroundColor: "rgba(217, 217, 217, 0.87)",
-                border: "1px solid rgba(0, 0, 0, 0.30",
-              }}
-            >
-              <span className="text-[12px] font-semibold xl:text-xl">NGN</span>
-            </div> */}
             <span className="ring-1 ring-black/50 rounded-s-lg font-bold bg-gray-400 px-6 p-3">
               NGN
             </span>
@@ -70,9 +83,7 @@ const FormTwo = ({ nextStep, savedState }) => {
               id="paymentRate"
               value={formik.values.paymentRate}
               onChange={formik.handleChange}
-              // value={value}
-              // onChange={onChange}
-              className="w-full bg-transparent border ring-1 rounded-e-lg outline-none ring-gray-400  p-3 text-sm"
+              className="w-full bg-transparent border ring-1 rounded-e-lg outline-none ring-gray-400 p-3 text-sm"
               style={{
                 borderColor: "rgba(0, 0, 0, 0.20)",
               }}
@@ -100,12 +111,11 @@ const FormTwo = ({ nextStep, savedState }) => {
             value={formik.values.paymentFrequency}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            className="w-full bg-transparent border  outline-gray-400 rounded-lg p-3 text-sm appearance-none"
+            className="w-full bg-transparent border outline-gray-400 rounded-lg p-3 text-sm appearance-none"
             style={{
               borderColor: "rgba(0, 0, 0, 0.20)",
             }}
           >
-            {/* <option value=""></option> */}
             <option className="w-full max-w-full" value="Monthly">
               Monthly
             </option>
@@ -124,11 +134,12 @@ const FormTwo = ({ nextStep, savedState }) => {
             disabled={!formik.isValid || formik.isSubmitting}
             size="large"
           >
-            Save and Continue
+            {hasChanges ? "Save and Continue" : "Continue"}
           </Button>
         </div>
       </CustomForm>
     </div>
   );
 };
-export default FormTwo;
+
+export default FormThree;

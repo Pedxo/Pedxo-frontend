@@ -26,7 +26,7 @@ export const NavItems = () => (
 )
 
 export const AuthButtons = () => {
-  const { data: isLoggedIn } = useIsLoggedIn()
+  const isLoggedIn = useIsLoggedIn()
   const navigate = useNavigate()
 
   const goToDashboard = () => navigate('/dashboard')

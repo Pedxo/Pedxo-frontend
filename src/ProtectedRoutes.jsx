@@ -1,5 +1,5 @@
-import Loader from '../components/Loader'
-import { useToken } from '../features/useToken'
+import Loader from './components/Loader'
+import { useToken } from './features/useToken'
 import { Navigate, useLocation } from 'react-router-dom'
 
 function ProtectedRoute({ children }) {

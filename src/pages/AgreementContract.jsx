@@ -80,7 +80,7 @@ const AgreementContract = () => {
                 Go back
               </span>
             ) : (
-              <Link to="/agreements" className="cursor-pointer">
+              <Link to="/dashboard/agreements" className="cursor-pointer">
                 Go back
               </Link>
             )}

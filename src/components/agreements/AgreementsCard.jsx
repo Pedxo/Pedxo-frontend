@@ -18,7 +18,7 @@ const AgreementsCard = ({ card }) => {
       <div className="font-medium text-center lg:text-[1.4rem]">
         {card.name}
       </div>
-      <Link to={`/agreements/${card.id}`} className="flex gap-[6px]">
+      <Link to={`/dashboard/agreements/${card.id}`} className="flex gap-[6px]">
         <span className="font-medium text-[0.625rem] pr-text-clr md:text-[0.75rem] lg:text-base">
           {card.link}
         </span>

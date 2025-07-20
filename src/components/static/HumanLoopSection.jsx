@@ -170,7 +170,7 @@ export const HumanLoopSection = () => {
 
         <InfoCard
           title='Best For'
-          content='Request to onboard creative human: Start by signing up and create a contract to define the required developer role, pay and tech stack then submit it. The tool will automatically onboard a human to add to the desired AI workspace tool via IDE or version control.'
+          content='Our database consists of AI-native, creative engineers you can automatically call on to handle any agent edge case tasks.'
         />
 
         <InfoCard
