@@ -41,7 +41,7 @@ const Navbar = () => {
         </h1> */}
         <img role="button" className="p-4 mx-auto my-2" onClick={() => navigate("/")} src={logosvg} alt="logo" />
         <div className="flex flex-col  w-full  gap-6 capitalize">
-          <SideBarMenuItems to="/" icon={OverviewIcon} title="Overview" />
+          <SideBarMenuItems to="/dashboard" icon={OverviewIcon} title="Overview" />
 
           <div className="flex flex-col gap-5">
             <div className="grey-text text-sm font-semibold leading-normal">
