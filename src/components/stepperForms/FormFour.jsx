@@ -123,7 +123,6 @@ const FormFour = ({
           >
             Send Contract
           </Button>
-          <div></div>
         </div>
       )}
     </div>
