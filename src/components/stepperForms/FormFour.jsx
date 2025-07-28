@@ -1,4 +1,6 @@
 import sign from '../../assets/svg/sign.svg'
+import sendContract from '../../assets/svg/sendcontract.svg'
+
 import { useSearchParams } from 'react-router-dom'
 import { formatCurrency, formatDate } from '../../utlity/helper'
 import useFinalizeContract from '../../features/contracts/useFinalizeContract'
@@ -63,7 +65,7 @@ const FormFour = ({
     finalize(savedState, {
       onSuccess: () => {
         nextStep()
-      }
+      },
     })
   }
 
@@ -117,9 +119,11 @@ const FormFour = ({
             isLoading={sendingForm}
             disabled={sendingForm}
             size='full'
+            iconRight={<img src={sendContract} alt='send icon' />}
           >
             Send Contract
           </Button>
+          <div></div>
         </div>
       )}
     </div>

@@ -83,7 +83,7 @@ const Navbar = () => {
             <SideBarMenuItems
               to="agreements"
               icon={AgreementsIcon}
-              title="agreements "
+              title="Contracts"
             />
           </div>
         </div>
