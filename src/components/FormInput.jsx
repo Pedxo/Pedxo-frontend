@@ -25,7 +25,7 @@ const FormInput = ({
           </label>
           {error && <p className="text-sm text-red-500">{errorMessage}</p>}
         </div>
-        <div className="flex focus-within:outline-gray-400 items-center border border-gray-400 p-3 rounded-lg">
+        <div className="flex focus-within:outline-gray-400 items-center border border-gray-400 py-3 px-4 rounded-lg">
           <input
             type={showPassword ? "text" : "password"}
             name={name}
@@ -42,7 +42,7 @@ const FormInput = ({
             className="flex-shrink-0"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? <IoMdEye size={18} /> : <IoIosEyeOff size={18} />}
+            {showPassword ? <IoMdEye size={22} /> : <IoIosEyeOff size={22} />}
           </button>
         </div>
       </div>

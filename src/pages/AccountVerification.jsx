@@ -33,7 +33,7 @@ const AccountVerification = () => {
       );
       toast.success("Account created successfully");
       setTimeout(() => {
-        navigate("/");
+        navigate("/dashboard");
       }, 2000);
     } catch (error) {
       if (error.response.data.message[0] === "code should not be empty") {
@@ -71,8 +71,8 @@ const AccountVerification = () => {
   };
 
   return (
-    <section className="min-w-[390px] max-w-[1440px] min-h-[844px] max-h-[1024px] mx-auto px-[25px]">
-      <div className="pt-[143px] pb-[59px] max-w-[569px] mx-auto xl:pt-10">
+    <section className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-lg bg-white rounded-xl shadow-md p-6">
         <h1 className="mb-[59px] text-2xl font-semibold leading-normal 2xl:text-[30px] 2xl:mb-5">
           A verification OTP has been sent to:
           <p className="text-sm text-[#00000099]">{email}</p>
@@ -89,7 +89,11 @@ const AccountVerification = () => {
             onChange={handleChange}
           />
 
-          <button type="button" className="pr-text-clr mt-1" onClick={requestOtp}>
+          <button
+            type="button"
+            className="pr-text-clr mt-1"
+            onClick={requestOtp}
+          >
             Resend otp
           </button>
 

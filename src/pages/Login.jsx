@@ -33,8 +33,8 @@ const Login = () => {
 
   return (
     <section className="w-full mx-auto md:w-1/2 md:max-w-[38em] flex justify-center flex-col px-4 h-screen">
-      <div className=" w-full">
-        <h1 className="mb-[59px] text-2xl font-semibold leading-normal 2xl:text-[30px] ">
+      <div className="w-full max-w-lg bg-white rounded-xl shadow-md p-6">
+        <h1 className="mb-[39px] text-2xl font-semibold leading-normal 2xl:text-[30px] ">
           Login
         </h1>
         <button className="w-full flex items-center justify-center p-4 gap-[10px] border border-black rounded-lg mb-[15px]">
@@ -73,8 +73,8 @@ const Login = () => {
             />
           </div>
 
-          <div className="pr-text-clr font-medium">
-            <Link to="/reset-password-otp">Forgot password?</Link>
+          <div className="pr-text-clr font-medium text-right -mt-2">
+            <Link to="/reset-password">Forgot password?</Link>
           </div>
           <button
             type="submit"
@@ -83,7 +83,7 @@ const Login = () => {
             {isLoggingIn ? <MiniLoader /> : "Continue"}
           </button>
         </form>
-        <div className="flex gap-2 text-[15px] mt-[13px] font-medium">
+        <div className="flex gap-1 flex-wrap justify-center text-[15px] items-center mt-[10px] font-medium">
           <span>Don&apos;t have an account?</span>
           <div className="pr-text-clr">
             <Link to="/signup">Create account</Link>

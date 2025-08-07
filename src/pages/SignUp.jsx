@@ -117,39 +117,50 @@ const SignUp = () => {
     }
   };
 
-  return (
-    <section className="w-full mx-auto md:w-1/2 md:max-w-[38em] flex  justify-center flex-col px-4 h-screen">
-      <div className="w-full">
-        <h1 className="mb-[59px] text-2xl font-semibold leading-normal xl:text-[30px] 2xl:text-[40px] 2xl:mb-5">
+    return (
+    <section className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-lg bg-white rounded-xl shadow-md p-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
           Create account
         </h1>
-        <button className="w-full flex items-center justify-center p-4 gap-[10px] border border-black rounded-lg mb-[15px]">
-          <img src={googleLogo} alt="google logo" />
-          <span className="font-medium">Continue with Google</span>
+        
+        <button className="w-full flex items-center justify-center p-3 gap-3 border border-gray-300 rounded-lg mb-6 hover:bg-gray-50 transition-colors">
+          <img src={googleLogo} alt="google logo" className="w-5 h-5" />
+          <span className="font-medium text-gray-700">Continue with Google</span>
         </button>
-        <div className="text-lg font-medium line-with-text">Or</div>
-        <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
-          <FormInput
-            htmlFor="firstName"
-            label="First Name"
-            type="text"
-            name="firstName"
-            id="firstName"
-            placeholder="first name"
-            value={formData.firstName}
-            onChange={handleChange}
-          />
-
-          <FormInput
-            htmlFor="lastName"
-            label="Last Name"
-            type="text"
-            name="lastName"
-            id="lastName"
-            placeholder="last name"
-            value={formData.lastName}
-            onChange={handleChange}
-          />
+        
+        <div className="flex items-center my-6">
+          <div className="flex-grow border-t border-gray-300"></div>
+          <span className="mx-4 text-gray-500 font-medium">or</span>
+          <div className="flex-grow border-t border-gray-300"></div>
+        </div>
+        
+        <form className="space-y-4" onSubmit={handleFormSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormInput
+              htmlFor="firstName"
+              label="First Name"
+              type="text"
+              name="firstName"
+              id="firstName"
+              placeholder="Enter your first name"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="w-full"
+            />
+            
+            <FormInput
+              htmlFor="lastName"
+              label="Last Name"
+              type="text"
+              name="lastName"
+              id="lastName"
+              placeholder="Enter your last name"
+              value={formData.lastName}
+              onChange={handleChange}
+              className="w-full"
+            />
+          </div>
 
           <FormInput
             htmlFor="email"
@@ -157,7 +168,7 @@ const SignUp = () => {
             type="email"
             name="email"
             id="email"
-            placeholder="email address"
+            placeholder="Enter your email"
             value={formData.email}
             onChange={handleChange}
           />
@@ -169,25 +180,21 @@ const SignUp = () => {
               type={isPasswordVisible ? "text" : "password"}
               name="password"
               id="password"
-              placeholder="password"
+              placeholder="Create a password"
               value={formData.password}
               onChange={handleChange}
             />
-            <div className="w-4 absolute top-[60%] right-0 mr-3">
-              {isPasswordVisible ? (
-                <img
-                  src={eyesolid}
-                  alt="password visible icon"
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                />
-              ) : (
-                <img
-                  src={eyeslashsolid}
-                  alt="password invisible icon"
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                />
-              )}
-            </div>
+            {/* <button
+              type="button"
+              className="absolute right-1 top-[42px] p-1 rounded-md hover:bg-gray-100"
+              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+            >
+              <img
+                src={isPasswordVisible ? eyesolid : eyeslashsolid}
+                alt={isPasswordVisible ? "Hide password" : "Show password"}
+                className="w-5 h-5"
+              />
+            </button> */}
           </div>
 
           <div className="relative">
@@ -197,47 +204,47 @@ const SignUp = () => {
               type={isConfirmPasswordVisible ? "text" : "password"}
               name="confirmPassword"
               id="confirmPassword"
-              placeholder="password"
+              placeholder="Confirm your password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <div className="w-4 absolute top-[60%] right-0 mr-3">
-              {isConfirmPasswordVisible ? (
-                <img
-                  src={eyesolid}
-                  alt="password visible icon"
-                  onClick={() =>
-                    setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
-                  }
-                />
-              ) : (
-                <img
-                  src={eyeslashsolid}
-                  alt="password invisible icon"
-                  onClick={() =>
-                    setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
-                  }
-                />
-              )}
-            </div>
+            {/* <button
+              type="button"
+              className="absolute right-1 top-[42px] p-1 rounded-md hover:bg-gray-100"
+              onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+            >
+              <img
+                src={isConfirmPasswordVisible ? eyesolid : eyeslashsolid}
+                alt={isConfirmPasswordVisible ? "Hide password" : "Show password"}
+                className="w-5 h-5"
+              />
+            </button> */}
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="outline-none py-4 font-medium pr-bg-clr text-white w-full mt-[6px] rounded-lg"
+            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
-            {isLoading ? <div className="loading"></div> : "Continue"}
+            {isLoading ? (
+              <div className="flex justify-center">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : (
+              "Continue"
+            )}
           </button>
         </form>
-        <div className="flex gap-2 text-[15px] mt-[13px] font-medium">
-          <span>Already have an account?</span>
-          <div className="pr-text-clr">
-            <Link to="/login">Login</Link>
-          </div>
+        
+        <div className="mt-6 text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+            Login
+          </Link>
         </div>
       </div>
     </section>
   );
 };
+
 export default SignUp;

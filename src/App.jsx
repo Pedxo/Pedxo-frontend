@@ -13,7 +13,7 @@ import {
   Login,
   Overview,
   Payroll,
-  ResetPasswordOtp,
+  ResetPassword,
   SignUp,
   StaticPage,
   Teams,
@@ -55,8 +55,8 @@ const router = createBrowserRouter([
     element: <Login />, // Accessible to all
   },
   {
-    path: '/reset-password-otp',
-    element: <ResetPasswordOtp />, // Accessible to all
+    path: '/reset-password',
+    element: <ResetPassword />, // Accessible to all
   },
   {
     path: '/forgot-password',
