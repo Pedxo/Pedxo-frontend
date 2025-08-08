@@ -9,11 +9,13 @@ import TeamsIcon from "../assets/icons/TeamsIcon";
 import PayRollIcon from "../assets/icons/PayRollIcon";
 import ExpensesIcon from "../assets/icons/ExpensesIcon";
 import AgreementsIcon from "../assets/icons/AgreementsIcon";
+import WalletIcon from "../assets/icons/WalletIcon"
 import { useUser } from "../context/UserContext";
 import { useLogout } from "../features/auth/useLogout";
 import { useNavBar } from "../context/SideBarContext";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import logosvg from "/logo.svg"
+
 
 const Navbar = () => {
   const { username, email } = useUser();
@@ -65,9 +67,14 @@ const Navbar = () => {
               Payment
             </div>
             <SideBarMenuItems
+              to="accounts"
+              icon={WalletIcon}
+              title="accounts"
+            />
+            <SideBarMenuItems
               to="payroll"
               icon={PayRollIcon}
-              title=" payroll"
+              title="payroll"
             />
             <SideBarMenuItems
               to="expenses"

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+const baseURL = "https://pedxo-back-project.onrender.com";
 
 const authFetch = axios.create({
   baseURL,

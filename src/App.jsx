@@ -13,6 +13,7 @@ import {
   Login,
   Overview,
   Payroll,
+  Accounts,
   ResetPasswordOtp,
   SignUp,
   StaticPage,
@@ -91,6 +92,10 @@ const router = createBrowserRouter([
       {
         path: 'teams',
         element: <Teams />,
+      },
+      {
+        path: 'accounts',
+        element: <Accounts />,
       },
       {
         path: 'payroll',

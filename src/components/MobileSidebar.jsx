@@ -14,7 +14,7 @@ import { useNavBar } from "../context/SideBarContext";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import logoutsvg from "../assets/svg/logout.svg";
 import logosvg from "/logo.svg"
-
+import WalletIcon from "../assets/icons/WalletIcon"
 
 const MobileSideBar = () => {
   const { navOpen, setNavOpen } = useNavBar();
@@ -79,6 +79,11 @@ const MobileSideBar = () => {
               <div className="grey-text text-sm font-semibold leading-normal">
                 Payment
               </div>
+                <SideBarMenuItems
+                  to="accounts"
+                  icon={WalletIcon}
+                  title="accounts"
+                />
               <SideBarMenuItems
                 onClick={() => setNavOpen(false)}
                 to="payroll"
