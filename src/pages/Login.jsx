@@ -37,9 +37,9 @@ const Login = () => {
         <h1 className="mb-[39px] text-2xl font-semibold leading-normal 2xl:text-[30px] ">
           Login
         </h1>
-        <button className="w-full flex items-center justify-center p-4 gap-[10px] border border-black rounded-lg mb-[15px]">
+        <button className="w-full flex items-center justify-center sm:p-4 p-2 gap-[5px] sm:gap-[1-px] border border-black rounded-lg mb-[15px]">
           <img src={googleLogo} alt="google logo" />
-          <span className="font-medium">Continue with Google</span>
+          <span className="font-medium text-xs sm:text-base">Continue with Google</span>
         </button>
         <div className="text-lg font-medium line-with-text">Or</div>
         <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
@@ -73,19 +73,19 @@ const Login = () => {
             />
           </div>
 
-          <div className="pr-text-clr font-medium text-right -mt-2">
+          <div className="pr-text-clr font-medium text-right sm:text-base text-xs -mt-2">
             <Link to="/reset-password">Forgot password?</Link>
           </div>
           <button
             type="submit"
-            className="py-4 font-medium pr-bg-clr text-white w-full mt-[6px] rounded-lg"
+            className="sm:py-4 py-3 font-medium pr-bg-clr text-white sm:text-base text-xs w-full mt-[6px] rounded-lg"
           >
             {isLoggingIn ? <MiniLoader /> : "Continue"}
           </button>
         </form>
-        <div className="flex gap-1 flex-wrap justify-center text-[15px] items-center mt-[10px] font-medium">
+        <div className="flex gap-1 flex-wrap justify-center sm:text-base text-xs items-center mt-[10px] font-medium">
           <span>Don&apos;t have an account?</span>
-          <div className="pr-text-clr">
+          <div className="pr-text-clr sm:text-base text-xs">
             <Link to="/signup">Create account</Link>
           </div>
         </div>
