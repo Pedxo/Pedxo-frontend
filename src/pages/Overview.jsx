@@ -8,94 +8,91 @@ import { formatCurrency } from "../utlity/helper";
 
 const Overview = () => {
   const { username } = useUser();
-  
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Promotional Banner */}
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-center py-3 text-sm font-medium mb-8 rounded-lg shadow-md">
-        Get Expert Developers on Demand and Pay as You Go
-      </div>
+    <section>
+      <div>
+        <header className="text-center py-2 overflow-banner text-sm font-medium px-[17px] xl:text-[18px]">
+          Get Expert Developers on Demand and Pay as You Go
+        </header>
 
-      {/* Welcome Section */}
-      <div className="mb-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-1">
-          Welcome, <span className="text-indigo-600">{username}</span>
-        </h1>
-        <p className="text-gray-500 text-lg">
-          We hope you&apos;re having a great day!
-        </p>
-      </div>
+        <div className="mx-[19px] mt-10">
+          <h1 className="text-[20px] font-Inter font-bold  leading-normal text-[#000000e6]  xl:text-[30px]">
+            Welcome, {username}
+            <span className="overview-text"></span>
+          </h1>
+          <p className="text-sm font-Inter font-medium leading-normal grey-text xl:text-[16px]">
+            We hope you’re having a good day!
+          </p>
 
-      {/* Stats Cards Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Total Expenses Card */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6 hover:shadow-lg transition-shadow">
-          <div className="flex items-center justify-between">
+          <div className="px-[22px] pt-[21px] pb-[39px] mt-[62px] overview-expense-bg flex flex-col gap-6 xl:px-[92px]">
             <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-1">Total Expenses</h3>
-              <p className="text-gray-500 text-sm mb-4">
-                Total amount spent on contractors
+              <h2 className="font-semibold leading-normal xl:text-[27px] overview-text">
+                Total Expenses
+              </h2>
+              <p className="mb-2 text-sm font-Inter font-medium leading-normal grey-text pr-[51px] xl:text-[16px]">
+                Total amount you&apos;ve spent on your contractors
               </p>
-              <div className="flex items-center">
-                <img src={moneybag} alt="Money bag" className="w-10 h-10 mr-4" />
-                <span className="text-3xl font-bold text-gray-900">
-                  {formatCurrency(0)}
-                </span>
+
+              <div className="flex justify-between bg-white rounded-lg py-3 px-[21px] xl:py-10 xl:px-16">
+                <div className="flex items-center gap-4">
+                  <img src={moneybag} alt="" />
+                  <span className="text-2xl font-semibold leading-normal xl:text-[40px] overview-text">
+                    {formatCurrency(0)}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Active Contractors Card */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6 hover:shadow-lg transition-shadow">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-1">Active Contractors</h3>
-            <p className="text-gray-500 text-sm mb-4">
-              Current contractors on your team
-            </p>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <img src={people} alt="People" className="w-10 h-10 mr-4" />
-                <span className="text-3xl font-bold text-gray-900">0</span>
+            <div>
+              <h2 className="font-semibold leading-normal xl:text-[27px] overview-text">
+                Active Contractors
+              </h2>
+              <p className="mb-2 text-sm font-Inter font-medium leading-normal grey-text pr-[51px] xl:text-[16px]">
+                Current contractors on your team
+              </p>
+
+              <div className="flex justify-between bg-white  rounded-lg py-3 px-[21px] xl:py-10 xl:px-16">
+                <div className="flex items-center gap-4">
+                  <img src={people} alt="" />
+                  <span className="text-2xl font-semibold leading-normal xl:text-[40px] overview-text">
+                    0
+                  </span>
+                </div>
+
+                <Link
+                  to="/dashboard/create-contract"
+                  className="flex items-center text-[0.8rem] text-white px-3 py-[10px] sm:px-5 sm:py-[14px] pr-bg-clr rounded-lg font-semibold xl:text-[16px]"
+                >
+                  <img src={add} alt="" className="w-4 " />
+                  <span>Create contract</span>
+                </Link>
               </div>
-              <Link
-                to="/dashboard/create-contract"
-                className="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-              >
-                <img src={add} alt="Add" className="w-4 h-4 mr-2" />
-                <span>Create contract</span>
-              </Link>
             </div>
-          </div>
-        </div>
 
-        {/* Onboarding Card */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6 hover:shadow-lg transition-shadow">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-1">Onboarding</h3>
-            <p className="text-gray-500 text-sm mb-4">
-              Pending contracts on their way
-            </p>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <img src={telegram} alt="Telegram" className="w-10 h-10 mr-4" />
-                <span className="text-3xl font-bold text-gray-900">0</span>
+            <div>
+              <h2 className="font-semibold leading-normal xl:text-[27px] overview-text">
+                Onboarding
+              </h2>
+              <p className="mb-2 text-sm font-Inter font-medium leading-normal grey-text pr-[51px] xl:text-[16px]">
+                Pending contracts on their way
+              </p>
+
+              <div className="flex justify-between bg-white  rounded-lg py-3 px-[21px] xl:py-10 xl:px-16 overview-text">
+                <div className="flex items-center gap-4">
+                  <img src={telegram} alt="" />
+                  <span className="text-2xl font-semibold leading-normal xl:text-[40px]">
+                    0
+                  </span>
+                </div>
+                <div className="text-[14px] pl-5 py-[14px] rounded-lg font-medium xl:text-[16px]">
+                  Pending
+                </div>
               </div>
-              <span className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg font-medium">
-                Pending
-              </span>
             </div>
           </div>
         </div>
       </div>
-
-      {/* <div className="mt-12 bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        </div>
-      </div> */}
     </section>
   );
 };
-
 export default Overview;
