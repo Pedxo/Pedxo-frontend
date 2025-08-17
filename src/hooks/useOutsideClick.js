@@ -1,11 +1,8 @@
 import { useEffect, useRef } from "react";
 
-export function useOutsideClick(
-  handler,
-  ignoreRefs = [],
-  listenCapturing = true
-) {
+export function useOutsideClick(handler, listenCapturing = true) {
   const ref = useRef(null);
+  const ignoreRefs = Array.isArray(arguments[1]) ? arguments[1] : [];
 
   useEffect(() => {
     function handleClick(e) {

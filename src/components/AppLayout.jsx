@@ -1,19 +1,16 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
-import { useNavBar } from "../context/SideBarContext";
-import { RiMenu2Fill } from "react-icons/ri";
+// import { useNavBar } from "../context/SideBarContext";
 import MobileSideBar from "./MobileSidebar";
 
 function AppLayout() {
-  const { navOpen, setNavOpen } = useNavBar();
-  if(navOpen ){
-    console.log("open")
-  }
+  // const { navOpen } = useNavBar();
+
   return (
     <div className="font-poppins relative w-full h-svh flex">
-      <span className="absolute md:hidden z-30  p-2 left-4 top-16">
+      {/* <span className="absolute md:hidden z-30  p-2 left-4 top-16">
         <RiMenu2Fill onClick={() => setNavOpen(true)} size={24} />
-      </span>
+      </span> */}
       <MobileSideBar />
       <Navbar />
       {/* <main className="flex-1 min-h-[844px] 2xl:max-w-[1512px] 2xl:max-h-[1024px]"> */}
