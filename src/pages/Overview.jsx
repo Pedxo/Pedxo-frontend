@@ -22,7 +22,7 @@ const Overview = () => {
           Welcome, <span className="text-indigo-600">{username}</span>
         </h1>
         <p className="text-gray-500 text-lg">
-          We hope you're having a great day!
+          We hope you&apos;re having a great day!
         </p>
       </div>
 
