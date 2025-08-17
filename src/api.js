@@ -11,7 +11,7 @@ const authFetch = axios.create({
     "Content-Type": "application/json",
     "Accept-Encoding": "gzip, deflate, br",
   },
-  timeout: 10000,
+  timeout: 30000,
 });
 
 // Request interceptor for auth token

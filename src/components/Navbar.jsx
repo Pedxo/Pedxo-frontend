@@ -29,7 +29,7 @@ const Navbar = () => {
   return (
     <nav
       ref={navRef}
-      className="md:flex border-r-2 w-full max-w-[13em] py-2 space-y-1 justify-between h-full  flex-col fixed sec-bg-clr   "
+      className="hidden md:flex border-r-2 w-full max-w-[13em] pt-8 justify-between  h-screen  flex-col fixed sec-bg-clr   "
     >
       <div className="flex-col px-8 ">
         {/* <h1
