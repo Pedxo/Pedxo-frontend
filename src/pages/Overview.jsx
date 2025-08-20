@@ -12,6 +12,7 @@ import { formatCurrency } from "../utlity/helper";
 const Overview = () => {
   const { username } = useUser();
   const [onboardingCount, setOnboardingCount] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // Get contract completion count from sessionStorage
   useEffect(() => {
@@ -34,6 +35,15 @@ const Overview = () => {
     };
   }, []);
 
+  // Trigger animation when onboardingCount changes
+  useEffect(() => {
+    if (onboardingCount > 0) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => setIsAnimating(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [onboardingCount]);
+
   return (
     <section>
       <div>
@@ -47,7 +57,7 @@ const Overview = () => {
             <span className="overview-text"></span>
           </h1>
           <p className="text-sm font-Inter font-medium leading-normal grey-text xl:text-[16px]">
-            We hope you're having a good day!
+            We hope you&apos;re having a good day!
           </p>
 
           <div className="px-[22px] pt-[21px] pb-[39px] mt-[62px] rounded-3xl overview-expense-bg flex flex-col gap-6 xl:px-[92px]">
@@ -110,14 +120,29 @@ const Overview = () => {
                     {onboardingCount}
                   </span>
                   {onboardingCount > 0 && (
-                    <span className="flex items-center">
-                      <img src={onboradIcon2} alt="" />
-                      <img src={onboardIcon1} className="-ml-10" alt="" />
+                    <span className="flex items-center relative">
+                      <img 
+                        src={onboradIcon2} 
+                        alt="" 
+                        className={`transition-all duration-700 ${isAnimating ? 'animate-pulse  continuous-pulse scale-110' : 'animate-pulse  continuous-pulse '}`}
+                      />
+                      <img 
+                        src={onboardIcon1} 
+                        className={`-ml-10 transition-all duration-700 ${isAnimating ? 'animate-bounce  continuous-pulse' : 'animate-pulse  continuous-pulse '}`}
+                        alt=""
+                      />
+                      {/* Floating animation dots */}
+                      {isAnimating && (
+                        <>
+                          <div className="absolute -top-2 -right-2 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
+                          <div className="absolute -top-2 -right-2 w-3 h-3 bg-green-500 rounded-full"></div>
+                        </>
+                      )}
                     </span>
                   )}
                 </div>
                 {onboardingCount > 0 && (
-                  <p className="text-[14px] pl-5 py-[14px] rounded-lg font-medium xl:text-[20px] text-gray-700">
+                  <p className="text-[14px] pl-5 py-[14px] rounded-lg font-medium xl:text-[20px] text-gray-700 transition-all duration-500 animate-pulse  continuous-pulse  hover:scale-105">
                     Onboarding human
                   </p>
                 )}
@@ -129,6 +154,17 @@ const Overview = () => {
           </div>
         </div>
       </div>
+      
+      {/* Add custom animation styles */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out;
+        }
+      `}</style>
     </section>
   );
 };
