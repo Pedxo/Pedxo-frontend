@@ -11,10 +11,10 @@ export default function useFinalizeContract() {
     onSuccess: (data) => {
       toast.success("Contract sent successfully");
       const contractData = data?.data;
-      console.log(data)
-      navigate("/");
+      console.log(data);
       sessionStorage.removeItem("personal-info", JSON.stringify(contractData));
-      sessionStorage.removeItem("currentStep")
+      sessionStorage.removeItem("currentStep");
+      navigate("/dashboard");
     },
     onError: (err) => {
       toast.error("Something went wrong.Please try again");

@@ -22,6 +22,14 @@ const ContractForm = ({ subHead, endDate }) => {
   const navigate = useNavigate()
   const { setFormStepperData } = useGlobalContext()
 
+  // Get completion count from sessionStorage or initialize to 0
+  const getCompletionCount = () => {
+    const count = sessionStorage.getItem('contractCompletionCount')
+    return count ? parseInt(count) : 0
+  }
+
+  const [completionCount, setCompletionCount] = useState(getCompletionCount())
+
   const handleOptionSelect = (option) => {
     setFormStepperData(option)
   }
@@ -101,6 +109,7 @@ const ContractForm = ({ subHead, endDate }) => {
     sessionStorage.setItem('currentStep', JSON.stringify(step))
   }
 
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -141,7 +150,12 @@ const ContractForm = ({ subHead, endDate }) => {
         )
 
       case 5:
-        return <FormFive savedState={savedState} nextStep={nextStep} />
+        return (
+          <FormFive 
+            savedState={savedState} 
+            nextStep={nextStep} 
+          />
+        )
 
       case 6:
         return (
