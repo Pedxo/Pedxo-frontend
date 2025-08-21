@@ -124,11 +124,11 @@ const Overview = () => {
                       <img 
                         src={onboradIcon2} 
                         alt="" 
-                        className={`transition-all duration-700 ${isAnimating ? 'animate-pulse  continuous-pulse scale-110' : 'animate-pulse  continuous-pulse '}`}
+                        className={`transition-all duration-700 ${isAnimating ? 'animate-pulse  continuous-pulse scale-1110' : 'animate-pulse scale-1110  continuous-pulse '}`}
                       />
                       <img 
                         src={onboardIcon1} 
-                        className={`-ml-10 transition-all duration-700 ${isAnimating ? 'animate-bounce  continuous-pulse' : 'animate-pulse  continuous-pulse '}`}
+                        className={`-ml-10 transition-all duration-700 ${isAnimating ? 'animate-bounce  continuous-pulse' : 'animate-bounce  continuous-bounce '}`}
                         alt=""
                       />
                       {/* Floating animation dots */}
