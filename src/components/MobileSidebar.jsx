@@ -76,7 +76,7 @@ const MobileSideBar = () => {
         <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-md md:hidden">
           <nav
             ref={navRef}
-            className="flex border-r-2 w-full max-w-[20em] h-full flex-col fixed user-bg-clr"
+            className="flex border-r-2 w-full max-w-[20em] h-full flex-col fixed overview-expense-bg"
           >
             <div className="flex-col pt-2 p-8">
               <img

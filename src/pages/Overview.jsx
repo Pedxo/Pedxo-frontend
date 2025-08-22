@@ -69,7 +69,7 @@ const Overview = () => {
                 Total amount you've spent on your contractors
               </p>
 
-              <div className="flex justify-between bg-white rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16">
+              <div className="flex justify-between bg-white border rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16">
                 <div className="flex items-center gap-4">
                   <img src={moneybag} alt="" />
                   <span className="text-2xl font-semibold leading-normal xl:text-[40px] overview-text">
@@ -87,7 +87,7 @@ const Overview = () => {
                 Current contractors on your team
               </p>
 
-              <div className="flex justify-between bg-white  rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16">
+              <div className="flex justify-between bg-white border  rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16">
                 <div className="flex items-center gap-4">
                   <img src={people} alt="" />
                   <span className="text-2xl font-semibold leading-normal xl:text-[40px] overview-text">
@@ -113,7 +113,7 @@ const Overview = () => {
                 Pending contracts on their way
               </p>
 
-              <div className="flex justify-between items-center bg-white rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16 overview-text">
+              <div className="flex justify-between items-center bg-white border rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16 overview-text">
                 <div className="flex items-center gap-4">
                   {onboardingCount === 0 && <img src={telegram} alt="" />}
                   <span className="text-2xl font-semibold leading-normal xl:text-[40px]">

@@ -42,7 +42,7 @@ const Navbar = () => {
       {desktopNavOpen && (
         <nav
           ref={navRef}
-          className="hidden md:flex border-r-2 w-full max-w-[13em] pt-8 justify-between h-screen flex-col fixed sec-bg-clr"
+          className="hidden md:flex border-r-2 w-full max-w-[13em] pt-8 justify-between h-screen flex-col fixed overview-expense-bg"
         >
           <div className="flex-col px-8">
             <img
