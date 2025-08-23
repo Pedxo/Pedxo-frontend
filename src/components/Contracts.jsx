@@ -15,9 +15,9 @@ const Contracts = () => {
           </p>
         </div>
 
-        <div className="flex flex-col gap-3 mt-[31px] mx-[21px] xl:mt-10">
+        <div className="flex flex-col gap-6 mt-[31px] mx-[21px] xl:mt-10">
           <Link to="/dashboard/full-time-form?contractType=full-time">
-            <div className="flex items-center justify-between gap-4 user-bg-clr rounded-lg px-4 py-[19px] xl:px-10 xl:py-9">
+            <div className="flex items-center justify-between gap-4 overview-expense-bg rounded-2xl px-4 py-[19px] xl:px-10 xl:py-9">
               <div className="flex items-center gap-[13px]">
                 <img src={fulltimeicon} alt="target icon" />
                 <div>
@@ -37,7 +37,7 @@ const Contracts = () => {
           </Link>
 
           <Link to="/dashboard/gig-based-form?contractType=gig-based">
-            <div className="flex items-center justify-between user-bg-clr rounded-lg px-4 py-[19px] xl:px-10 xl:py-9">
+            <div className="flex items-center justify-between overview-expense-bg rounded-2xl px-4 py-[19px] xl:px-10 xl:py-9">
               <div className="flex gap-[13px]">
                 <img src={gigbased} alt="target icon" />
                 <div>

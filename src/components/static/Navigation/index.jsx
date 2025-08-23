@@ -12,7 +12,7 @@ export const Navigation = () => {
   return (
     <nav className='w-full'>
       {/* Mobile Layout (shows on small screens) */}
-      <div className='md:hidden bg-white rounded-full p-3 flex justify-between items-center'>
+      <div className='md:hidden overview-expense-bg rounded-full p-3 flex justify-between items-center'>
         <img src={BrandImage} className='w-[107px] h-[33px]' alt='Brand Logo' />
         <motion.button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -26,7 +26,7 @@ export const Navigation = () => {
       </div>
 
       {/* Desktop Layout (shows on medium screens and up) */}
-      <div className='hidden md:flex bg-white rounded-full p-4'>
+      <div className='hidden md:flex overview-expense-bg rounded-full p-4'>
         <div className='flex-1 flex items-center'>
           <img
             src={BrandImage}

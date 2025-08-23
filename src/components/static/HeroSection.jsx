@@ -3,7 +3,7 @@ import bgGradient from '../../assets/svg/gradientBg.svg'
 import { MaxScreenWrapper } from '../MaxScreenWrapper'
 import { RevealAnimation } from '../RevealAnimation'
 import ReactPlayer from 'react-player'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const GradientTextHeading = () => (
@@ -54,7 +54,7 @@ const ActionButtons = () => (
 const DemoContainer = () => {
   const [hasError, setHasError] = useState(false)
   const youtubeUrl =
-    'https://youtu.be/WhLFwXSJo5I?si=5jQ8Y37YfdjBQnRy' // ↞ same link, just lower‑case “si”
+    'https://youtu.be/WhLFwXSJo5I?si=5jQ8Y37YfdjBQnRy' // ↞ same link, just lower‑case "si"
 
   return (
     <RevealAnimation
@@ -98,14 +98,41 @@ const DemoContainer = () => {
 }
 
 export const HeroSection = () => {
+  const [showBackground, setShowBackground] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    // Initial 30-second delay timer
+    const initialTimer = setTimeout(() => {
+      setShowBackground(true);
+      setIsInitialLoad(false);
+    }, 30000); // 30 seconds
+
+    // Cleanup initial timer
+    return () => clearTimeout(initialTimer);
+  }, []);
+
+  useEffect(() => {
+    // Only start the toggle timer after initial load
+    if (!isInitialLoad) {
+      const toggleTimer = setInterval(() => {
+        setShowBackground(prev => !prev);
+      }, 30000); // Toggle every 30 seconds
+
+      // Cleanup toggle timer
+      return () => clearInterval(toggleTimer);
+    }
+  }, [isInitialLoad]);
+
   return (
     <MaxScreenWrapper
       style={{
-        backgroundImage: `url(${bgGradient})`,
+        backgroundImage: showBackground ? `url(${bgGradient})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        transition: 'background-image 1s ease-in-out',
       }}
-      className=' rounded-none md:rounded-3xl py-4 md:py-14 px-4 md:px-24 bg-white'
+      className='rounded-none md:rounded-3xl py-4 md:py-14 px-4 md:px-24 bg-white'
     >
       <Navigation />
       <div className='md:mt-24 mt-14 flex flex-col items-center gap-6 md:gap-8'>
@@ -114,6 +141,13 @@ export const HeroSection = () => {
         <ActionButtons />
         <DemoContainer />
       </div>
+      
+      {/* Loading indicator for initial delay */}
+      {isInitialLoad && (
+        <div className="fixed bottom-4 right-4 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg text-sm">
+          Background loading in {Math.ceil((30000 - (Date.now() - performance.timing.navigationStart)) / 1000)} seconds...
+        </div>
+      )}
     </MaxScreenWrapper>
   )
 }

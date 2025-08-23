@@ -13,6 +13,17 @@ const Overview = () => {
   const { username } = useUser();
   const [onboardingCount, setOnboardingCount] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024); // Assuming 1024px as desktop breakpoint
+
+  // Handle window resize to update isDesktop state
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Get contract completion count from sessionStorage
   useEffect(() => {
@@ -48,7 +59,7 @@ const Overview = () => {
     <section>
       <div>
         <header className="text-center py-2 overflow-banner text-sm font-medium px-[17px] xl:text-[18px]">
-          Get Expert Developers on Demand and Pay as You Go
+          Get creative developers for your code agents
         </header>
 
         <div className="mx-[19px] mt-10">
@@ -120,33 +131,34 @@ const Overview = () => {
                     {onboardingCount}
                   </span>
                   {onboardingCount > 0 && (
-                    <span className="flex items-center relative">
-                      <img 
-                        src={onboradIcon2} 
-                        alt="" 
-                        className={`transition-all duration-700 ${isAnimating ? 'animate-pulse  continuous-pulse scale-1110' : 'animate-pulse scale-1110  continuous-pulse '}`}
+                    <span className="flex items-center relative w-30">
+                      <img
+                        src={onboradIcon2}
+                        alt=""
+                        className={`transition-all duration-700 sm:w-20 w-10 ${
+                          isAnimating
+                            ? "animate-pulse  continuous-pulse scale-1110"
+                            : "animate-pulse scale-1110  continuous-pulse "
+                        }`}
                       />
-                      <img 
-                        src={onboardIcon1} 
-                        className={`-ml-10 transition-all duration-700 ${isAnimating ? 'animate-bounce  continuous-pulse' : 'animate-bounce  continuous-bounce '}`}
+                      <img
+                        src={onboardIcon1}
+                        className={` transition-all duration-700 w-100 sm:w-30 -ml-10 ${
+                          isAnimating
+                            ? "animate-bounce  continuous-pulse"
+                            : "animate-bounce  continuous-bounce "
+                        }`}
                         alt=""
                       />
-                      {/* Floating animation dots */}
-                      {isAnimating && (
-                        <>
-                          <div className="absolute -top-2 -right-2 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
-                          <div className="absolute -top-2 -right-2 w-3 h-3 bg-green-500 rounded-full"></div>
-                        </>
-                      )}
                     </span>
                   )}
                 </div>
                 {onboardingCount > 0 && (
-                  <p className="text-[14px] pl-5 py-[14px] rounded-lg font-medium xl:text-[20px] text-gray-700 transition-all duration-500 animate-pulse  continuous-pulse  hover:scale-105">
-                    Onboarding human
+                  <p className="text-[10px] pl-0 py-[14px] rounded-lg font-medium xl:text-[20px] text-gray-700 transition-all duration-500 animate-pulse  continuous-pulse  hover:scale-105">
+                    {isDesktop ? "Working to onboard human" : "Onboarding human"}
                   </p>
                 )}
-                <div className="text-[14px] pl-5 py-[14px] rounded-lg font-medium xl:text-[16px] text-gray-500">
+                <div className="text-[8px] pl-5 py-[14px] rounded-lg font-medium xl:text-[16px] text-gray-500">
                   Pending
                 </div>
               </div>
@@ -154,12 +166,18 @@ const Overview = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Add custom animation styles */}
       <style jsx>{`
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         .animate-fadeIn {
           animation: fadeIn 0.5s ease-out;

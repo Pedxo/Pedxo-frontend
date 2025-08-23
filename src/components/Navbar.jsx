@@ -69,11 +69,11 @@ const Navbar = () => {
                   icon={AddDeveloperIcon}
                   title="add developer"
                 />
-                <SideBarMenuItems
+                {/* <SideBarMenuItems
                   icon={CreateContractIcon}
                   to="create-contract"
                   title="create contract"
-                />
+                /> */}
                 <SideBarMenuItems to="teams" icon={TeamsIcon} title="teams" />
               </div>
 
