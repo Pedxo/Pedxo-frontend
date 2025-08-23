@@ -133,7 +133,7 @@ const Overview = () => {
                   {onboardingCount > 0 && (
                     <span className="flex items-center relative w-30">
                       <img
-                        src={onboradIcon2}
+                        src={isDesktop? onboradIcon2 : onboradIcon2}
                         alt=""
                         className={`transition-all duration-700 sm:w-20 w-10 ${
                           isAnimating
@@ -142,7 +142,7 @@ const Overview = () => {
                         }`}
                       />
                       <img
-                        src={onboardIcon1}
+                         src={isDesktop ? onboardIcon1 : ''}
                         className={` transition-all duration-700 w-100 sm:w-30 -ml-10 ${
                           isAnimating
                             ? "animate-bounce  continuous-pulse"
