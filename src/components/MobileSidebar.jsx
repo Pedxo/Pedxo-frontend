@@ -106,12 +106,15 @@ const MobileSideBar = () => {
                     icon={AddDeveloperIcon}
                     title="add developer"
                   />
+
                   {/* <SideBarMenuItems
                     onClick={() => setMobileNavOpen(false)}
                     icon={CreateContractIcon}
                     to="create-contract"
                     title="create contract"
+
                   /> */}
+
                   <SideBarMenuItems
                     onClick={() => setMobileNavOpen(false)}
                     to="teams"
