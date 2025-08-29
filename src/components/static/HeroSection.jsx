@@ -31,7 +31,7 @@ const ActionButton = ({ children, variant = 'primary', ...props }) => {
   return (
     <button
       onClick={goToDashboard}
-      className={`px-6 py-3 rounded-full font-medium transition-all shadow-sm ${
+      className={`px-5 py-3 sm:text-base text-sm rounded-full font-medium transition-all shadow-sm ${
         variant === 'primary'
           ? 'bg-gradient-to-r from-gradientPrimary via-violet to-gradientPrimary text-white hover:opacity-90'
           : 'border border-gray-300 text-gray-800 hover:bg-gray-50 bg-[#FFFFFF]'
