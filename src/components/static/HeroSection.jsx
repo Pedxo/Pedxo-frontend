@@ -147,6 +147,7 @@ export const HeroSection = () => {
           Background loading in {Math.ceil((30000 - (Date.now() - performance.timing.navigationStart)) / 1000)} seconds...
         </div>
       )} */}
+
     </MaxScreenWrapper>
   )
 }

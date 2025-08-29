@@ -278,6 +278,7 @@ const ContractForm = ({ subHead, endDate }) => {
           </div>
 
           <div className='overview-expense-bg border-[2px] border-[#E1E2DD] p-10 w-full rounded-3xl'>
+
             <div>
               <div>{renderStep()}</div>
 
