@@ -39,13 +39,17 @@ const Login = () => {
           Login
         </h1>
         <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">
-          <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] rounded-lg mb-[15px]">
+          <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px]">
             <img src={GitHubLogo} alt="github logo" className="w-6 h-6" />
-            <span className="font-medium text-xs sm:text-base">Github</span>
+            <span className="font-medium text-xs sm:text-sm">
+              Continue with Github
+            </span>
           </button>
-          <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] rounded-lg mb-[15px]">
+          <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px]">
             <img src={googleLogo} alt="google logo" />
-            <span className="font-medium text-xs sm:text-base">Google</span>
+            <span className="font-medium text-xs sm:text-sm">
+              Continue with Google
+            </span>
           </button>
         </div>
         <div className="text-lg font-medium line-with-text">Or</div>
