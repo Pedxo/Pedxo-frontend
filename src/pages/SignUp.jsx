@@ -1,9 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import googleLogo from "../assets/svg/google-logo.svg";
+import GitHubLogo from '../assets/svg/githubLogo.svg';
 import FormInput from "../components/FormInput";
 import { useState } from "react";
-import eyesolid from "../assets/svg/eyesolid.svg";
-import eyeslashsolid from "../assets/svg/eyeslashsolid.svg";
 import { useGlobalContext } from "../Context";
 import toast from "react-hot-toast";
 import authFetch from "../api";
@@ -117,24 +116,30 @@ const SignUp = () => {
     }
   };
 
-    return (
+  return (
     <section className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-lg bg-white rounded-xl shadow-md p-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
           Create account
         </h1>
-        
-        <button className="w-full flex items-center justify-center p-3 gap-3 border border-gray-300 rounded-lg mb-6 hover:bg-gray-50 transition-colors">
-          <img src={googleLogo} alt="google logo" className="w-5 h-5" />
-          <span className="font-medium text-gray-700">Continue with Google</span>
-        </button>
-        
+
+        <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">
+          <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] rounded-lg mb-[15px]">
+            <img src={GitHubLogo} alt="github logo" className="w-6 h-6" />
+            <span className="font-medium text-xs sm:text-base">Github</span>
+          </button>
+          <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] rounded-lg mb-[15px]">
+            <img src={googleLogo} alt="google logo" />
+            <span className="font-medium text-xs sm:text-base">Google</span>
+          </button>
+        </div>
+
         <div className="flex items-center my-6">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="mx-4 text-gray-500 font-medium">or</span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
-        
+
         <form className="space-y-4" onSubmit={handleFormSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormInput
@@ -148,7 +153,7 @@ const SignUp = () => {
               onChange={handleChange}
               className="w-full"
             />
-            
+
             <FormInput
               htmlFor="lastName"
               label="Last Name"
@@ -235,10 +240,13 @@ const SignUp = () => {
             )}
           </button>
         </form>
-        
+
         <div className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+          <Link
+            to="/login"
+            className="text-blue-600 hover:text-blue-800 font-medium"
+          >
             Login
           </Link>
         </div>

@@ -48,7 +48,7 @@ const Overview = () => {
     <section>
       <div>
         <header className="text-center py-2 overflow-banner text-sm font-medium px-[17px] xl:text-[18px]">
-          Get creative developers for  your code agents
+          Onboard the right prompt engineers autonomously
         </header>
 
         <div className="mx-[19px] mt-10">

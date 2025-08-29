@@ -104,7 +104,7 @@ const MobileSideBar = () => {
                     onClick={() => setMobileNavOpen(false)}
                     to="add-developer"
                     icon={AddDeveloperIcon}
-                    title="add developer"
+                    title="add engineer"
                   />
                   {/* <SideBarMenuItems
                     onClick={() => setMobileNavOpen(false)}

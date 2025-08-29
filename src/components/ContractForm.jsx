@@ -247,7 +247,7 @@ const ContractForm = ({ subHead, endDate }) => {
         </div>
 
         <div className='flex-col flex md:flex-row gap-5 md:justify-between w-full'>
-          <div className='flex  bg-white border-[2px] border-[#E1E2DD] mb-3 md:mb-0 rounded-2xl h-fit md:p-8 px-8 p-2 flex-shrink-0  lg:w-96 gap-4 md:flex-col md:order-2  items-center'>
+          <div className='flex overview-expense-bg border-[2px] border-[#E1E2DD] mb-3 md:mb-0 rounded-2xl h-fit md:p-8 px-8 p-2 flex-shrink-0  lg:w-96 gap-4 md:flex-col md:order-2  items-center'>
             {steps.map((step, i) => (
               <div key={i} className='flex w-full items-center gap-4'>
                 <p
@@ -277,7 +277,7 @@ const ContractForm = ({ subHead, endDate }) => {
             ))}
           </div>
 
-          <div className=' bg-white border-[2px] border-[#E1E2DD] p-10 w-full rounded-3xl'>
+          <div className='overview-expense-bg border-[2px] border-[#E1E2DD] p-10 w-full rounded-3xl'>
             <div>
               <div>{renderStep()}</div>
 
