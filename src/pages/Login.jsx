@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import googleLogo from "../assets/svg/google-logo.svg";
+import githubLogo from "../assets/png/githubLogo.png"
 import FormInput from "../components/FormInput";
 import useLogin from "../features/auth/useLogin";
 import * as Yup from "yup";
@@ -37,10 +38,18 @@ const Login = () => {
         <h1 className="mb-[39px] text-2xl font-semibold leading-normal 2xl:text-[30px] ">
           Login
         </h1>
-        <button className="w-full flex items-center justify-center sm:p-4 p-2 gap-[5px] sm:gap-[1-px] border border-black rounded-lg mb-[15px]">
-          <img src={googleLogo} alt="google logo" />
-          <span className="font-medium text-xs sm:text-base">Continue with Google</span>
+        <div className="flex md:flex-row flex-col items-center md:gap-4 gap-1">
+          {/*Github Auth button*/}
+        <button className="w-full flex items-center cursor-pointer justify-center p-3 gap-3 border border-gray-300 rounded-lg mb-6 hover:bg-gray-50 transition-colors">
+          <img src={githubLogo} alt="github logo" className="w-5 h-5" />
+          <span className="font-medium text-gray-700">Github</span>
         </button>
+        {/*Google Auth button*/}
+        <button className="w-full flex items-center cursor-pointer justify-center p-3 gap-3 border border-gray-300 rounded-lg mb-6 hover:bg-gray-50 transition-colors">
+          <img src={googleLogo} alt="google logo" className="w-5 h-5" />
+          <span className="font-medium text-gray-700">Google</span>
+        </button>
+        </div>
         <div className="text-lg font-medium line-with-text">Or</div>
         <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
           <FormInput

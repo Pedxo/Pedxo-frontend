@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import googleLogo from "../assets/svg/google-logo.svg";
+import githubLogo from "../assets/png/githubLogo.png"
 import FormInput from "../components/FormInput";
 import { useState } from "react";
 import eyesolid from "../assets/svg/eyesolid.svg";
@@ -124,10 +125,18 @@ const SignUp = () => {
           Create account
         </h1>
         
-        <button className="w-full flex items-center justify-center p-3 gap-3 border border-gray-300 rounded-lg mb-6 hover:bg-gray-50 transition-colors">
-          <img src={googleLogo} alt="google logo" className="w-5 h-5" />
-          <span className="font-medium text-gray-700">Continue with Google</span>
+        <div className="flex md:flex-row flex-col items-center md:gap-4 gap-1">
+          {/*Github Auth button*/}
+        <button className="w-full flex items-center cursor-pointer justify-center p-3 gap-3 border border-gray-300 rounded-lg mb-6 hover:bg-gray-50 transition-colors">
+          <img src={githubLogo} alt="github logo" className="w-5 h-5" />
+          <span className="font-medium text-gray-700">Github</span>
         </button>
+        {/*Google Auth button*/}
+        <button className="w-full flex items-center cursor-pointer justify-center p-3 gap-3 border border-gray-300 rounded-lg mb-6 hover:bg-gray-50 transition-colors">
+          <img src={googleLogo} alt="google logo" className="w-5 h-5" />
+          <span className="font-medium text-gray-700">Google</span>
+        </button>
+        </div>
         
         <div className="flex items-center my-6">
           <div className="flex-grow border-t border-gray-300"></div>
