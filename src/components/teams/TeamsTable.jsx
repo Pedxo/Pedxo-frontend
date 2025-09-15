@@ -4,7 +4,8 @@ import expenseavatar from "../../assets/svg/expenseavatar.svg";
 import SearchInput from "../../components/SearchInput";
 import { GoDotFill } from "react-icons/go";
 
-const baseUrl = "https://pedxo-back-project.onrender.com";
+// Read from .env
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const TeamsTable = () => {
   const [employees, setEmployees] = useState([]);
