@@ -66,7 +66,7 @@ const TeamsTable = () => {
 
         {/* Desktop Layout */}
         <div className="mt-6 hidden lg:block">
-          {/* ✅ Table Header */}
+          {/* Table Header */}
           <div className="grid grid-cols-9 gap-4 font-semibold mb-[12px] px-10 text-xs text-gray-600">
             <div className="truncate">Name</div>
             <div className="truncate">Email</div>
