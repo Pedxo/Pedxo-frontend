@@ -123,7 +123,6 @@ const SignUp = () => {
         <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
           Create account
         </h1>
-
         {/* <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">
           <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px]">
             <img src={GitHubLogo} alt="github logo" className="w-6 h-6" />
