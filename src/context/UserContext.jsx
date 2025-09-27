@@ -41,6 +41,7 @@ const logout = async () => {
   const username = user?.userName || '';
   const email = user?.email || '';
 
+
   return (
     <UserContext.Provider value={{ user, username, email, login, logout }}>
       {children}

@@ -17,6 +17,7 @@ import {
   SignUp,
   StaticPage,
   Teams,
+  AuthSuccess
 } from './pages'
 import ProtectedRoutes from './utlity/ProtectedRoutes'
 import PageNotFound from './pages/PageNotFound'
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
   {
     path: '/forgot-password',
     element: <ForgotPassword />, // Accessible to all
+  },
+  {
+    path: '/auth/success',
+    element: <AuthSuccess />,
   },
 
   // Protected routes group

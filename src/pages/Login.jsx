@@ -6,6 +6,7 @@ import useLogin from "../features/auth/useLogin";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import MiniLoader from "../components/MiniLoader";
+import Socials from "../components/Socials"
 
 const Login = () => {
   const navigate = useNavigate();
@@ -38,7 +39,8 @@ const Login = () => {
         <h1 className="mb-[39px] text-2xl font-semibold leading-normal 2xl:text-[30px] ">
           Login
         </h1>
-        <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">
+        <Socials />
+        {/* <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">
           <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px]">
             <img src={GitHubLogo} alt="github logo" className="w-6 h-6" />
             <span className="font-medium text-xs sm:text-sm">
@@ -51,7 +53,7 @@ const Login = () => {
               Continue with Google
             </span>
           </button>
-        </div>
+        </div> */}
         <div className="text-lg font-medium line-with-text">Or</div>
         <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
           <FormInput

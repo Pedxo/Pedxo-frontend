@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "https://pedxo-back-project.onrender.com";
+export const baseURL = "https://pedxo-back-project.onrender.com";
 
 // Request cache - works in browser
 const cache = new Map();
@@ -9,7 +9,7 @@ const authFetch = axios.create({
   baseURL,
   headers: {
     "Content-Type": "application/json",
-    "Accept-Encoding": "gzip, deflate, br",
+    // "Accept-Encoding": "gzip, deflate, br",
   },
   timeout: 30000,
 });

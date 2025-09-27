@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useGlobalContext } from "../Context";
 import toast from "react-hot-toast";
 import authFetch from "../api";
+import Socials from "../components/Socials"
 
 const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -96,7 +97,7 @@ const SignUp = () => {
           refreshTokenExpiration,
         };
         localStorage.setItem("user", JSON.stringify(tokenData));
-        console.log(response);
+       
       } catch (error) {
         if (
           error.response &&
@@ -123,7 +124,7 @@ const SignUp = () => {
           Create account
         </h1>
 
-        <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">
+        {/* <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">
           <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px]">
             <img src={GitHubLogo} alt="github logo" className="w-6 h-6" />
             <span className="font-medium text-xs sm:text-base">Github</span>
@@ -132,7 +133,8 @@ const SignUp = () => {
             <img src={googleLogo} alt="google logo" />
             <span className="font-medium text-xs sm:text-base">Google</span>
           </button>
-        </div>
+        </div> */}
+        <Socials isRegisterPage />
 
         <div className="flex items-center my-6">
           <div className="flex-grow border-t border-gray-300"></div>
