@@ -23,8 +23,9 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px; 
+  width: 4px;
 }
+
 ::-webkit-scrollbar-thumb {
   background-color: gray;
 }
@@ -49,9 +50,11 @@
   .pr-text-clr {
     color: var(--pr-text-clr);
   }
+
   .pr-bg-clr {
     background-color: var(--pr-bg-clr);
   }
+
   .sec-bg-clr {
     background: var(--sec-bg-clr);
   }
@@ -63,12 +66,14 @@
   .user-email-clr {
     color: rgba(0, 0, 0, 0.5);
   }
+
   .user-avatar {
     background-color: #00b9cb;
   }
 
   .overflow-banner {
     background-color: #c4ddfc;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
   }
 
   .hover-clr {

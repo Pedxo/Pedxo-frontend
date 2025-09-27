@@ -1,6 +1,7 @@
 import { useState } from "react";
 import googleLogo from "../assets/svg/google-logo.svg";
-import GitHubLogo from "../assets/svg/githubLogo.svg";
+// import GitHubLogo from "../assets/svg/githubLogo.svg";
+import { FaGithub } from "react-icons/fa";
 import { baseURL } from "../api";
 import toast from "react-hot-toast";
 
@@ -66,7 +67,8 @@ const Socials = ({ isRegisterPage = false }) => {
 
         ): (
           <>
-          <img src={GitHubLogo} alt="github logo" className="w-6 h-6" />
+          <FaGithub/>
+          {/* <img src={GitHubLogo} alt="github logo" className="w-6 h-6" /> */}
         <span className="font-medium text-xs sm:text-sm">
           {!isRegisterPage && "Continue with"} Github
         </span>

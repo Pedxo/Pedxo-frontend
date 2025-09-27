@@ -57,7 +57,7 @@ const Overview = () => {
             <span className="overview-text"></span>
           </h1>
           <p className="text-sm font-Inter font-medium leading-normal grey-text xl:text-[16px]">
-            We hope you&apos;re having a good day!
+            I hope you&apos;re having a good day!
           </p>
 
           <div className="px-[22px] pt-[21px] pb-[39px] mt-[62px] rounded-3xl overview-expense-bg flex flex-col gap-6 xl:px-[92px]">
@@ -142,7 +142,7 @@ const Overview = () => {
                   )}
                 </div>
                 {onboardingCount > 0 && (
-                  <p className="text-[10px] pl-5 py-[14px] rounded-lg font-medium xl:text-[20px] text-gray-700 transition-all duration-500 animate-pulse  continuous-pulse  hover:scale-105">
+                  <p className="text-[12px] pl-5 py-[14px] rounded-lg font-medium xl:text-[20px] text-gray-700 transition-all duration-500 animate-pulse  continuous-pulse  hover:scale-105">
                     Working to onboard human
                   </p>
                 )}
