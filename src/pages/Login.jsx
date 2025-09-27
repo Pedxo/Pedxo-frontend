@@ -54,6 +54,7 @@ const Login = () => {
             </span>
           </button>
         </div> */}
+
         <div className="text-lg font-medium line-with-text">Or</div>
         <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
           <FormInput
