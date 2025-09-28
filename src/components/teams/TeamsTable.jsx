@@ -62,57 +62,68 @@ const TeamsTable = () => {
           <SearchInput />
         </div>
 
+        {/* -------- MOBILE VIEW -------- */}
         <div className="flex flex-col gap-4 mt-[21px] xl:flex-col-reverse xl:gap-[10px] xl:w-full lg:hidden">
           {employees.map((employee, index) => (
             <div
               key={index}
-              className="flex justify-between font-medium px-[18px] py-[22px] rounded-lg xl:flex-row xl:items-center xl:px-10  xl:py-[20px] "
+              className="flex flex-col font-medium px-[18px] py-[22px] rounded-lg xl:flex-row xl:items-center xl:px-10  xl:py-[20px]"
               style={{ border: "0.5px solid rgba(0, 0, 0, 0.20)" }}
             >
-              <div className="xl:flex xl:items-center">
-                <div className="flex gap-[10px] xl:items-center">
-                  <img src={expenseavatar} alt="profile photo" />
-                  <div className="xl:flex">
-                    <div className="text-sm xl:text-sm">{employee.fullName}</div>
-                    <div className="text-[0.75rem] xl:text-sm xl:ml-[110px]">
-                      {employee.country}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-[0.75rem] xl:text-sm mt-[13px] xl:mt-0">
-                  {employee.position}
+              {/* Name + Email */}
+              <div className="flex gap-[10px] items-center">
+                <img src={expenseavatar} alt="profile" />
+                <div className="flex flex-col">
+                  <div className="text-sm">{employee.fullName}</div>
+                  <div className="text-sm text-gray-700">{employee.email}</div>
                 </div>
               </div>
+
+              {/* Seniority Level (badge) */}
               <div
-                className="px-[10px] py-[3px] rounded-[4px] text-[0.5rem] max-h-max xl:hidden"
-                style={{ backgroundColor: " rgba(0, 128, 0, 0.20)" }}
+                className="mt-3 px-[10px] py-[3px] rounded-[4px] text-[0.65rem] w-max xl:hidden"
+                style={{ backgroundColor: "rgba(0, 128, 0, 0.20)" }}
               >
-                {employee.status}
+                {employee.seniorityLevel}
               </div>
-              <div className="flex justify-between gap-[50px] xl:flex-row-reverse xl:ml-[50px]">
-                <div className="text-sm flex flex-col justify-between">
-                  {employee.amount}
 
-                  <div
-                    className="py-[7px] px-[9px] font-semibold text-[0.625rem] text-center pr-bg-clr text-white rounded-lg max-w-max"
-                    style={{ backgroundColor: "#FF0000" }}
-                  >
-                    <Link
-                    // to="/dashboard/add-developer"
-                    >
-                      Terminate
-                    </Link>
-                  </div>
-                </div>
+              {/* Position */}
+              <div className="text-[0.8rem] mt-3">{employee.roleTitle}</div>
+
+              {/* Country */}
+              <div className="text-[0.8rem] mt-2">{employee.country}</div>
+
+              {/* Pay */}
+              <div className="text-[0.8rem] mt-2">{employee.paymentRate}</div>
+
+              {/* GitHub Profile */}
+              {employee.githubAccount && (
+                <a
+                  href={employee.githubAccount}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 underline text-[0.8rem] mt-2"
+                >
+                  Profile
+                </a>
+              )}
+
+              {/* Action Button */}
+              <div className="mt-4">
+                <button
+                  className="py-[7px] px-[12px] font-semibold text-[0.7rem] text-center text-white rounded-lg"
+                  style={{ backgroundColor: "#FF0000" }}
+                >
+                  <Link>Terminate</Link>
+                </button>
               </div>
             </div>
           ))}
         </div>
-
-        <div className="mt-[21px] hidden xl:w-full lg:block whitespace-nowrap">
+        
+        <div className="mt-[21px] hidden xl:w-full lg:block">
           <div
-            className="grid grid-cols-9 gap-5 font-medium mb-[15px] px-10 text-sm"
+            className="grid grid-cols-9 gap-5 font-medium mb-[15px] px-10 text-sm whitespace-nowrap"
             style={{ color: "rgba(0, 0, 0, 0.60)" }}
           >
             <div>Name</div>
@@ -141,13 +152,13 @@ const TeamsTable = () => {
                     </div>
                     <div>{employee.fullName}</div>
                   </div>
-                  <div className="truncate">{employee.email}</div>
-                <div className="truncate">{employee.roleTitle}</div>
-                <div className="truncate">{employee.country}</div>
-                <div className="truncate">{employee.paymentRate}</div>
-                <div className="truncate">{employee.seniorityLevel}</div>
-                <div className="truncate">{employee.paymentFrequency}</div>
-                <div className="truncate text-blue-600 underline">
+                  <div className="break-words">{employee.email}</div>
+                <div >{employee.roleTitle}</div>
+                <div >{employee.country}</div>
+                <div >{employee.paymentRate}</div>
+                <div >{employee.seniorityLevel}</div>
+                <div >{employee.paymentFrequency}</div>
+                <div className="text-blue-600 underline">
                 {employee.githubAccount && (
                   <a href={employee.githubAccount} target="_blank" rel="noreferrer">
                     Profile
