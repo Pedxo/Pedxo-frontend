@@ -1,5 +1,5 @@
 import { useState } from "react";
-import googleLogo from "../assets/svg/google-logo.svg";
+import googleLogo from "../assets/svg/google.svg";
 // import GitHubLogo from "../assets/svg/githubLogo.svg";
 import { FaGithub } from "react-icons/fa";
 import { baseURL } from "../api";

@@ -7,6 +7,7 @@ module.exports = withMT({
     extend: {
       fontFamily: {
         sans: ['Poppins, san-serif'],
+        Inter: ['Inter, san-serif'],
       },
       screens: {
         sm: '640px',

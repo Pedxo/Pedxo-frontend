@@ -22,6 +22,18 @@ export const NavItems = () => (
     >
       Use Cases
     </Link>
+     <Link
+      to='#price'
+      onClick={() => {
+        const element = document.getElementById('price')
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' })
+        }
+      }}
+      className='text-sm font-medium text-darkGrey hover:text-gradientPrimary transition-colors'
+    >
+      Pricing
+    </Link>
   </>
 )
 

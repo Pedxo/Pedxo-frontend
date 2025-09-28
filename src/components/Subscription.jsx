@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { CheckCircleIcon } from '@heroicons/react/24/solid';
-import { useIsLoggedIn } from '../hooks/useIsLoggedIn' // Assuming this hook returns a boolean
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn"; // Assuming this hook returns a boolean
 import { Link } from "react-router-dom";
 
 const plans = [
@@ -47,7 +47,7 @@ const plans = [
     name: "Scale",
     tag: "Custom",
     priceMonthly: 0,
-    priceType: "/developer", // Adjusted to match the visual style
+    priceType: "/seat",
     description: "Companies managing global payroll at scale",
     features: [
       { id: 12, text: "Unlimited Contractors" },
@@ -55,7 +55,7 @@ const plans = [
       { id: 14, text: "Dedicated Account Manager" },
       { id: 15, text: "API Access" },
       { id: 16, text: "24/7 Support" },
-      { id: 17, text: "Talk to Founders" }, // Added as a feature for clarity
+      { id: 17, text: "Talk to Founders" },
     ],
     buttonText: "Talk to Founders",
     buttonColor: "bg-gray-800 text-white hover:bg-gray-900",
@@ -65,7 +65,7 @@ const plans = [
 ];
 
 const DISCOUNT_RATE = 0.17; // 17% discount
-const DASHBOARD_URL = "/dashboard/create-contract"; 
+const DASHBOARD_URL = "/dashboard/create-contract";
 
 const calculateYearlyPrice = (monthlyPrice) => {
   if (monthlyPrice === 0) return "Custom";
@@ -93,43 +93,45 @@ const PlanCard = ({ plan, isYearly, isLoggedIn }) => {
   const price = isYearly ? calculateYearlyPrice(priceMonthly) : priceMonthly;
   const priceDisplay = isCustom ? "Custom" : `$${price}`;
 
-  const priceTypeDisplay = isCustom
-    ? "/developer"
-    : priceType;
+  const priceTypeDisplay = isCustom ? "/developer" : priceType;
 
   // Determine the final button link based on login status for Starter/Growth
-  const finalButtonLink = (requiresLogin && isLoggedIn)
-    ? DASHBOARD_URL
-    : buttonLink;
+  const finalButtonLink =
+    requiresLogin && isLoggedIn ? DASHBOARD_URL : buttonLink;
 
   return (
     <div
       className={`relative flex flex-col p-6 rounded-xl border ${
         isPopular ? "bg-white shadow-lg" : "border-gray-200"
-      } bg-gray-100 transition-all duration-300`}
+      } bg-gray-100 font-Inter transition-all duration-300`}
     >
       {/* MOST POPULAR Tag */}
       {isPopular && (
-        <span className="absolute top-0 right-1/2 translate-x-1/2 -mt-3 px-3 py-1 text-xs font-semibold text-white bg-blue-600 rounded-full shadow-md">
+        <span className="absolute top-2 right-1/2 translate-x-1/2 -mt-3 px-3 py-1 text-xs font-semibold text-white bg-blue-600 rounded-full shadow-md">
           {tag}
         </span>
       )}
 
       <h3 className="text-2xl font-bold text-gray-900 mb-1">{name}</h3>
-      <p className="text-sm text-gray-500 mb-6 min-h-[40px]">
+      <p className="text-sm text-gray-500 mb-2 min-h-[40px]">
         {name === "Scale" ? "For growing teams" : description}
       </p>
 
       {/* Price Block */}
-      <div className="flex items-end mb-8 min-h-[72px]">
-        <span className="text-4xl font-extrabold text-gray-900 leading-none">
+      <div className="flex items-end mb-8 min-h-[52px]">
+        <span className="text-4xl font-bold text-gray-900">
           {priceDisplay}
         </span>
         <span className="text-lg font-medium text-gray-500 ml-1">
           {priceTypeDisplay}
         </span>
       </div>
-
+      {isPopular && isYearly && (
+        <span>
+          <p className="text-xs text-gray-500 mb-4">billed annually</p>
+          <p className="text-sm mb-8">Save 17% vs monthly</p>
+        </span>
+      )}
       {/* Button */}
       <Link
         to={finalButtonLink}
@@ -161,16 +163,24 @@ const Subscription = () => {
   const isLoggedIn = useIsLoggedIn(); // Use the hook here
 
   return (
-    <div className="min-h-screen py-8 px-0">
+    <div id='price' className="min-h-screen py-8 px-0 font-Inter">
       <div className="max-w-7xl mx-auto">
+        <div className="text-center flex flex-col items-center gap-4 justify-center">
+          <h2 className="text-4xl font-bold">Choose Your Plan</h2>
+          <p className="max-w-xl text-xl">
+            You can always scale as you grow. Pedxo is fully flexible and
+            designed to adapt to your enterprise team needs
+          </p>
+        </div>
+        <hr className="my-12" />
         {/* Monthly/Yearly Toggle */}
-        <div className="flex justify-center mb-12">
-          <div className="flex bg-gray-200 rounded-full shadow-inner">
+        <div className="flex justify-center mb-8">
+          <div className="flex bg-gray-200 p-0.5 gap-2 rounded-full shadow-inner">
             <button
               onClick={() => setIsYearly(false)}
               className={`px-6 py-2 text-sm font-medium rounded-full transition-colors duration-300 ${
                 !isYearly
-                  ? "overview-expense-bg text-gray-800"
+                  ? "bg-gray-100 shadow-lg font-semibold text-black"
                   : "text-gray-700 hover:bg-gray-100"
               }`}
             >
@@ -180,7 +190,7 @@ const Subscription = () => {
               onClick={() => setIsYearly(true)}
               className={`px-6 py-2 text-sm font-medium rounded-full transition-colors duration-300 relative ${
                 isYearly
-                  ? "overview-expense-bg text-gray-800 shadow-md"
+                  ? "bg-gray-100 shadow-lg font-semibold text-black"
                   : "text-gray-700 hover:bg-gray-100"
               }`}
             >
@@ -195,7 +205,9 @@ const Subscription = () => {
         <div className="text-center flex justify-center">
           <p className="max-w-sm text-xl">
             {isYearly ? (
-              <span className="font-bold bg-gray-300 p-2 text-gray-900 rounded-full">💰 Save 17% with yearly billing</span>
+              <span className="bg-gray-300 py-1 px-4 text-black text-sm rounded-full">
+                💰 Save 17% with yearly billing
+              </span>
             ) : (
               ""
             )}
@@ -203,13 +215,13 @@ const Subscription = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 gap-8 lg:gap-10 md:grid-cols-3 mt-12">
+        <div className="grid grid-cols-1 gap-8 lg:gap-10 md:grid-cols-3 mt-8">
           {plans.map((plan) => (
-            <PlanCard 
-              key={plan.name} 
-              plan={plan} 
-              isYearly={isYearly} 
-              isLoggedIn={isLoggedIn} 
+            <PlanCard
+              key={plan.name}
+              plan={plan}
+              isYearly={isYearly}
+              isLoggedIn={isLoggedIn}
             />
           ))}
         </div>
