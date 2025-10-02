@@ -39,7 +39,7 @@ const plans = [
       { id: 11, text: "Monthly Compliance Reports" },
     ],
     buttonText: "Subscribe",
-    buttonColor: "bg-blue-600 text-white hover:bg-blue-700",
+    buttonColor: "bg-[#387dcd] text-white hover:bg-blue-800",
     buttonLink: "/login", // Default link if not logged in
     requiresLogin: true, // Flag to indicate login check is needed
   },
