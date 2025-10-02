@@ -163,7 +163,7 @@ const Subscription = () => {
   const isLoggedIn = useIsLoggedIn(); // Use the hook here
 
   return (
-    <div id='price' className="min-h-screen py-8 px-0 font-Inter">
+    <div id='price' className="py-8 px-0 font-Inter">
       <div className="max-w-7xl mx-auto">
         <div className="text-center flex flex-col items-center gap-4 justify-center">
           <h2 className="text-4xl font-bold">Choose Your Plan</h2>
