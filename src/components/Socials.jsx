@@ -99,7 +99,7 @@ const Socials = ({ isRegisterPage = false }) => {
           </span>
         ) : (
           <>
-            <img src={googleLogo} alt="google logo" className="w-6 h-6" />
+            <img src={googleLogo} alt="google logo" className="w-5 h-5" />
             <span className="font-medium text-xs sm:text-sm">
               {!isRegisterPage && "Continue with"} Google
             </span>
