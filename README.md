@@ -2,7 +2,7 @@ Pedxo.com
 
  http://pedxo.com
 
-Self-driving recruiter
+Self-driving recruiter 👨‍💼
 
 About The Project:
 We're building a tool to help clients onboard human developers and pay them for pieces of work done.
