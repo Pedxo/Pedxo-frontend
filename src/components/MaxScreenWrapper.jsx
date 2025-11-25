@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '../utlity/helper'
+import { cn } from '../utility/helper'
 
 export const MaxScreenWrapper = ({ className, children, style }) => {
   return (
