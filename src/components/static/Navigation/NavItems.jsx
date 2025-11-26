@@ -79,8 +79,7 @@ const baseButton = `
 const primaryButton = `
   ${baseButton}
   text-white
-  bg-gradient-to-r from-gradientPrimary via-violet to-gradientPrimary
-  hover:opacity-90
+  bg-[#387dcd] shadow-md border-none hover:opacity-90
 `
 
 const secondaryButton = `
