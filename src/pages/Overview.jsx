@@ -97,7 +97,7 @@ const Overview = () => {
 
                 <Link
                   to="/dashboard/create-contract"
-                  className="flex items-center text-[0.8rem] text-white px-3 py-[10px] sm:px-5 sm:py-[14px] pr-bg-clr rounded-lg font-semibold xl:text-[16px]"
+                  className="flex items-center text-[0.8rem] text-white px-3 py-[10px] sm:px-5 sm:py-[14px] pr-bg-clr shadow-xl rounded-lg font-semibold xl:text-[16px]"
                 >
                   <img src={add} alt="" className="w-4 " />
                   <span>Create contract</span>
