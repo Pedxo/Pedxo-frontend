@@ -5,14 +5,12 @@ import { listContracts, listDevelopers, assignDeveloper } from "../../utility/ad
 import { Eye, X } from "lucide-react";
 import { getAssignedTalentIds, isContractCompleted } from "../../utility/contractUtils.js";
 
-
 /**
  * AssignmentPage (contracts-based)
  *
- * Notes:
- * - Uses contracts instead of hires.
- * - assignDeveloper(talentIds, contractId) is used (keeps existing API shape).
- * - Robust id handling and optimistic UI update retained.
+ * - Developers can be assigned multiple contracts (backend must allow).
+ * - UI shows busy state and assigned count; busy devs are deprioritized in the list but still selectable.
+ * - Responsive layout and improved mobile UX.
  */
 
 export default function AssignmentPage() {
@@ -69,21 +67,20 @@ export default function AssignmentPage() {
     }
   }
 
-// Partition contracts using shared helper for completed detection
-const pendingContracts = contracts.filter((c) => {
-  const ids = getAssignedTalentIds(c);
-  const completed = isContractCompleted(c);
-  return ids.length === 0 && !completed;
-});
+  // Partition contracts using shared helper for completed detection
+  const pendingContracts = contracts.filter((c) => {
+    const ids = getAssignedTalentIds(c);
+    const completed = isContractCompleted(c);
+    return ids.length === 0 && !completed;
+  });
 
-const assignedContracts = contracts.filter((c) => {
-  const ids = getAssignedTalentIds(c);
-  const completed = isContractCompleted(c);
-  return ids.length > 0 && !completed;
-});
+  const assignedContracts = contracts.filter((c) => {
+    const ids = getAssignedTalentIds(c);
+    const completed = isContractCompleted(c);
+    return ids.length > 0 && !completed;
+  });
 
-const completedContracts = contracts.filter((c) => isContractCompleted(c));
-
+  const completedContracts = contracts.filter((c) => isContractCompleted(c));
 
   // talent lookup (map by all id variants)
   const talentMap = useMemo(() => {
@@ -107,6 +104,19 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
     return s;
   }, [contracts]);
 
+  // Build assigned counts per developer id (helps show how many contracts a dev has)
+  const assignedCountById = useMemo(() => {
+    const m = new Map();
+    contracts.forEach((c) => {
+      getAssignedTalentIds(c).forEach((id) => {
+        if (!id) return;
+        const k = String(id);
+        m.set(k, (m.get(k) || 0) + 1);
+      });
+    });
+    return m; // Map<string, number>
+  }, [contracts]);
+
   // Get representative id variants for a developer object
   const getDeveloperIdVariants = (d) => {
     if (!d) return [];
@@ -127,8 +137,18 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
     return ids.some((id) => allAssignedIdsSet.has(id));
   };
 
+  // Count assigned contracts for a developer (by any id variant)
+  const getAssignedCountForDeveloper = (d) => {
+    const ids = getDeveloperIdVariants(d);
+    let sum = 0;
+    ids.forEach((id) => {
+      sum += assignedCountById.get(String(id)) || 0;
+    });
+    return sum;
+  };
+
   // Available developers (not assigned according to the contracts' assigned ids)
-  const availableDevelopers = developers.filter((d) => !isTalentAssigned(d));
+  const availableDevelopers = developers.filter((d) => getAssignedCountForDeveloper(d) === 0);
 
   const getAssignedDevelopersForContract = (contract) => {
     const ids = getAssignedTalentIds(contract);
@@ -171,14 +191,28 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
     return score;
   };
 
-  // sorted available devs when assigning
-  const sortedAvailableForAssign = useMemo(() => {
-    const base = availableDevelopers.slice();
-    if (!assigningContract) return base;
-    return base
-      .map((d) => ({ ...d, __score: scoreDeveloperForContract(d, assigningContract) }))
-      .sort((a, b) => (b.__score || 0) - (a.__score || 0));
-  }, [availableDevelopers, assigningContract]);
+  // sorted developers when assigning -- show free first, then busy, each ranked by match score
+  const sortedDevelopersForAssign = useMemo(() => {
+    if (!assigningContract) return developers.slice();
+    return developers
+      .map((d) => {
+        const assignedCount = getAssignedCountForDeveloper(d);
+        return {
+          dev: d,
+          assignedCount,
+          __score: scoreDeveloperForContract(d, assigningContract),
+        };
+      })
+      .sort((a, b) => {
+        // free first (assignedCount === 0), then by score desc, then by name
+        if ((a.assignedCount === 0) !== (b.assignedCount === 0)) return a.assignedCount === 0 ? -1 : 1;
+        if (b.__score !== a.__score) return b.__score - a.__score;
+        const na = getDevDisplayName(a.dev).toLowerCase();
+        const nb = getDevDisplayName(b.dev).toLowerCase();
+        return na < nb ? -1 : na > nb ? 1 : 0;
+      })
+      .map((x) => x.dev);
+  }, [developers, assigningContract, contracts, assignedCountById]);
 
   // assignment flow
   const openAssignModal = (contract) => {
@@ -208,7 +242,7 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
       const res = await assignDeveloper(talentIds, contractId);
 
       // consider several "success" shapes
-      const success = res?.ok || res?.status === "success" || (res?.data && !res.data.error);
+      const success = res?.ok || res?.status === "success" || (res?.data && !res.data.error) || res?.status === 200;
 
       if (!success) {
         setNotice({ type: "error", text: res?.error || res?.message || "Assignment failed" });
@@ -264,20 +298,22 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
       )}
 
       {/* Tabs */}
-      <div className="flex items-center gap-3 mb-6">
-        {[
-          { key: "pending", label: "Pending", count: pendingContracts.length },
-          { key: "assigned", label: "Assigned", count: assignedContracts.length },
-          { key: "completed", label: "Completed", count: completedContracts.length },
-        ].map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setActiveTab(t.key)}
-            className={`px-4 py-2 rounded ${activeTab === t.key ? "bg-black text-white" : "bg-white border border-gray-200 text-gray-700"}`}
-          >
-            {t.label} ({t.count})
-          </button>
-        ))}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+        <div className="flex gap-2 flex-wrap">
+          {[
+            { key: "pending", label: "Pending", count: pendingContracts.length },
+            { key: "assigned", label: "Assigned", count: assignedContracts.length },
+            { key: "completed", label: "Completed", count: completedContracts.length },
+          ].map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setActiveTab(t.key)}
+              className={`px-4 py-2 rounded ${activeTab === t.key ? "bg-black text-white" : "bg-white border border-gray-200 text-gray-700"}`}
+            >
+              {t.label} ({t.count})
+            </button>
+          ))}
+        </div>
 
         <div className="ml-auto text-sm text-gray-600">Total Contracts: {contracts.length} · Developers: {developers.length}</div>
       </div>
@@ -293,13 +329,13 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
             visibleContracts.map((contract) => {
               const assignedList = getAssignedDevelopersForContract(contract);
               return (
-                <div key={contract._id || contract.id} className="bg-white p-4 rounded-lg border border-gray-200">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="text-lg font-semibold text-black">
+                <div key={contract._id || contract.id} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-lg font-semibold text-black truncate">
                         {contract.YourTitle || contract.roleTitle || contract.contractName || "Contract / Project"}
                       </div>
-                      <div className="text-sm text-gray-500 mt-1">
+                      <div className="text-sm text-gray-500 mt-1 truncate">
                         Client: {contract.name || contract.clientName || "Unknown"} · {contract.whereYouLive || contract.state || contract.country || ""}
                       </div>
                       <div className="mt-2 text-xs text-gray-500">
@@ -307,7 +343,7 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-end gap-2">
+                    <div className="flex-shrink-0 flex flex-col items-end gap-2">
                       <div className="text-sm text-gray-500">{formatDate(contract.createdAt)}</div>
                       <div className="flex gap-2">
                         <button title="View details" onClick={() => setSelectedContract(contract)} className="px-2 py-1 rounded border border-gray-200 hover:bg-gray-50">
@@ -353,16 +389,17 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
               {developers.length === 0 && <div className="text-sm text-gray-500">No developers found.</div>}
 
               {developers.map((d) => {
-                const assigned = isTalentAssigned(d);
+                const assignedCount = getAssignedCountForDeveloper(d);
+                const assigned = assignedCount > 0;
                 return (
                   <div key={(d._id || d.talentId || d.id) || Math.random()} className="p-3 border border-gray-100 rounded flex items-center justify-between">
-                    <div>
-                      <div className="text-sm font-medium text-black">{getDevDisplayName(d)}</div>
-                      <div className="text-xs text-gray-500">{d.roleTitle || d.experienceLevel || ""}</div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium text-black truncate">{getDevDisplayName(d)}</div>
+                      <div className="text-xs text-gray-500 truncate">{d.roleTitle || d.experienceLevel || ""}</div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right ml-4">
                       <div className={`text-xs px-2 py-1 rounded ${assigned ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
-                        {assigned ? "Busy" : "Free"}
+                        {assigned ? `Busy · ${assignedCount}` : "Free"}
                       </div>
                     </div>
                   </div>
@@ -468,7 +505,7 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
       {assigningContract && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => closeAssignModal()}>
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto relative p-6" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between flex-col sm:flex-row gap-3 sm:gap-0">
               <div>
                 <h3 className="text-lg font-bold">{assigningContract.YourTitle || assigningContract.roleTitle || "Assign Developer"}</h3>
                 <div className="text-xs text-gray-500">Client: {assigningContract.name || assigningContract.clientName || "Unknown"}</div>
@@ -482,19 +519,21 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
               <input
                 value={searchDev}
                 onChange={(e) => setSearchDev(e.target.value)}
-                placeholder="Search available developers..."
+                placeholder="Search developers (name, role, level)..."
                 className="w-full border px-3 py-2 rounded focus:outline-none"
               />
             </div>
 
             <div className="space-y-2 max-h-[50vh] overflow-y-auto">
-              {sortedAvailableForAssign.filter(d => {
+              {sortedDevelopersForAssign.filter(d => {
                 const q = searchDev.trim().toLowerCase();
                 if (!q) return true;
                 return (getDevDisplayName(d) + " " + (d.roleTitle || "") + " " + (d.experienceLevel || "")).toLowerCase().includes(q);
               }).map((d) => {
                 // pick a stable id to send to the backend (prefer talentId, fallback to _id or id)
                 const talentId = d.talentId || d._id || d.id;
+                const assignedCount = getAssignedCountForDeveloper(d);
+                const isBusy = assignedCount > 0;
                 return (
                   <label key={talentId} className="flex items-center gap-3 p-2 border rounded hover:bg-gray-50 cursor-pointer">
                     <input
@@ -504,27 +543,68 @@ const completedContracts = contracts.filter((c) => isContractCompleted(c));
                       checked={selectedTalentId === talentId}
                       onChange={() => setSelectedTalentId(talentId)}
                     />
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{getDevDisplayName(d)}</div>
-                      <div className="text-xs text-gray-500">{d.roleTitle || d.experienceLevel || ""}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium truncate">{getDevDisplayName(d)}</div>
+                      <div className="text-xs text-gray-500 truncate">{d.roleTitle || d.experienceLevel || ""}</div>
                     </div>
-                    <div className="text-xs text-gray-500">{d.country || d.state || ""}</div>
+                    <div className="text-right">
+                      <div className={`text-xs px-2 py-1 rounded ${isBusy ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
+                        {isBusy ? `Busy · ${assignedCount}` : "Free"}
+                      </div>
+                    </div>
                   </label>
                 );
               })}
 
-              {sortedAvailableForAssign.length === 0 && <div className="text-sm text-gray-500">No available developers to assign.</div>}
+              {sortedDevelopersForAssign.length === 0 && <div className="text-sm text-gray-500">No developers found.</div>}
             </div>
 
-            <div className="mt-4 flex justify-end gap-2">
-              <button onClick={() => closeAssignModal()} className="px-4 py-2 rounded border">Cancel</button>
-              <button onClick={() => performAssignment()} className="px-4 py-2 rounded bg-black text-white" disabled={assigning}>
-                {assigning ? "Assigning..." : "Assign Developer"}
-              </button>
+            {/* Busy warning + actions */}
+            <div className="mt-4">
+              {selectedTalentId && (() => {
+                // find selected dev
+                const dev = developers.find(d => {
+                  const ids = getDeveloperIdVariants(d);
+                  return ids.includes(String(selectedTalentId));
+                });
+                const assignedCount = dev ? getAssignedCountForDeveloper(dev) : 0;
+                if (assignedCount > 0) {
+                  return (
+                    <div className="mb-3 p-3 rounded bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm">
+                      This developer already has <strong>{assignedCount}</strong> assigned contract{assignedCount > 1 ? "s" : ""}. You may still assign additional contracts, but please confirm.
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+              <div className="flex justify-end gap-2">
+                <button onClick={() => closeAssignModal()} className="px-4 py-2 rounded border">Cancel</button>
+                <button
+                  onClick={() => performAssignment()}
+                  className="px-4 py-2 rounded bg-black text-white disabled:opacity-60"
+                  disabled={assigning}
+                >
+                  {assigning ? "Assigning..." : (selectedTalentId && (() => {
+                    const dev = developers.find(d => getDeveloperIdVariants(d).includes(String(selectedTalentId)));
+                    const assignedCount = dev ? getAssignedCountForDeveloper(dev) : 0;
+                    return assignedCount > 0 ? `Assign (developer busy)` : "Assign Developer";
+                  })()) || "Assign Developer"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
     </AdminLayout>
   );
+}
+
+// small helper used inside JSX (kept at bottom for readability)
+function getDeveloperIdVariants(d) {
+  if (!d) return [];
+  const ids = [];
+  if (d._id) ids.push(String(d._id));
+  if (d.talentId) ids.push(String(d.talentId));
+  if (d.id) ids.push(String(d.id));
+  return [...new Set(ids)];
 }
