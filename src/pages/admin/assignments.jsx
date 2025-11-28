@@ -8,9 +8,9 @@ import { getAssignedTalentIds, isContractCompleted } from "../../utility/contrac
 /**
  * AssignmentPage (contracts-based)
  *
- * - Developers can be assigned multiple contracts (backend must allow).
- * - UI shows busy state and assigned count; busy devs are deprioritized in the list but still selectable.
- * - Responsive layout and improved mobile UX.
+ * - Adds developer location display in Assign modal and Talent Pool
+ * - Search now includes location text
+ * - Keeps all existing assignment logic, optimistic updates and safety checks
  */
 
 export default function AssignmentPage() {
@@ -171,6 +171,28 @@ export default function AssignmentPage() {
 
   const getDevDisplayName = (d) =>
     [d?.firstName, d?.lastName].filter(Boolean).join(" ") || d?.name || d?.email || "Unknown";
+
+  // NEW: Location helper - pick best available location info from a developer object
+  const getDevLocation = (d) => {
+    if (!d) return "Location unknown";
+    // common fields: country, city, state, whereYouLive, location, address, geo
+    const possible =
+      d.location ||
+      d.whereYouLive ||
+      d.city ||
+      d.state ||
+      d.country ||
+      d.address ||
+      (d.geo && (d.geo.city || d.geo.country || d.geo.region)) ||
+      "";
+    if (typeof possible === "string" && possible.trim()) return possible;
+    // attempt structured: country + city
+    const country = d.country || (d.address && d.address.country) || (d.geo && d.geo.country);
+    const city = d.city || (d.address && d.address.city) || (d.geo && d.geo.city);
+    const parts = [city, country].filter(Boolean);
+    if (parts.length) return parts.join(", ");
+    return "Location unknown";
+  };
 
   // Simple fit-scoring to highlight best matches (role/title & experience)
   const scoreDeveloperForContract = (dev = {}, contract = {}) => {
@@ -365,7 +387,7 @@ export default function AssignmentPage() {
                       <div className="mt-1 flex flex-wrap gap-2">
                         {assignedList.map((t) => (
                           <span key={t._id || t.id || t.name} className="px-2 py-1 bg-gray-100 rounded text-xs">
-                            {getDevDisplayName(t)}
+                            {getDevDisplayName(t)} {t ? `· ${getDevLocation(t)}` : ""}
                           </span>
                         ))}
                       </div>
@@ -459,7 +481,7 @@ export default function AssignmentPage() {
 
                 <div>
                   <div className="text-xs text-gray-500">Payment</div>
-                  <div className="font-medium">{selectedContract.paymentPattern || formatCurrency(selectedContract.minimumToPayToTalent || selectedContract.paymentRate) }</div>
+                  <div className="font-medium">{selectedContract.paymentPattern || formatCurrency(selectedContract.minimumToPayToTalent || selectedContract.paymentRate)}</div>
                 </div>
 
                 <div>
@@ -482,7 +504,7 @@ export default function AssignmentPage() {
                     ) : (
                       getAssignedDevelopersForContract(selectedContract).map((t) => (
                         <span key={t._id || t.id} className="px-2 py-1 bg-gray-100 rounded text-xs">
-                          {getDevDisplayName(t)}
+                          {getDevDisplayName(t)} {t ? `· ${getDevLocation(t)}` : ""}
                         </span>
                       ))
                     )}
@@ -519,42 +541,47 @@ export default function AssignmentPage() {
               <input
                 value={searchDev}
                 onChange={(e) => setSearchDev(e.target.value)}
-                placeholder="Search developers (name, role, level)..."
+                placeholder="Search developers (name, role, level, location)..."
                 className="w-full border px-3 py-2 rounded focus:outline-none"
               />
             </div>
 
             <div className="space-y-2 max-h-[50vh] overflow-y-auto">
-              {sortedDevelopersForAssign.filter(d => {
-                const q = searchDev.trim().toLowerCase();
-                if (!q) return true;
-                return (getDevDisplayName(d) + " " + (d.roleTitle || "") + " " + (d.experienceLevel || "")).toLowerCase().includes(q);
-              }).map((d) => {
-                // pick a stable id to send to the backend (prefer talentId, fallback to _id or id)
-                const talentId = d.talentId || d._id || d.id;
-                const assignedCount = getAssignedCountForDeveloper(d);
-                const isBusy = assignedCount > 0;
-                return (
-                  <label key={talentId} className="flex items-center gap-3 p-2 border rounded hover:bg-gray-50 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="selectedTalent"
-                      value={talentId}
-                      checked={selectedTalentId === talentId}
-                      onChange={() => setSelectedTalentId(talentId)}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium truncate">{getDevDisplayName(d)}</div>
-                      <div className="text-xs text-gray-500 truncate">{d.roleTitle || d.experienceLevel || ""}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className={`text-xs px-2 py-1 rounded ${isBusy ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
-                        {isBusy ? `Busy · ${assignedCount}` : "Free"}
+              {sortedDevelopersForAssign
+                .filter((d) => {
+                  const q = searchDev.trim().toLowerCase();
+                  if (!q) return true;
+                  const hay = `${getDevDisplayName(d)} ${d.roleTitle || ""} ${d.experienceLevel || ""} ${getDevLocation(d)}`.toLowerCase();
+                  return hay.includes(q);
+                })
+                .map((d) => {
+                  // pick a stable id to send to the backend (prefer talentId, fallback to _id or id)
+                  const talentId = d.talentId || d._id || d.id;
+                  const assignedCount = getAssignedCountForDeveloper(d);
+                  const isBusy = assignedCount > 0;
+                  return (
+                    <label key={talentId} className="flex items-center gap-3 p-2 border rounded hover:bg-gray-50 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="selectedTalent"
+                        value={talentId}
+                        checked={selectedTalentId === talentId}
+                        onChange={() => setSelectedTalentId(talentId)}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium truncate">{getDevDisplayName(d)}</div>
+                        <div className="text-xs text-gray-500 truncate">
+                          {(d.roleTitle || d.experienceLevel || "")}{` · ${getDevLocation(d)}`}
+                        </div>
                       </div>
-                    </div>
-                  </label>
-                );
-              })}
+                      <div className="text-right">
+                        <div className={`text-xs px-2 py-1 rounded ${isBusy ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
+                          {isBusy ? `Busy · ${assignedCount}` : "Free"}
+                        </div>
+                      </div>
+                    </label>
+                  );
+                })}
 
               {sortedDevelopersForAssign.length === 0 && <div className="text-sm text-gray-500">No developers found.</div>}
             </div>
@@ -563,7 +590,7 @@ export default function AssignmentPage() {
             <div className="mt-4">
               {selectedTalentId && (() => {
                 // find selected dev
-                const dev = developers.find(d => {
+                const dev = developers.find((d) => {
                   const ids = getDeveloperIdVariants(d);
                   return ids.includes(String(selectedTalentId));
                 });
@@ -572,6 +599,7 @@ export default function AssignmentPage() {
                   return (
                     <div className="mb-3 p-3 rounded bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm">
                       This developer already has <strong>{assignedCount}</strong> assigned contract{assignedCount > 1 ? "s" : ""}. You may still assign additional contracts, but please confirm.
+                      <div className="mt-2 text-xs text-gray-600">Location: {dev ? getDevLocation(dev) : "Unknown"}</div>
                     </div>
                   );
                 }
@@ -585,7 +613,7 @@ export default function AssignmentPage() {
                   disabled={assigning}
                 >
                   {assigning ? "Assigning..." : (selectedTalentId && (() => {
-                    const dev = developers.find(d => getDeveloperIdVariants(d).includes(String(selectedTalentId)));
+                    const dev = developers.find((d) => getDeveloperIdVariants(d).includes(String(selectedTalentId)));
                     const assignedCount = dev ? getAssignedCountForDeveloper(dev) : 0;
                     return assignedCount > 0 ? `Assign (developer busy)` : "Assign Developer";
                   })()) || "Assign Developer"}
@@ -599,7 +627,7 @@ export default function AssignmentPage() {
   );
 }
 
-// small helper used inside JSX (kept at bottom for readability)
+// helper used inside JSX (kept at bottom for readability)
 function getDeveloperIdVariants(d) {
   if (!d) return [];
   const ids = [];
