@@ -627,12 +627,12 @@ export default function AssignmentPage() {
   );
 }
 
-// helper used inside JSX (kept at bottom for readability)
-function getDeveloperIdVariants(d) {
-  if (!d) return [];
-  const ids = [];
-  if (d._id) ids.push(String(d._id));
-  if (d.talentId) ids.push(String(d.talentId));
-  if (d.id) ids.push(String(d.id));
-  return [...new Set(ids)];
-}
+// // helper used inside JSX (kept at bottom for readability)
+// function getDeveloperIdVariants(d) {
+//   if (!d) return [];
+//   const ids = [];
+//   if (d._id) ids.push(String(d._id));
+//   if (d.talentId) ids.push(String(d.talentId));
+//   if (d.id) ids.push(String(d.id));
+//   return [...new Set(ids)];
+// }
