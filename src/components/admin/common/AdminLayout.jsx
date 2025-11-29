@@ -240,11 +240,6 @@ export default function AdminLayout({ title = "Admin", children }) {
                 <Key className="h-5 w-5 text-gray-700" />
               </button>
 
-              {/* Settings */}
-              <a href="/admin/settings" className="p-2 rounded-md hover:bg-gray-100" title="Settings">
-                <Settings className="h-5 w-5 text-gray-700" />
-              </a>
-
               {/* Admin Avatar */}
               <div className="h-8 w-8 bg-black rounded-full flex items-center justify-center ml-1">
                 <span className="text-white text-sm font-medium">A</span>
