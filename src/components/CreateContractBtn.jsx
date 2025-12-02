@@ -14,13 +14,13 @@ const CreateContractBtn = () => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <g id="Layer_1" clip-path="url(#clip0_2021_835)">
+          <g id="Layer_1" clipPath="url(#clip0_2021_835)">
             <g id="Group">
               <g id="Group_2">
                 <path
                   id="Vector"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M13.5 0H2.25C1.00744 0 0 1.00744 0 2.25V15.75C0 16.9926 1.00744 18 2.25 18H8.4375V16.875H2.25C1.63041 16.875 1.125 16.3707 1.125 15.75V2.25C1.125 1.62928 1.63041 1.125 2.25 1.125H13.5C14.1207 1.125 14.625 1.62928 14.625 2.25V8.86373L15.75 7.73873V2.25C15.75 1.00744 14.7426 0 13.5 0Z"
                   fill="black"
                 />

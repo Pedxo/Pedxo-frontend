@@ -7,6 +7,7 @@ import FormFour from './stepperForms/FormFour';
 import FormFive from './stepperForms/FormFive';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGlobalContext } from '../Context';
+import { useUser } from '../context/UserContext';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -16,10 +17,20 @@ const ContractForm = ({ subHead, endDate }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const contractType = searchParams.get('contractType');
-  const { setFormStepperData, currentUser } = useGlobalContext();
+  const { setFormStepperData } = useGlobalContext();
+  const { user } = useUser();
 
   // Generate or retrieve username
-  const username = sessionStorage.getItem('username') || generateTempUsername();
+  const authUserId = user?.id || user?._id;
+  const existingUsername = sessionStorage.getItem('username');
+  const username = existingUsername || (authUserId ? `contract_${authUserId}` : generateTempUsername());
+
+  useEffect(() => {
+    if (!existingUsername) {
+      sessionStorage.setItem('username', username);
+    }
+  }, [existingUsername, username]);
+
   function generateTempUsername() {
     const temp = `user_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     sessionStorage.setItem('username', temp);
@@ -27,7 +38,15 @@ const ContractForm = ({ subHead, endDate }) => {
   }
 
   // Get userId from auth context or fallback
-  const userId = currentUser?.id || sessionStorage.getItem('userId') || generateTempUserId();
+  const storedUserId = sessionStorage.getItem('userId');
+  const userId = authUserId || storedUserId || generateTempUserId();
+
+  useEffect(() => {
+    if (authUserId && authUserId !== storedUserId) {
+      sessionStorage.setItem('userId', authUserId);
+    }
+  }, [authUserId, storedUserId]);
+
   function generateTempUserId() {
     const id = `uid_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     sessionStorage.setItem('userId', id);

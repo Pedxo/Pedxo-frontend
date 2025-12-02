@@ -12,12 +12,14 @@ export async function loginUser(details) {
   const accessTokenExpiration = Date.now() + 1200000; // 20 minutes
   const refreshTokenExpiration = Date.now() + 604800000; // 7 days
   
+  const result = response?.data?.result || {};
   const userData = {
+    id: result._id || result.id,
     accessToken: response?.data?.accessToken,
-    refreshToken: response?.data?.result?.refreshToken,
-    token: response?.data?.result?.randomToken,
-    userName: response.data.result.firstName,
-    email: response.data.result.email,
+    refreshToken: result?.refreshToken,
+    token: result?.randomToken,
+    userName: [result.firstName, result.lastName].filter(Boolean).join(" ") || result.firstName,
+    email: result.email,
     accessTokenExpiration,
     refreshTokenExpiration
   };

@@ -56,7 +56,9 @@ const FormTwo = ({ nextStep, savedState, username, userId }) => {
         ...values,
       };
 
+      // Save to localStorage immediately
       localStorage.setItem(`${username}_personalInfo`, JSON.stringify(mergedData));
+      console.log("[FORM2] Saved to localStorage:", mergedData);
 
       if (!hasChanges) {
         nextStep();
@@ -70,7 +72,16 @@ const FormTwo = ({ nextStep, savedState, username, userId }) => {
       };
 
       updateForm(payload, {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          // Merge any data returned from backend
+          if (data?.data) {
+            const backendUpdated = {
+              ...mergedData,
+              ...data.data,
+            };
+            localStorage.setItem(`${username}_personalInfo`, JSON.stringify(backendUpdated));
+            console.log("[FORM2] Updated from backend response:", backendUpdated);
+          }
           nextStep();
         },
         onSettled: () => {

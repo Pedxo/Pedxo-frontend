@@ -73,11 +73,9 @@ const router = createBrowserRouter([
     path: '/dashboard',
     element: (
       <ProtectedRoutes>
-        <UserProvider>
-          <SideBarProvider>
-            <AppLayout />
-          </SideBarProvider>
-        </UserProvider>
+        <SideBarProvider>
+          <AppLayout />
+        </SideBarProvider>
       </ProtectedRoutes>
     ),
     children: [
@@ -128,7 +126,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router}></RouterProvider>
+      <UserProvider>
+        <RouterProvider router={router}></RouterProvider>
+      </UserProvider>
     </QueryClientProvider>
   )
 }

@@ -70,7 +70,7 @@ const DemoContainer = () => {
           </div>
         ) : (
           <ReactPlayer
-            src={youtubeUrl}              /* ✅ correct prop */
+            src={youtubeUrl}              /* correct prop */
             width='100%'
             height='100%'
             controls

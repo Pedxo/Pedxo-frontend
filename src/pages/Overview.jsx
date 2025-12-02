@@ -12,18 +12,20 @@ import { useUser } from "../context/UserContext";
 import { formatCurrency } from "../utlity/helper";
 
 const Overview = () => {
-  const { username } = useUser();
+  const { user, username } = useUser();
   const [isAnimating, setIsAnimating] = useState(false);
   const [currencyCode, setCurrencyCode] = useState("USD");
   const [locale, setLocale] = useState("en-US");
+  const userId = user?.id || user?._id || sessionStorage.getItem("userId");
 
-  // ✅ Fetch contracts filtered by username
+  // Fetch contracts filtered by userId (backend expects userId)
   const { data: contracts, isLoading } = useQuery({
-    queryKey: ["user-contracts", username],
-    queryFn: () => getUserContracts(username),
+    queryKey: ["user-contracts", userId],
+    queryFn: () => getUserContracts(userId),
+    enabled: Boolean(userId),
   });
 
-  // ✅ Load user-specific currency
+  // Load user-specific currency
   useEffect(() => {
     const storedCode = localStorage.getItem(`${username}_userCurrencyCode`);
     if (storedCode === "NGN") {
@@ -153,7 +155,7 @@ const Overview = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from {
             opacity: 0;

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 // import GitHubLogo from "../assets/svg/githubLogo.svg";
 import FormInput from "../components/FormInput";
 import useLogin from "../features/auth/useLogin";
+import { useUser } from "../context/UserContext";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import MiniLoader from "../components/MiniLoader";
@@ -10,7 +11,8 @@ import Socials from "../components/Socials"
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, isLoggingIn } = useLogin();
+  const { login: loginMutation, isLoggingIn } = useLogin();
+  const { login: setUserContext } = useUser();
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string().required("Password is required"),
@@ -23,8 +25,16 @@ const Login = () => {
     },
     validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      login(values, {
+      loginMutation(values, {
         onSuccess: () => {
+          const storedUser = localStorage.getItem("user");
+          if (storedUser) {
+            try {
+              setUserContext(JSON.parse(storedUser));
+            } catch (error) {
+              console.error("Failed to parse stored user", error);
+            }
+          }
           navigate("/dashboard");
         },
 

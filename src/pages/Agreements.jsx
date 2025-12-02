@@ -1,18 +1,19 @@
 import { nanoid } from "nanoid";
-// import SearchingDoc from "../components/SearchingDoc";
+import { useQuery } from "@tanstack/react-query";
+import { NavLink } from "react-router-dom";
 import AddDeveloperBtn from "../components/AddDeveloperBtn";
 import CreateContractBtn from "../components/CreateContractBtn";
-import AgreementTable from "../components/agreements/AgreementTable";
-import { NavLink } from "react-router-dom";
 import { SearchingDoc } from "../components";
 import SearchInput from "../components/SearchInput";
 import AgreementsCard from "../components/agreements/AgreementsCard";
 import expenseavatar from "../assets/svg/expenseavatar.svg";
-
-// import { NavLink } from "react-router-dom";
-// import add from "../assets/svg/add.svg";
+import { useUser } from "../context/UserContext";
+import { getUserContracts } from "../api";
 
 const Agreements = () => {
+  const { user } = useUser();
+  const userId = user?.id || user?._id || sessionStorage.getItem("userId");
+
   const onBoarding = [
     {
       id: nanoid(),
@@ -26,32 +27,34 @@ const Agreements = () => {
     },
   ];
 
-  const agreementsCards = [
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract1",
-      link: "View contract",
-    },
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract2",
-      link: "View contract",
-    },
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract3",
-      link: "View contract",
-    },
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract4",
-      link: "View contract",
-    },
-  ];
+  const {
+    data: contracts,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["user-contracts", userId],
+    queryFn: () => getUserContracts(userId),
+    enabled: Boolean(userId),
+  });
+
+  // Normalize API response shape:
+  // - If backend returns an array directly: use it
+  // - If backend wraps it (e.g. { data: [...] } or { contracts: [...] }): unwrap
+  console.log("[AGREEMENTS] Raw contracts response:", contracts);
+  const contractsArray = Array.isArray(contracts)
+    ? contracts
+    : Array.isArray(contracts?.data)
+    ? contracts.data
+    : Array.isArray(contracts?.contracts)
+    ? contracts.contracts
+    : [];
+
+  const agreementsCards = contractsArray.map((c) => ({
+        avatar: expenseavatar,
+        name: c.clientName || "Unnamed client",
+        id: c._id || c.id,
+        link: "View contract",
+      }));
 
   return (
     <div className="mt-[62px] mx-5 flex flex-col xl:ml-[86px] xl:mr-[65px] ">
@@ -76,33 +79,46 @@ const Agreements = () => {
             style={{ backgroundColor: "#008000" }}
           ></div>
         </div>
-          <SearchInput />
+        <SearchInput />
       </div>
 
-      {agreementsCards.length > 0 ? (
+      {isLoading && (
+        <p className="mt-6 text-sm text-gray-500">Loading agreements...</p>
+      )}
+
+      {isError && !isLoading && (
+        <p className="mt-6 text-sm text-red-500">
+          Failed to load agreements. Please refresh.
+        </p>
+      )}
+
+      {!isLoading && !isError && agreementsCards.length > 0 ? (
         <div className="mt-[23px] grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-[30px] lg:mt-[33px]">
-          {agreementsCards.map((el, i) => (
-            <AgreementsCard key={i} card={el} />
+          {agreementsCards.map((el) => (
+            <AgreementsCard key={el.id} card={el} />
           ))}
         </div>
       ) : (
-        <SearchingDoc
-          noticeText="Add devs and pay them to see their 
+        !isLoading &&
+        !isError && (
+          <SearchingDoc
+            noticeText="Add devs and pay them to see their 
 records here."
-          searchingdocTitle="No Agreement yet"
-          searchingdocText="They would be generated when you have
+            searchingdocTitle="No Agreement yet"
+            searchingdocText="They would be generated when you have
 created a contract"
-          onBoarding={onBoarding}
-        >
-          <div className="mt-[33px]">
-            <NavLink
-              to="/dashboard/create-contract"
-              className="flex items-center text-[0.8rem] text-white px-3 py-[10px] sm:px-5 sm:py-[14px] pr-bg-clr rounded-lg font-semibold xl:text-[16px]"
-            >
-              <img src={""} alt="" className="w-4 mr-1" /> Create new contract
-            </NavLink>
-          </div>
-        </SearchingDoc>
+            onBoarding={onBoarding}
+          >
+            <div className="mt-[33px]">
+              <NavLink
+                to="/dashboard/create-contract"
+                className="flex items-center text-[0.8rem] text-white px-3 py-[10px] sm:px-5 sm:py-[14px] pr-bg-clr rounded-lg font-semibold xl:text-[16px]"
+              >
+                <img src={""} alt="" className="w-4 mr-1" /> Create new contract
+              </NavLink>
+            </div>
+          </SearchingDoc>
+        )
       )}
     </div>
   );

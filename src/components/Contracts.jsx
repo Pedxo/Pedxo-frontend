@@ -1,9 +1,42 @@
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import rightarrowicon from "../assets/svg/rightarrow.svg";
 import fulltimeicon from "../assets/svg/fulltime.svg";
 import gigbased from "../assets/svg/gigbased.svg";
-import { Link } from "react-router-dom";
+import { useUser } from "../context/UserContext";
+
+const clearDraftData = (key) => {
+  if (!key) return;
+  const localKeys = [
+    `${key}_personalInfo`,
+    `${key}_countryLocked`,
+    `${key}_stateLocked`,
+  ];
+  const sessionKeys = [`${key}_currentStep`];
+  localKeys.forEach((localKey) => localStorage.removeItem(localKey));
+  sessionKeys.forEach((sessionKey) => sessionStorage.removeItem(sessionKey));
+};
 
 const Contracts = () => {
+  const { user } = useUser();
+
+  useEffect(() => {
+    const existingKey = sessionStorage.getItem("username");
+    if (existingKey) {
+      clearDraftData(existingKey);
+    }
+
+    if (user?.id || user?._id) {
+      const authUserId = user.id || user._id;
+      const newKey = `contract_${authUserId}`;
+      sessionStorage.setItem("username", newKey);
+      sessionStorage.setItem("userId", authUserId);
+    } else {
+      sessionStorage.removeItem("username");
+      sessionStorage.removeItem("userId");
+    }
+  }, [user?.id, user?._id]);
+
   return (
     <section className=" flex items-center justify-center flex-col h-screen">
         <div className="text-center">

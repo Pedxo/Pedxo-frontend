@@ -55,13 +55,25 @@ const FormThree = ({ nextStep, savedState, username, userId }) => {
         userId, //  Include userId for backend filtering
       };
 
+      // Save to localStorage immediately, even before API call completes
+      const updated = {
+        ...(JSON.parse(localStorage.getItem(`${username}_personalInfo`)) || {}),
+        ...values,
+      };
+      localStorage.setItem(`${username}_personalInfo`, JSON.stringify(updated));
+      console.log("[FORM3] Saved to localStorage:", updated);
+
       updatePayment(payload, {
-        onSuccess: () => {
-          const updated = {
-            ...JSON.parse(localStorage.getItem(`${username}_personalInfo`)),
-            ...values,
-          };
-          localStorage.setItem(`${username}_personalInfo`, JSON.stringify(updated));
+        onSuccess: (data) => {
+          // Merge any data returned from backend
+          if (data?.data) {
+            const backendUpdated = {
+              ...updated,
+              ...data.data,
+            };
+            localStorage.setItem(`${username}_personalInfo`, JSON.stringify(backendUpdated));
+            console.log("[FORM3] Updated from backend response:", backendUpdated);
+          }
           nextStep();
         },
         onSettled: () => {

@@ -40,7 +40,7 @@ function Body({ data, render }) {
   if (!data?.length)
     return (
       <p className="text-center font-medium text-xs  my-6">
-        ⚠️ No Data Found
+        No Data Found
       </p>
     );
   return (

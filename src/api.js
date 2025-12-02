@@ -22,6 +22,23 @@ authFetch.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    // If sending FormData, remove Content-Type to let axios set it with boundary
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    }
+
+    // Log outgoing requests (especially for contract finalize)
+    if (config.url?.includes("contracts/finalize")) {
+      console.log("[HTTP] HTTP Request Details:");
+      console.log("URL:", `${config.baseURL}${config.url}`);
+      console.log("Method:", config.method?.toUpperCase());
+      console.log("Headers:", {
+        ...config.headers,
+        Authorization: config.headers.Authorization ? "Bearer [TOKEN]" : "None",
+      });
+      console.log("Has FormData:", config.data instanceof FormData);
+    }
+
     if (config.method?.toLowerCase() === "get") {
       const cacheKey = JSON.stringify({
         url: config.url,
@@ -48,6 +65,14 @@ authFetch.interceptors.request.use(
 // Response interceptor: stores GET responses in cache and handles retries
 authFetch.interceptors.response.use(
   (response) => {
+    // Log responses for contract finalize
+    if (response.config.url?.includes("contracts/finalize")) {
+      console.log("[HTTP] HTTP Response Received:");
+      console.log("Status:", response.status, response.statusText);
+      console.log("Response headers:", response.headers);
+      console.log("Response data:", response.data);
+    }
+
     if (response.config.method?.toLowerCase() === "get") {
       const cacheKey = JSON.stringify({
         url: response.config.url,
