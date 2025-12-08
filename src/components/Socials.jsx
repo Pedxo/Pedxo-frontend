@@ -9,7 +9,7 @@ const Socials = ({ isRegisterPage = false }) => {
   const [loadingProvider, setLoadingProvider] = useState(null);
 
   const oAuthHandler = async (type) => {
-    if (!!loadingProvider) return;
+    if (loadingProvider !== null) return;
     if (type !== "google" && type !== "github") {
       toast.error("Unsupported login method");
       return;
@@ -37,9 +37,9 @@ const Socials = ({ isRegisterPage = false }) => {
         disabled={!!loadingProvider}
       >
         {loadingProvider === "github" ? (
-          <span>
+          <span className="">
             <svg
-              className="animate-spin h-5 w-5 text-gray-600 [animation-duration:0.5s]"
+              className="animate-spin h-5 w-5 text-gray-600"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -51,15 +51,15 @@ const Socials = ({ isRegisterPage = false }) => {
                 r="10"
                 stroke="currentColor"
                 strokeWidth="4"
-              />
+              ></circle>
               <path
                 className="opacity-75"
                 fill="currentColor"
                 d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
-              />
+              ></path>
             </svg>
           </span>
-        ) : (
+        ): (
           <>
             <img src={GitHubLogo} alt="github logo" className="" />
             <span className="font-medium text-xs sm:text-sm">
@@ -75,9 +75,9 @@ const Socials = ({ isRegisterPage = false }) => {
         disabled={!!loadingProvider}
       >
         {loadingProvider === "google" ? (
-          <span>
+          <span className="">
             <svg
-              className="animate-spin h-5 w-5 text-gray-600 [animation-duration:0.5s]"
+              className="animate-spin h-5 w-5 text-gray-600"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -89,12 +89,12 @@ const Socials = ({ isRegisterPage = false }) => {
                 r="10"
                 stroke="currentColor"
                 strokeWidth="4"
-              />
+              ></circle>
               <path
                 className="opacity-75"
                 fill="currentColor"
                 d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
-              />
+              ></path>
             </svg>
           </span>
         ) : (

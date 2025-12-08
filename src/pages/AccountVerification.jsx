@@ -76,6 +76,7 @@ const AccountVerification = () => {
         <h1 className="mb-[59px] text-2xl font-semibold leading-normal 2xl:text-[30px] 2xl:mb-5">
           A verification OTP has been sent to:
           <p className="text-sm text-[#00000099]">{email}</p>
+          <p className="text-xs text-[#00000099] mt-2">Check your spam if you didn&apos;t get the code in your inbox</p>
         </h1>
         <form onSubmit={handleFormSubmit}>
           <FormInput
