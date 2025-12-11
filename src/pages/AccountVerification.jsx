@@ -3,6 +3,7 @@ import FormInput from "../components/FormInput";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import authFetch from "../api";
+import { handleLoginDetails } from "../services/apiAuth";
 
 const AccountVerification = () => {
   const [verificationCode, setVerificationCode] = useState("");
@@ -19,6 +20,7 @@ const AccountVerification = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (isLoading) return;
     setIsLoading(true);
 
     const verificationData = {
@@ -27,19 +29,22 @@ const AccountVerification = () => {
     };
 
     try {
-      await authFetch.post(
+     const response =  await authFetch.post(
         "/auth/verify-email",
         JSON.stringify(verificationData)
       );
+
+      handleLoginDetails(response.data?.result)
+
       toast.success("Account created successfully");
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
     } catch (error) {
-      if (error.response.data.message[0] === "code should not be empty") {
+      if (error?.response?.data?.message[0] === "code should not be empty") {
         toast.error(error.response.data.message[0]);
       } else if (
-        error.response.data.message ===
+        error?.response?.data?.message ===
         "Your code has either expire or is Invalid"
       ) {
         toast.error(error.response.data.message);
