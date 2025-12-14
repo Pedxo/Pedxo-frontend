@@ -7,7 +7,7 @@ import onboradIcon2 from "../assets/svg/onboardIcon2.svg";
 import add from "../assets/svg/add.svg";
 import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
-import { formatCurrency } from "../utlity/helper";
+import { formatCurrency } from "../utility/helper";
 
 const Overview = () => {
   const { username } = useUser();

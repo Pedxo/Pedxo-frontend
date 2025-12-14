@@ -3,6 +3,7 @@ import FormInput from "../components/FormInput";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import authFetch from "../api";
+import { handleLoginDetails } from "../services/apiAuth";
 
 const AccountVerification = () => {
   const [verificationCode, setVerificationCode] = useState("");
@@ -19,6 +20,7 @@ const AccountVerification = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (isLoading) return;
     setIsLoading(true);
 
     const verificationData = {
@@ -27,19 +29,22 @@ const AccountVerification = () => {
     };
 
     try {
-      await authFetch.post(
+     const response =  await authFetch.post(
         "/auth/verify-email",
         JSON.stringify(verificationData)
       );
+
+      handleLoginDetails(response.data?.result)
+
       toast.success("Account created successfully");
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
     } catch (error) {
-      if (error.response.data.message[0] === "code should not be empty") {
+      if (error?.response?.data?.message[0] === "code should not be empty") {
         toast.error(error.response.data.message[0]);
       } else if (
-        error.response.data.message ===
+        error?.response?.data?.message ===
         "Your code has either expire or is Invalid"
       ) {
         toast.error(error.response.data.message);
@@ -76,6 +81,7 @@ const AccountVerification = () => {
         <h1 className="mb-[59px] text-2xl font-semibold leading-normal 2xl:text-[30px] 2xl:mb-5">
           A verification OTP has been sent to:
           <p className="text-sm text-[#00000099]">{email}</p>
+          <p className="text-xs text-[#00000099] mt-2">Check your spam if you didn&apos;t get the code in your inbox</p>
         </h1>
         <form onSubmit={handleFormSubmit}>
           <FormInput
