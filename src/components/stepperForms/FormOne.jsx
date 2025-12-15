@@ -152,7 +152,7 @@ const FormOne = ({ nextStep, savedState, contractType }) => {
                 countries?.find((c) => c.name === formik.values.country)
                   ?.iso2 || ''
               }
-              className='appearance-none w-full disabled:ring-gray-300  bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm'
+              className='appearance-none w-full border overview-expense-bgs disabled:ring-gray-300  bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm'
             >
               <option value=''>
                 {isLoading ? 'Loading Countries...' : 'Select Country'}
@@ -190,7 +190,7 @@ const FormOne = ({ nextStep, savedState, contractType }) => {
               id='state'
               onChange={(e) => formik.setFieldValue('state', e.target.value)}
               value={formik.values.state}
-              className='appearance-none w-full disabled:ring-gray-300  bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm '
+              className='appearance-none w-full disabled:ring-gray-300 border overview-expense-bgs bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm '
             >
               <option value=''>
                 {loadingStates

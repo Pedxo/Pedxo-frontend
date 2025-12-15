@@ -158,7 +158,7 @@ const FormTwo = ({ nextStep, savedState }) => {
             value={formik.values.startDate}
             onChange={formik.handleChange}
             min={today}
-            className={`w-full bg-transparent border outline-gray-400 rounded-lg p-3 text-sm`}
+            className={`w-full bg-transparent border outline-gray-400 overview-expense-bgs rounded-lg p-3 text-sm`}
             style={{
               borderColor: 'rgba(0, 0, 0, 0.20)',
             }}
@@ -193,7 +193,7 @@ const FormTwo = ({ nextStep, savedState }) => {
             onChange={formik.handleChange}
             onClick={(e) => e.target.showPicker()}
             min={formik.values.startDate}
-            className={`w-full disabled:opacity-50 bg-transparent border outline-gray-400 rounded-lg p-4
+            className={`w-full disabled:opacity-50 bg-transparent border overview-expense-bgs outline-gray-400 rounded-lg p-4
             `}
             style={{
               borderColor: 'rgba(0, 0, 0, 0.20)',
@@ -215,7 +215,7 @@ const FormTwo = ({ nextStep, savedState }) => {
             rows='7'
             value={formik.values.explanationOfScopeOfWork}
             onChange={formik.handleChange}
-            className='bg-transparent border outline-gray-400 rounded-lg px-4 py-2'
+            className='bg-transparent border outline-gray-400 overview-expense-bgs rounded-lg px-4 py-2'
             style={{ borderColor: 'rgba(0, 0, 0, 0.20)' }}
           ></textarea>
         </div>
