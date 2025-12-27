@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export const baseURL = "https://pedxo-back-project.onrender.com";
+// export const baseURL = 'http://localhost:5000'
 
 // Request cache - works in browser
 const cache = new Map();
