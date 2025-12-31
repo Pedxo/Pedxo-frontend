@@ -78,6 +78,10 @@ const FormFour = ({
     const newCount = completionCount + 1;
     setCompletionCount(newCount);
     sessionStorage.setItem("contractCompletionCount", newCount.toString());
+    localStorage.removeItem(`${username}_userCurrencyCode`, isNigerian ? 'NGN' : 'USD');
+    localStorage.removeItem(`${username}_personalInfo`);
+    localStorage.removeItem(`${username}_countryLocked`);
+    localStorage.removeItem(`${username}_stateLocked`);
   };
 
   return (
@@ -123,7 +127,7 @@ const FormFour = ({
       </button>
 
       {hasSignature && (
-        <div className="w-full flex items-center justify-center">
+        <div className="flex items-center justify-center w-full">
           <Button
             type="primary"
             onClick={sendFinalForm}
