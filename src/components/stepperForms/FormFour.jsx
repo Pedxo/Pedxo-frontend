@@ -80,6 +80,11 @@ const FormFour = ({
         toast.error("Failed to send contract.");
       },
     });
+    sessionStorage.removeItem("currentStep");
+    // Increment the completion count
+    const newCount = completionCount + 1;
+    setCompletionCount(newCount);
+    sessionStorage.setItem("contractCompletionCount", newCount.toString());
   };
 
   return (
@@ -117,15 +122,8 @@ const FormFour = ({
         <img src={sign} alt="sign icon" />
       </button>
 
-      {showSignatureForm && (
-        <FormFive
-          nextStep={() => setShowSignatureForm(false)}
-          setSignatureFile={setSignatureFile}
-        />
-      )}
-
-      {signatureFile && !showSignatureForm && (
-        <div className="w-full flex items-center justify-center mt-6">
+      {hasSignature && (
+        <div className="w-full flex items-center justify-center">
           <Button
             type="primary"
             onClick={sendFinalForm}

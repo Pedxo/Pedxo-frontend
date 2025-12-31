@@ -3,7 +3,6 @@ import authFetch from "../api";
 // Helper function to clear all auth-related storage
 const clearAuthStorage = () => {
   localStorage.removeItem("user");
-  localStorage.clear();
   // Add any other storage mechanisms you use
 };
 
