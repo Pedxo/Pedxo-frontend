@@ -75,6 +75,10 @@ const FormFour = ({
         const newCount = completionCount + 1;
         setCompletionCount(newCount);
         sessionStorage.setItem("contractCompletionCount", newCount.toString());
+        localStorage.removeItem(`${username}_userCurrencyCode`, isNigerian ? 'NGN' : 'USD');
+        localStorage.removeItem(`${username}_personalInfo`);
+        localStorage.removeItem(`${username}_countryLocked`);
+        localStorage.removeItem(`${username}_stateLocked`);
       },
       onError: () => {
         toast.error("Failed to send contract.");
@@ -125,7 +129,7 @@ const FormFour = ({
       )}
 
       {signatureFile && !showSignatureForm && (
-        <div className="w-full flex items-center justify-center mt-6">
+        <div className="flex items-center justify-center w-full mt-6">
           <Button
             type="primary"
             onClick={sendFinalForm}

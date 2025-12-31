@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export const baseURL = "https://pedxo-back-project.onrender.com";
+// export const baseURL = 'http://localhost:5000'
 
 // Simple in-memory cache for GET requests
 const cache = new Map();
@@ -101,4 +102,4 @@ export async function getUserContracts(userId) {
   }
 }
 
-export default authFetch;
+  export default authFetch;
