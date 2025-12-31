@@ -12,8 +12,7 @@ export default function useFinalizeContract() {
       toast.success("Contract sent successfully");
       const contractData = data?.data;
       console.log(data);
-      // sessionStorage.removeItem("personal-info", JSON.stringify(contractData));
-      sessionStorage.removeItem("personal-info");
+      sessionStorage.removeItem("personal-info", JSON.stringify(contractData));
       sessionStorage.removeItem("currentStep");
       navigate("/dashboard");
     },
