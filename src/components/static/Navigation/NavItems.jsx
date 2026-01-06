@@ -22,6 +22,18 @@ export const NavItems = () => (
     >
       Use Cases
     </Link>
+     <Link
+      to='#price'
+      onClick={() => {
+        const element = document.getElementById('price')
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' })
+        }
+      }}
+      className='text-sm font-medium text-darkGrey hover:text-gradientPrimary transition-colors'
+    >
+      Pricing
+    </Link>
   </>
 )
 
@@ -67,8 +79,7 @@ const baseButton = `
 const primaryButton = `
   ${baseButton}
   text-white
-  bg-gradient-to-r from-gradientPrimary via-violet to-gradientPrimary
-  hover:opacity-90
+  bg-[#387dcd] shadow-md border-none hover:opacity-90
 `
 
 const secondaryButton = `

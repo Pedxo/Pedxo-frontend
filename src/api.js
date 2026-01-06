@@ -2,33 +2,26 @@ import axios from "axios";
 
 export const baseURL = "https://pedxo-back-project.onrender.com";
 
-// Request cache - works in browser
+// Simple in-memory cache for GET requests
 const cache = new Map();
 
 const authFetch = axios.create({
   baseURL,
   headers: {
     "Content-Type": "application/json",
-    // "Accept-Encoding": "gzip, deflate, br",
   },
   timeout: 30000,
 });
 
-// Request interceptor for auth token
+// Request interceptor: adds auth token and handles caching
 authFetch.interceptors.request.use(
   (config) => {
-    // console.log('Request:', config.method?.toUpperCase(), config.url);
-
-    // Add authorization token if available
-    if (!config.headers.Authorization) {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      const token = storedUser?.accessToken;
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const token = storedUser?.accessToken;
+    if (token && !config.headers.Authorization) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Cache GET requests (browser-only implementation)
     if (config.method?.toLowerCase() === "get") {
       const cacheKey = JSON.stringify({
         url: config.url,
@@ -38,7 +31,6 @@ authFetch.interceptors.request.use(
       if (cache.has(cacheKey)) {
         const { timestamp, data } = cache.get(cacheKey);
         if (Date.now() - timestamp < 300000) {
-          // 5 minute cache
           return Promise.reject({
             response: { data },
             config,
@@ -50,17 +42,12 @@ authFetch.interceptors.request.use(
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor
+// Response interceptor: stores GET responses in cache and handles retries
 authFetch.interceptors.response.use(
   (response) => {
-    // console.log('Response:', response.status, response.config.url);
-
-    // Cache successful GET responses
     if (response.config.method?.toLowerCase() === "get") {
       const cacheKey = JSON.stringify({
         url: response.config.url,
@@ -83,13 +70,13 @@ authFetch.interceptors.response.use(
       console.error(
         "Error Response:",
         error.response.status,
-        error.response.config.url
+        error.response.config.url,
+        error.response.data
       );
     } else {
       console.error("Error:", error.message);
     }
 
-    // Retry logic for failed requests
     const originalRequest = error.config;
     if (error.code !== "ECONNABORTED" && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -100,5 +87,18 @@ authFetch.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Updated to use userId instead of username
+export async function getUserContracts(userId) {
+  try {
+    const response = await authFetch.get("/contracts/get-user-contracts", {
+      params: { userId },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("getUserContracts failed:", error.response?.data || error.message);
+    throw error;
+  }
+}
 
 export default authFetch;

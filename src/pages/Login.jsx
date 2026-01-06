@@ -1,6 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import googleLogo from "../assets/svg/google-logo.svg";
-import GitHubLogo from "../assets/svg/githubLogo.svg";
 import FormInput from "../components/FormInput";
 import useLogin from "../features/auth/useLogin";
 import * as Yup from "yup";
@@ -37,7 +35,7 @@ const Login = () => {
     <section className="w-full mx-auto md:w-1/2 md:max-w-[38em] flex justify-center flex-col px-4 h-screen">
       <div className="w-full max-w-lg bg-white rounded-xl shadow-md p-6">
         <h1 className="mb-[39px] text-2xl font-semibold leading-normal 2xl:text-[30px] ">
-          Login
+          Login to continue
         </h1>
         <Socials />
         {/* <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">

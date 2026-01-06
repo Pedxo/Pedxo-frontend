@@ -5,23 +5,32 @@ import { useFormik } from "formik";
 import useUploadSignature from "../../features/contracts/useUploadSignature";
 import Button from "../Button";
 import CustomForm from "../../ui/CustomForm";
+import toast from "react-hot-toast";
 
-const FormFive = ({ nextStep }) => {
+const FormFive = ({ nextStep, setSignatureFile }) => {
   const { uploadSignature, sendingForm } = useUploadSignature();
+  const sigCanvas = useRef(null);
+
   const validationSchema = Yup.object({
     signature: Yup.mixed().required("Signature is required"),
   });
+
   const formik = useFormik({
     validationSchema,
-    initialValues: {
-      signature: null,
-    },
+    initialValues: { signature: null },
     onSubmit: (values, { setSubmitting }) => {
       const formData = new FormData();
+      
       formData.append("signature", values?.signature);
+
       uploadSignature(formData, {
         onSuccess: () => {
-            nextStep()
+          setSignatureFile(values.signature); // Pass file to FormFour
+          toast.success("Signature uploaded successfully!");
+          nextStep();
+        },
+        onError: () => {
+          toast.error("Failed to upload signature.");
         },
         onSettled: () => {
           setSubmitting(false);
@@ -29,17 +38,26 @@ const FormFive = ({ nextStep }) => {
       });
     },
   });
-  const sigCanvas = useRef(null);
+
   const saveSignature = () => {
-    const canvas = sigCanvas.current.getCanvas(); // Get the raw canvas element
+    const canvas = sigCanvas.current?.getCanvas();
+    if (!canvas || sigCanvas.current.isEmpty()) {
+      formik.setFieldError("signature", "Please provide a signature.");
+      return;
+    }
+
     canvas.toBlob((blob) => {
-      const signatureFile = new File([blob], "signature.png", { type: "image/png" });
+      const signatureFile = new File([blob], "signature.png", {
+        type: "image/png",
+      });
       formik.setFieldValue("signature", signatureFile);
+      setSignatureFile(signatureFile); //  Keep FormFour in sync
     }, "image/png");
   };
 
   const clearSignature = () => {
-    sigCanvas.current.clear();
+    sigCanvas.current?.clear();
+    formik.setFieldValue("signature", null);
   };
 
   return (
@@ -47,53 +65,47 @@ const FormFive = ({ nextStep }) => {
       <div className="text-lg font-semibold leading-normal mb-6 xl:text-2xl xl:mb-[32px]">
         Sign Signature
       </div>
+
       <div className="bg-gray-50 h-[202px]">
         <SignatureCanvas
           ref={sigCanvas}
-          onBegin={() => {
-            console.log("started")
-
-          }}
+          onBegin={() => console.log("started")}
           onEnd={() => {
-            saveSignature()
-            console.log("ended")
+            saveSignature();
+            console.log("ended");
           }}
           canvasProps={{
-            color: "white",
             className: "mx-auto",
             width: 400,
             height: 202,
+            style: { backgroundColor: "white" },
           }}
         />
-
         <div className="flex justify-end my-4">
           <button onClick={clearSignature}>Clear</button>
         </div>
       </div>
+
       <CustomForm onSubmit={formik.handleSubmit}>
         <div className="mt-[50px] xl:mb-[66px] lg:flex lg:justify-center">
-          {/* <button
-          type="submit"
-          onClick={saveSignature}
-          className="flex items-center justify-center gap-2 pr-bg-clr w-full rounded-lg text-white text-[0.75rem] py-[14px] lg:w-auto lg:mx-auto lg:px-[60px] xl:py-6 xl:text-xl "
-        >
-          Use signature
-          <img src={usesignature} alt="tick" />
-        </button> */}
-          <div>
-            <Button
-              buttonType="submit"
-              disabled={formik.isSubmitting || sendingForm || !formik.isValid || !formik.dirty}
-              // onClick={saveSignature}
-              isLoading={sendingForm}
-              type="primary"
-            >
-              Use Signature
-            </Button>
-          </div>
+          <Button
+            buttonType="submit"
+            onClick={saveSignature} //  Ensure signature is saved before submit
+            disabled={
+              formik.isSubmitting ||
+              sendingForm ||
+              !formik.isValid ||
+              !formik.dirty
+            }
+            isLoading={sendingForm}
+            type="primary"
+          >
+            Use Signature
+          </Button>
         </div>
       </CustomForm>
     </div>
   );
 };
+
 export default FormFive;

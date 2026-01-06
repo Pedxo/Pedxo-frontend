@@ -7,7 +7,6 @@ const clearAuthStorage = () => {
 };
 
 
-
 export async function loginUser(details) {
   const response = await authFetch.post("/auth/login", details);
 
@@ -29,6 +28,7 @@ export async function loginUser(details) {
 
   localStorage.setItem("user", JSON.stringify(userData));
   localStorage.setItem("token", accessToken); // SINGLE SOURCE
+
 
   authFetch.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 

@@ -7,9 +7,27 @@ import useCompensation from "../../features/contracts/useCompensation";
 import CustomForm from "../../ui/CustomForm";
 import Button from "../Button";
 
-const FormThree = ({ nextStep, savedState }) => {
+const FormThree = ({ nextStep, savedState, username, userId }) => {
   const { updatePayment, isUpdating } = useCompensation();
   const [hasChanges, setHasChanges] = useState(false);
+  const [currencySymbol, setCurrencySymbol] = useState("$");
+
+  // Load currency symbol for this user
+  useEffect(() => {
+    const storedCode = localStorage.getItem(`${username}_userCurrencyCode`);
+    setCurrencySymbol(storedCode === "NGN" ? "₦" : "$");
+  }, [username]);
+
+  // Auto-fill from saved personal info
+  useEffect(() => {
+    const savedInfo = JSON.parse(localStorage.getItem(`${username}_personalInfo`));
+    if (savedInfo) {
+      formik.setValues((prev) => ({
+        ...prev,
+        ...savedInfo,
+      }));
+    }
+  }, [username]);
 
   const validationSchema = Yup.object({
     paymentRate: Yup.number().required("Amount is required"),
@@ -32,8 +50,18 @@ const FormThree = ({ nextStep, savedState }) => {
         return;
       }
 
-      updatePayment(values, {
+      const payload = {
+        ...values,
+        userId, //  Include userId for backend filtering
+      };
+
+      updatePayment(payload, {
         onSuccess: () => {
+          const updated = {
+            ...JSON.parse(localStorage.getItem(`${username}_personalInfo`)),
+            ...values,
+          };
+          localStorage.setItem(`${username}_personalInfo`, JSON.stringify(updated));
           nextStep();
         },
         onSettled: () => {
@@ -43,7 +71,6 @@ const FormThree = ({ nextStep, savedState }) => {
     },
   });
 
-  // Check for changes between current values and initial values
   useEffect(() => {
     const changesDetected = Object.keys(initialValues).some(
       (key) => formik.values[key] !== initialValues[key]
@@ -58,6 +85,7 @@ const FormThree = ({ nextStep, savedState }) => {
       </div>
 
       <CustomForm onSubmit={formik.handleSubmit}>
+        {/* Payment Rate */}
         <div className="flex flex-col w-full gap-2 relative">
           <div className="flex items-center gap-3">
             <label
@@ -74,7 +102,7 @@ const FormThree = ({ nextStep, savedState }) => {
           </div>
           <div className="relative flex items-center">
             <span className="ring-1 ring-black/50 rounded-s-lg font-bold bg-gray-400 px-6 p-3">
-              NGN
+              {currencySymbol}
             </span>
             <input
               type="number"
@@ -83,14 +111,18 @@ const FormThree = ({ nextStep, savedState }) => {
               id="paymentRate"
               value={formik.values?.paymentRate}
               onChange={formik.handleChange}
-              className="w-full bg-transparent border ring-1 rounded-e-lg outline-none ring-gray-400 p-3 text-sm"
+              className="w-full bg-transparent border ring-1 rounded-e-lg outline-none ring-gray-400 p-3 text-sm caret-black font-medium focus:ring-2 focus:ring-blue-500"
               style={{
                 borderColor: "rgba(0, 0, 0, 0.20)",
               }}
             />
           </div>
+          <p className="text-xs text-gray-500 italic mt-1">
+            You can edit the payment amount directly here.
+          </p>
         </div>
 
+        {/* Payment Frequency */}
         <div className="relative flex flex-col w-full gap-2">
           <div className="flex items-center gap-3">
             <label
@@ -116,16 +148,16 @@ const FormThree = ({ nextStep, savedState }) => {
               borderColor: "rgba(0, 0, 0, 0.20)",
             }}
           >
-            <option className="w-full max-w-full" value="Monthly">
-              Monthly
-            </option>
+            <option value="Monthly">Monthly</option>
             <option value="Bi-weekly">Bi-weekly</option>
             <option value="Weekly">Weekly</option>
           </select>
-          <div className="absolute top-[70%] right-4 transform -translate-y-1/2 pointer-events-none text-blue-600 text-2xl ">
+          <div className="absolute top-[70%] right-4 transform -translate-y-1/2 pointer-events-none text-blue-600 text-2xl">
             <img src={dropdownarrow} alt="" />
           </div>
         </div>
+
+        {/* Submit Button */}
         <div>
           <Button
             isLoading={formik.isSubmitting || isUpdating}
