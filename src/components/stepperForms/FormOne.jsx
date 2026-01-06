@@ -15,7 +15,7 @@ const FormOne = ({ nextStep, savedState, contractType }) => {
   const [hasChanges, setHasChanges] = useState(false)
 
   const selectedIso = savedState
-    ? countries?.find((el) => el.name === savedState.country).iso2
+    ? countries?.find((el) => el.name === savedState?.country).iso2
     : null
   const [selectedCountry, setSelectedCountry] = useState(selectedIso || '')
   const { states, isLoading: loadingStates } = useGetStates(selectedCountry)
@@ -104,10 +104,10 @@ const FormOne = ({ nextStep, savedState, contractType }) => {
           id='clientName'
           placeholder='John Doe'
           disabled={formik.isSubmitting || sendingForm}
-          error={Boolean(formik.errors.clientName && formik.touched.clientName)}
-          errorMessage={formik.errors.clientName}
+          error={Boolean(formik.errors?.clientName && formik.touched?.clientName)}
+          errorMessage={formik.errors?.clientName}
           onBlur={formik.handleBlur}
-          value={formik.values.clientName}
+          value={formik.values?.clientName}
           onChange={formik.handleChange}
           required={true}
         />
@@ -119,10 +119,10 @@ const FormOne = ({ nextStep, savedState, contractType }) => {
           disabled={formik.isSubmitting || sendingForm}
           id='email'
           placeholder='John@gmail.com'
-          error={Boolean(formik.errors.email && formik.touched.email)}
-          errorMessage={formik.errors.email}
+          error={Boolean(formik.errors?.email && formik.touched?.email)}
+          errorMessage={formik.errors?.email}
           onBlur={formik.handleBlur}
-          value={formik.values.email}
+          value={formik.values?.email}
           onChange={formik.handleChange}
           required={true}
         />
@@ -149,7 +149,7 @@ const FormOne = ({ nextStep, savedState, contractType }) => {
               disabled={isLoading || formik.isSubmitting || sendingForm}
               onChange={handleCountryChange}
               value={
-                countries?.find((c) => c.name === formik.values.country)
+                countries?.find((c) => c.name === formik.values?.country)
                   ?.iso2 || ''
               }
               className='appearance-none w-full disabled:ring-gray-300  bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm'
@@ -159,7 +159,7 @@ const FormOne = ({ nextStep, savedState, contractType }) => {
               </option>
               {countries?.map((country) => (
                 <option key={country.id} value={country.iso2}>
-                  {country.name}
+                  {country?.name}
                 </option>
               ))}
             </select>
@@ -200,8 +200,8 @@ const FormOne = ({ nextStep, savedState, contractType }) => {
                   : 'Select State'}
               </option>
               {states?.map((state) => (
-                <option key={state.id} value={state.name}>
-                  {state.name}
+                <option key={state.id} value={state?.name}>
+                  {state?.name}
                 </option>
               ))}
             </select>
@@ -219,7 +219,7 @@ const FormOne = ({ nextStep, savedState, contractType }) => {
             disabled={formik.isSubmitting || sendingForm}
             id='companyName'
             placeholder='Enter company name'
-            value={formik.values.companyName}
+            value={formik.values?.companyName}
             onChange={formik.handleChange}
             required={true}
           />

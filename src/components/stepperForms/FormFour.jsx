@@ -33,36 +33,36 @@ const FormFour = ({
     },
     {
       title: "Start Date",
-      data: savedState.startDate ? formatDate(savedState.startDate) : "-",
+      data: savedState?.startDate ? formatDate(savedState?.startDate) : "-",
     },
     {
       title: "End Date",
-      data: savedState.endDate ? formatDate(savedState.endDate) : "-",
+      data: savedState?.endDate ? formatDate(savedState?.endDate) : "-",
     },
     {
       title: "Job Title",
-      data: savedState.roleTitle ?? "-",
+      data: savedState?.roleTitle ?? "-",
     },
     {
       title: "Seniority Level",
-      data: savedState.seniorityLevel ?? "-",
+      data: savedState?.seniorityLevel ?? "-",
     },
     {
       title: "Scope of Work",
-      data: savedState.scopeOfWork ?? "-",
+      data: savedState?.scopeOfWork ?? "-",
     },
     {
       title: "Payment Rate",
       data:
         formatCurrency(
-          savedState.paymentRate,
-          savedState.country === "Nigeria" ? "NGN" : "USD",
-          savedState.country === "Nigeria" ? "en-NG" : "en-US"
+          savedState?.paymentRate,
+          savedState?.country === "Nigeria" ? "NGN" : "USD",
+          savedState?.country === "Nigeria" ? "en-NG" : "en-US"
         ) ?? null,
     },
     {
       title: "Payment Frequency",
-      data: savedState.paymentFrequency ?? null,
+      data: savedState?.paymentFrequency ?? null,
     },
   ];
 
@@ -89,8 +89,8 @@ const FormFour = ({
       <div className="bg-white rounded-lg border border-solid border-[#00000033] px-10 pt-[53px] text-[0.625rem] xl:text-[1.125rem]">
         {userInfo.map((item, index) => (
           <div className="flex justify-between mb-[45px]" key={index}>
-            <p className="text-[#00000080]">{item.title}</p>
-            <p className="text-right capitalize">{item.data}</p>
+            <p className="text-[#00000080]">{item?.title}</p>
+            <p className="text-right capitalize">{item?.data}</p>
           </div>
         ))}
 

@@ -17,8 +17,8 @@ const FormThree = ({ nextStep, savedState }) => {
   });
 
   const initialValues = {
-    paymentFrequency: savedState.paymentFrequency || "",
-    paymentRate: savedState.paymentRate || "",
+    paymentFrequency: savedState?.paymentFrequency || "",
+    paymentRate: savedState?.paymentRate || "",
   };
 
   const formik = useFormik({
@@ -66,9 +66,9 @@ const FormThree = ({ nextStep, savedState }) => {
             >
               Payment Rate *
             </label>
-            {formik.errors.paymentRate && (
+            {formik.errors?.paymentRate && (
               <p className="text-sm text-red-500">
-                {formik.errors.paymentRate}
+                {formik.errors?.paymentRate}
               </p>
             )}
           </div>
@@ -81,7 +81,7 @@ const FormThree = ({ nextStep, savedState }) => {
               name="paymentRate"
               onBlur={formik.handleBlur}
               id="paymentRate"
-              value={formik.values.paymentRate}
+              value={formik.values?.paymentRate}
               onChange={formik.handleChange}
               className="w-full bg-transparent border ring-1 rounded-e-lg outline-none ring-gray-400 p-3 text-sm"
               style={{
@@ -99,16 +99,16 @@ const FormThree = ({ nextStep, savedState }) => {
             >
               Payment Frequency *
             </label>
-            {formik.errors.paymentFrequency && (
+            {formik.errors?.paymentFrequency && (
               <p className="text-sm text-red-500">
-                {formik.errors.paymentFrequency}
+                {formik.errors?.paymentFrequency}
               </p>
             )}
           </div>
           <select
             name="paymentFrequency"
             id="paymentFrequency"
-            value={formik.values.paymentFrequency}
+            value={formik.values?.paymentFrequency}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             className="w-full bg-transparent border outline-gray-400 rounded-lg p-3 text-sm appearance-none"

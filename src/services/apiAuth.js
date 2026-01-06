@@ -6,31 +6,35 @@ const clearAuthStorage = () => {
   // Add any other storage mechanisms you use
 };
 
+
+
 export async function loginUser(details) {
   const response = await authFetch.post("/auth/login", details);
 
-  const accessTokenExpiration = Date.now() + 1200000; // 20 minutes
-  const refreshTokenExpiration = Date.now() + 604800000; // 7 days
+  const accessToken = response.data.accessToken;
+  const refreshToken = response.data.result.refreshToken;
+
   
+  if (!accessToken) {
+    throw new Error("Login failed: access token missing");
+  }
+
   const userData = {
-    accessToken: response?.data?.accessToken,
-    refreshToken: response?.data?.result?.refreshToken,
-    token: response?.data?.result?.randomToken,
+    accessToken,
+    refreshToken,
     userName: response.data.result.firstName,
     email: response.data.result.email,
-    accessTokenExpiration,
-    refreshTokenExpiration
+    accessTokenExpiration: Date.now() + 20 * 60 * 1000,
   };
 
   localStorage.setItem("user", JSON.stringify(userData));
-  
-  // Set the default auth header if using token-based auth
-  if (userData.accessToken) {
-    authFetch.defaults.headers.common['Authorization'] = `Bearer ${userData.accessToken}`;
-  }
+  localStorage.setItem("token", accessToken); // SINGLE SOURCE
 
-  return response.data;
+  authFetch.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+
+  return userData;
 }
+
 
 export async function signUpUserAPI(details) {
   const response = await authFetch.post("/auth/signup", details);
