@@ -34,11 +34,24 @@ const FormFour = ({
     { title: "Contract Type", data: contractType.split("-").join(" ") },
     {
       title: "Start Date",
-      data: safeState.startDate ? formatDate(safeState.startDate) : "-",
+
+      data: savedState?.startDate ? formatDate(savedState?.startDate) : "-",
     },
     {
       title: "End Date",
-      data: safeState.endDate ? formatDate(safeState.endDate) : "-",
+      data: savedState?.endDate ? formatDate(savedState?.endDate) : "-",
+    },
+    {
+      title: "Job Title",
+      data: savedState?.roleTitle ?? "-",
+    },
+    {
+      title: "Seniority Level",
+      data: savedState?.seniorityLevel ?? "-",
+    },
+    {
+      title: "Scope of Work",
+      data: savedState?.scopeOfWork ?? "-",
     },
     { title: "Job Title", data: safeState.roleTitle ?? "-" },
     { title: "Seniority Level", data: safeState.seniorityLevel ?? "-" },
@@ -47,10 +60,14 @@ const FormFour = ({
       title: "Payment Rate",
       data:
         formatCurrency(
-          safeState.paymentRate,
-          safeState.country === "Nigeria" ? "NGN" : "USD",
-          safeState.country === "Nigeria" ? "en-NG" : "en-US"
-        ) ?? "-",
+          savedState?.paymentRate,
+          savedState?.country === "Nigeria" ? "NGN" : "USD",
+          savedState?.country === "Nigeria" ? "en-NG" : "en-US"
+        ) ?? null,
+    },
+    {
+      title: "Payment Frequency",
+      data: savedState?.paymentFrequency ?? null,
     },
     { title: "Payment Frequency", data: safeState.paymentFrequency ?? "-" },
   ];
@@ -96,8 +113,8 @@ const FormFour = ({
       <div className="bg-white rounded-lg border border-solid border-[#00000033] px-10 pt-[53px] text-[0.625rem] xl:text-[1.125rem]">
         {userInfo.map((item, index) => (
           <div className="flex justify-between mb-[45px]" key={index}>
-            <p className="text-[#00000080]">{item.title}</p>
-            <p className="text-right capitalize">{item.data}</p>
+            <p className="text-[#00000080]">{item?.title}</p>
+            <p className="text-right capitalize">{item?.data}</p>
           </div>
         ))}
 

@@ -18,24 +18,51 @@ function UserProvider({ children }) {
     }
   }, []);
 
+  // const login = (userData) => {
+  //   setUser(userData);
+  //   localStorage.setItem("user", JSON.stringify(userData));
+
+  //   // Save token separately
+  //   if (userData?.token) {
+  //     localStorage.setItem("token", userData.token);
+  //   }
+  // };
+
   const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
-  };
+  if (!userData?.accessToken) {
+    throw new Error("Invalid login payload");
+  }
+
+  setUser(userData);
+
+  localStorage.setItem("user", JSON.stringify(userData));
+  localStorage.setItem("token", userData.accessToken);
+};
+
 
  // Update the logout function to be more thorough
+// const logout = async () => {
+//   try {
+//     await logoutUser(); // Use the API logout function
+//     setUser(null);
+//     // Storage is already cleared by logoutUser()
+//   } catch (error) {
+//     console.error("Logout error:", error);
+//     // Force cleanup anyway
+//     setUser(null);
+//     localStorage.removeItem("user");
+//   }
+// };
 const logout = async () => {
   try {
-    await logoutUser(); // Use the API logout function
-    setUser(null);
-    // Storage is already cleared by logoutUser()
-  } catch (error) {
-    console.error("Logout error:", error);
-    // Force cleanup anyway
+    await logoutUser();
+  } finally {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
   }
 };
+
 
   // Use consistent naming (either username or userName)
   const username = user?.userName || '';
