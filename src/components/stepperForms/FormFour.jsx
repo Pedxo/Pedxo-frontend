@@ -1,6 +1,6 @@
 import sign from "../../assets/svg/sign.svg";
 import sendContract from "../../assets/svg/sendcontract.svg";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { formatCurrency, formatDate } from "../../utility/helper";
 import useFinalizeContract from "../../features/contracts/useFinalizeContract";
 import Button from "../Button";
