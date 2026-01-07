@@ -122,7 +122,10 @@ const FormFour = ({
           <div className="mb-[39px]">
             <div className="w-full h-[0.5px] bg-[#0000004d]"></div>
             <div className="mt-[39px] max-w-[100px] mx-auto">
-              <img src={URL.createObjectURL(signatureFile)} alt="user signature" />
+              <img
+                src={URL.createObjectURL(signatureFile)}
+                alt="user signature"
+              />
             </div>
           </div>
         )}
@@ -139,7 +142,7 @@ const FormFour = ({
         <img src={sign} alt="sign icon" />
       </button>
 
-      {hasSignature && (
+      {signatureFile && (
         <div className="w-full flex items-center justify-center">
           <Button
             type="primary"
@@ -151,6 +154,28 @@ const FormFour = ({
           >
             Send Contract
           </Button>
+        </div>
+      )}
+
+      {/* Signature Form Modal */}
+      {showSignatureForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
+            <button
+              type="button"
+              onClick={() => setShowSignatureForm(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl cursor-pointer"
+            >
+              ✕
+            </button>
+            <FormFive
+              setSignatureFile={(file) => {
+                setSignatureFile(file);
+                setShowSignatureForm(false);
+              }}
+              nextStep={() => setShowSignatureForm(false)}
+            />
+          </div>
         </div>
       )}
     </div>
