@@ -1,6 +1,6 @@
 import { motion, useInView, useAnimation } from 'framer-motion'
 import { useEffect, useRef } from 'react'
-import { cn } from '../utlity/helper'
+import { cn } from '../utility/helper'
 import { useWindowSize } from '../hooks/useWindowsize'
 
 export const RevealAnimation = ({
