@@ -168,7 +168,7 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
               Country <span className='text-red-500'>*</span>
             </label>
             {formik.errors.country && (
-              <p className='text-sm text-red-500 italic'>{formik.errors.country}</p>
+              <p className='text-sm italic text-red-500'>{formik.errors.country}</p>
             )}
           </div>
           <div className='relative'>
@@ -199,7 +199,7 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
             </div>
           </div>
           {isCountryLocked && (
-            <p className="text-xs text-gray-500 italic mt-1">
+            <p className="mt-1 text-xs italic text-gray-500">
               Country selection is locked after submission.
             </p>
           )}
@@ -247,14 +247,14 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
               </div>
             </div>
             {isStateLocked && (
-              <p className="text-xs text-gray-500 italic mt-1">
+              <p className="mt-1 text-xs italic text-gray-500">
                 State selection is locked after submission.
               </p>
             )}
           </div>
         {/* Fallback message when no states are available */}
         {states?.length === 0 && (
-          <p className="text-sm text-gray-500 italic mt-2">
+          <p className="mt-2 text-sm italic text-gray-500">
             No region/state required for your selected country.
           </p>
         )}
@@ -275,7 +275,7 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
         )}
 
         {/* Currency Note */}
-        <p className="text-xs text-gray-600 italic mt-2">
+        <p className="mt-2 text-xs italic text-gray-600">
           Note: Your selected country will determine your default currency. Nigerian users will use <strong>₦ (Naira)</strong>, while all other users will use <strong>$ (USD)</strong>. This setting cannot be changed after submission.
         </p>
 
