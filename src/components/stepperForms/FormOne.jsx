@@ -15,6 +15,7 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
   const { countries, isLoading } = useGetCountries();
   const [hasChanges, setHasChanges] = useState(false);
   const [isCountryLocked, setIsCountryLocked] = useState(false);
+  const [isStateLocked, setIsStateLocked] = useState(false);
 
   const selectedIso = savedState
     ? countries?.find((el) => el.name === savedState?.country)?.iso2
@@ -68,9 +69,11 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
       );
       localStorage.setItem(`${username}_personalInfo`, JSON.stringify(details));
 
-      // Lock country permanently after first submission
+      // Lock country and state permanently after first submission
       localStorage.setItem(`${username}_countryLocked`, "true");
+      localStorage.setItem(`${username}_stateLocked`, "true");
       setIsCountryLocked(true);
+      setIsStateLocked(true);
 
       postForm(details, {
         onSuccess: () => nextStep(),
@@ -85,6 +88,8 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
     );
     const countryLocked =
       localStorage.getItem(`${username}_countryLocked`) === "true";
+    const stateLocked =
+      localStorage.getItem(`${username}_stateLocked`) === "true";
 
     if (savedInfo) {
       formik.setValues((prev) => ({
@@ -104,6 +109,7 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
     }
 
     if (countryLocked) setIsCountryLocked(true);
+    if (stateLocked) setIsStateLocked(true);
   }, [username, countries]);
 
   useEffect(() => {
@@ -128,6 +134,8 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
   };
 
   const handleStateChange = (e) => {
+    // Prevent any state changes if locked
+    if (isStateLocked) return;
     formik.setFieldValue("state", e.target.value);
   };
 
@@ -263,12 +271,17 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
                 !formik.values.country ||
                 formik.isSubmitting ||
                 sendingForm ||
-                !selectedCountry
+                !selectedCountry ||
+                isStateLocked
               }
               id="state"
               onChange={handleStateChange}
               value={formik.values.state}
-              className="appearance-none w-full disabled:ring-gray-300  bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm "
+              className={`appearance-none w-full bg-transparent ring-1 outline-none rounded-lg p-3 text-sm ${
+                isStateLocked
+                  ? "ring-amber-400 bg-amber-50 cursor-not-allowed opacity-80"
+                  : "ring-[#00000033] disabled:ring-gray-300"
+              }`}
             >
               <option value="">
                 {loadingStates
@@ -283,10 +296,30 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
                 </option>
               ))}
             </select>
-            <div className="absolute top-[50%] right-4 transform -translate-y-1/2 pointer-events-none text-gray-500">
-              <img src={dropdownarrow} alt="dropdown_icon" />
+            <div
+              className={`absolute top-[50%] right-4 transform -translate-y-1/2 pointer-events-none ${
+                isStateLocked ? "text-amber-600" : "text-gray-500"
+              }`}
+            >
+              {isStateLocked ? (
+                <GiPadlock size={18} />
+              ) : (
+                <img src={dropdownarrow} alt="dropdown_icon" />
+              )}
             </div>
           </div>
+          {isStateLocked && formik.values.state && (
+            <div className="flex items-start gap-2 mt-1 p-2 bg-amber-50 border border-amber-200 rounded-md">
+              <GiPadlock
+                size={14}
+                className="text-amber-600 mt-0.5 flex-shrink-0"
+              />
+              <p className="text-xs text-amber-700">
+                <span className="font-semibold">State locked.</span> This cannot
+                be changed after submission.
+              </p>
+            </div>
+          )}
         </div>
         {/* Fallback message when no states are available */}
         {states?.length === 0 && (

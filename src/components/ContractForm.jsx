@@ -1,41 +1,54 @@
-import { useState, useEffect, useCallback } from 'react';
-import './Stepper.css';
-import FormOne from './stepperForms/FormOne';
-import FormTwo from './stepperForms/FormTwo';
-import FormThree from './stepperForms/FormThree';
-import FormFour from './stepperForms/FormFour';
-import FormFive from './stepperForms/FormFive';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useGlobalContext } from '../Context';
-import { FaArrowLeft } from 'react-icons/fa';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import toast from 'react-hot-toast';
+import { useState, useEffect, useCallback } from "react";
+import "./Stepper.css";
+import FormOne from "./stepperForms/FormOne";
+import FormTwo from "./stepperForms/FormTwo";
+import FormThree from "./stepperForms/FormThree";
+import FormFour from "./stepperForms/FormFour";
+import FormFive from "./stepperForms/FormFive";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useGlobalContext } from "../Context";
+import { FaArrowLeft } from "react-icons/fa";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import toast from "react-hot-toast";
+import { useUser } from "../context/UserContext";
 
 const ContractForm = ({ subHead, endDate }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const contractType = searchParams.get('contractType');
+  const contractType = searchParams.get("contractType");
   const { setFormStepperData, currentUser } = useGlobalContext();
+  const { username: contextUsername } = useUser();
 
-  // Generate or retrieve username
-  const username = sessionStorage.getItem('username') || generateTempUsername();
+  // Use username from UserContext (same as Overview page) for consistent localStorage keys
+  // Fall back to sessionStorage only if user is not logged in
+  const username =
+    contextUsername ||
+    sessionStorage.getItem("username") ||
+    generateTempUsername();
   function generateTempUsername() {
-    const temp = `user_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-    sessionStorage.setItem('username', temp);
+    const temp = `user_${Date.now()}_${Math.random()
+      .toString(36)
+      .substring(2, 6)}`;
+    sessionStorage.setItem("username", temp);
     return temp;
   }
 
   // Get userId from auth context or fallback
-  const userId = currentUser?.id || sessionStorage.getItem('userId') || generateTempUserId();
+  const userId =
+    currentUser?.id || sessionStorage.getItem("userId") || generateTempUserId();
   function generateTempUserId() {
-    const id = `uid_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-    sessionStorage.setItem('userId', id);
+    const id = `uid_${Date.now()}_${Math.random()
+      .toString(36)
+      .substring(2, 6)}`;
+    sessionStorage.setItem("userId", id);
     return id;
   }
 
   // Step management
-  const savedStep = JSON.parse(sessionStorage.getItem(`${username}_currentStep`));
+  const savedStep = JSON.parse(
+    sessionStorage.getItem(`${username}_currentStep`)
+  );
   const [currentStep, setCurrentStep] = useState(savedStep || 1);
 
   const getCompletionCount = () => {
@@ -49,44 +62,47 @@ const ContractForm = ({ subHead, endDate }) => {
   };
 
   const steps = [
-    'Personal Information',
-    'Job Details',
-    'Compensation Budget',
-    'Review Contract',
+    "Personal Information",
+    "Job Details",
+    "Compensation Budget",
+    "Review Contract",
   ];
 
   const initialValues = {
-    clientName: '',
-    email: '',
-    country: '',
-    state: '',
-    companyName: '',
-    roleTitle: '',
-    seniorityLevel: '',
-    scopeOfWork: '',
-    description: '',
-    startDate: '',
-    endDate: '',
-    paymentRate: '',
-    paymentFrequency: '',
-    signature: '',
+    clientName: "",
+    email: "",
+    country: "",
+    state: "",
+    companyName: "",
+    roleTitle: "",
+    seniorityLevel: "",
+    scopeOfWork: "",
+    description: "",
+    startDate: "",
+    endDate: "",
+    paymentRate: "",
+    paymentFrequency: "",
+    signature: "",
   };
 
   const handlePrevious = useCallback(() => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
-      sessionStorage.setItem(`${username}_currentStep`, JSON.stringify(currentStep - 1));
+      sessionStorage.setItem(
+        `${username}_currentStep`,
+        JSON.stringify(currentStep - 1)
+      );
     } else {
-      navigate('/dashboard/add-developer');
+      navigate("/dashboard/add-developer");
     }
   }, [currentStep, navigate, username]);
 
   const validationSchema = Yup.object({
-    scopeOfWork: Yup.string().required('Scope of work is required'),
-    startDate: Yup.string().required('Start date is required'),
-    description: Yup.string().required('Scope of work explanation is required'),
-    paymentRate: Yup.number().required('Payment rate is required'),
-    paymentFrequency: Yup.string().required('Payment frequency is required'),
+    scopeOfWork: Yup.string().required("Scope of work is required"),
+    startDate: Yup.string().required("Start date is required"),
+    description: Yup.string().required("Scope of work explanation is required"),
+    paymentRate: Yup.number().required("Payment rate is required"),
+    paymentFrequency: Yup.string().required("Payment frequency is required"),
   });
 
   const formik = useFormik({
@@ -94,7 +110,7 @@ const ContractForm = ({ subHead, endDate }) => {
     enableReinitialize: true,
     validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      toast.success('Application sent Successfully');
+      toast.success("Application sent Successfully");
     },
   });
 
@@ -183,16 +199,25 @@ const ContractForm = ({ subHead, endDate }) => {
 
   return (
     <section className="p-4 w-full flex flex-col gap-10 pt-10">
-      <div className="flex items-center gap-1 text-sm font-medium leading-normal pr-text-clr xl:gap-3" onClick={handlePrevious}>
+      <div
+        className="flex items-center gap-1 text-sm font-medium leading-normal pr-text-clr xl:gap-3"
+        onClick={handlePrevious}
+      >
         <FaArrowLeft size={18} />
         <span className="cursor-pointer">Go back</span>
       </div>
 
       <div className="flex flex-col gap-6">
         <div className="space-y-3">
-          <h3 className="text-xl leading-normal font-bold xl:text-[29px]">Preparing a contract</h3>
-          <p className="text-[12px] font-medium leading-normal xl:w-[428px] xl:text-[16px]" style={{ color: 'rgba(0, 0, 0, 0.60)' }}>
-            Input the required details to customize your contract. Ensure all fields are complete for accuracy.
+          <h3 className="text-xl leading-normal font-bold xl:text-[29px]">
+            Preparing a contract
+          </h3>
+          <p
+            className="text-[12px] font-medium leading-normal xl:w-[428px] xl:text-[16px]"
+            style={{ color: "rgba(0, 0, 0, 0.60)" }}
+          >
+            Input the required details to customize your contract. Ensure all
+            fields are complete for accuracy.
           </p>
         </div>
 
@@ -201,9 +226,13 @@ const ContractForm = ({ subHead, endDate }) => {
           <div className="flex overview-expense-bg border-[2px] border-[#E1E2DD] mb-3 md:mb-0 rounded-2xl h-fit md:p-8 px-8 p-2 flex-shrink-0 lg:w-96 gap-4 md:flex-col md:order-2 items-center">
             {steps.map((step, i) => (
               <div key={i} className="flex w-full items-center gap-4">
-                <p className={`w-8 h-8 md:w-10 md:h-10 flex-shrink-0 flex items-center justify-center rounded-full ${
-                  currentStep >= i + 1 ? 'bg-[#008000] text-white' : 'text-[#E1E2DD] ring-1 ring-[#E1E2DD]'
-                }`}>
+                <p
+                  className={`w-8 h-8 md:w-10 md:h-10 flex-shrink-0 flex items-center justify-center rounded-full ${
+                    currentStep >= i + 1
+                      ? "bg-[#008000] text-white"
+                      : "text-[#E1E2DD] ring-1 ring-[#E1E2DD]"
+                  }`}
+                >
                   {i + 1}
                 </p>
                 <p className="hidden md:block text-center text-sm lg:text-base truncate font-medium leading-normal">
