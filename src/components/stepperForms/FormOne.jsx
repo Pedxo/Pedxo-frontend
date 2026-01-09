@@ -18,12 +18,14 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
   const [isStateLocked, setIsStateLocked] = useState(false);
 
   const selectedIso = savedState
-    ? countries?.find((el) => el.name === savedState.country)?.iso2
-    : null;
-  const [selectedCountry, setSelectedCountry] = useState(selectedIso || '');
-  const { states, isLoading: loadingStates } = useGetStates(selectedCountry);
-  const queryClient = useQueryClient();
-  const { postForm, isLoading: sendingForm } = usePersonalInfoContract();
+
+    ? countries?.find((el) => el.name === savedState?.country).iso2
+    : null
+  const [selectedCountry, setSelectedCountry] = useState(selectedIso || '')
+  const { states, isLoading: loadingStates } = useGetStates(selectedCountry)
+  const queryClient = useQueryClient()
+  const { postForm, isLoading: sendingForm } = usePersonalInfoContract()
+
 
   const validationSchema = Yup.object({
     clientName: Yup.string().required('Client name is required'),
@@ -136,10 +138,10 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
           id='clientName'
           placeholder='John Doe'
           disabled={formik.isSubmitting || sendingForm}
-          error={Boolean(formik.errors.clientName && formik.touched.clientName)}
-          errorMessage={formik.errors.clientName}
+          error={Boolean(formik.errors?.clientName && formik.touched?.clientName)}
+          errorMessage={formik.errors?.clientName}
           onBlur={formik.handleBlur}
-          value={formik.values.clientName}
+          value={formik.values?.clientName}
           onChange={formik.handleChange}
           required={true}
         />
@@ -151,10 +153,10 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
           disabled={formik.isSubmitting || sendingForm}
           id='email'
           placeholder='John@gmail.com'
-          error={Boolean(formik.errors.email && formik.touched.email)}
-          errorMessage={formik.errors.email}
+          error={Boolean(formik.errors?.email && formik.touched?.email)}
+          errorMessage={formik.errors?.email}
           onBlur={formik.handleBlur}
-          value={formik.values.email}
+          value={formik.values?.email}
           onChange={formik.handleChange}
           required={true}
         />
@@ -175,15 +177,20 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
               id='country'
               disabled={isLoading || formik.isSubmitting || sendingForm || isCountryLocked}
               onChange={handleCountryChange}
-              value={countries?.find((c) => c.name === formik.values.country)?.iso2 || ''}
-              className='appearance-none w-full disabled:ring-gray-300 bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg p-3 text-sm'
+
+              value={
+                countries?.find((c) => c.name === formik.values?.country)
+                  ?.iso2 || ''
+              }
+              className='appearance-none w-full disabled:ring-gray-300  bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm'
+
             >
               <option value=''>
                 {isLoading ? 'Loading Countries...' : 'Select Country'}
               </option>
               {countries?.map((country) => (
                 <option key={country.id} value={country.iso2}>
-                  {country.name}
+                  {country?.name}
                 </option>
               ))}
             </select>
@@ -198,34 +205,40 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
           )}
         </div>
 
-        {/* State Dropdown — only show if states exist */}
-        {states?.length > 0 && (
-          <div className='flex flex-col w-full gap-1 xl:gap-4'>
-            <label htmlFor='state' className='text-sm font-semibold leading-normal'>
-              Region/Province/State
-            </label>
-            <div className='relative'>
-              <select
-                name='state'
-                disabled={
-                  loadingStates ||
-                  !formik.values.country ||
-                  formik.isSubmitting ||
-                  sendingForm ||
-                  !selectedCountry ||
-                  isStateLocked
-                }
-                id='state'
-                onChange={handleStateChange}
-                value={formik.values.state}
-                className='appearance-none w-full disabled:ring-gray-300 bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg p-3 text-sm'
-              >
-                <option value=''>
-                  {loadingStates ? 'Loading States...' : 'Select State'}
-                </option>
-                {states.map((state) => (
-                  <option key={state.id} value={state.name}>
-                    {state.name}
+
+        {/* State Dropdown */}
+        <div className='flex flex-col w-full gap-1 xl:gap-4'>
+          <label
+            htmlFor='state'
+            className='text-sm font-semibold leading-normal'
+          >
+            Region/Province/State
+          </label>
+          <div className='relative'>
+            <select
+              name='state'
+              disabled={
+                loadingStates ||
+                !formik.values.country ||
+                formik.isSubmitting ||
+                sendingForm ||
+                !selectedCountry
+              }
+              id='state'
+              onChange={(e) => formik.setFieldValue('state', e.target.value)}
+              value={formik.values.state}
+              className='appearance-none w-full disabled:ring-gray-300  bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm '
+            >
+              <option value=''>
+                {loadingStates
+                  ? 'Loading States...'
+                  : states?.length === 0
+                  ? '-'
+                  : 'Select State'}
+              </option>
+              {states?.map((state) => (
+                <option key={state.id} value={state?.name}>
+                  {state?.name}
                   </option>
                 ))}
               </select>
@@ -239,8 +252,6 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
               </p>
             )}
           </div>
-        )}
-
         {/* Fallback message when no states are available */}
         {states?.length === 0 && (
           <p className="mt-2 text-sm italic text-gray-500">
@@ -257,7 +268,7 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
             disabled={formik.isSubmitting || sendingForm}
             id='companyName'
             placeholder='Enter company name'
-            value={formik.values.companyName}
+            value={formik.values?.companyName}
             onChange={formik.handleChange}
             required={true}
           />

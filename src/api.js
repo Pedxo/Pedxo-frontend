@@ -102,4 +102,4 @@ export async function getUserContracts(userId) {
   }
 }
 
-  export default authFetch;
+export default authFetch;
