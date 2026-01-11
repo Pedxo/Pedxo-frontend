@@ -190,17 +190,6 @@ const SignUp = () => {
               value={formData.password}
               onChange={handleChange}
             />
-            {/* <button
-              type="button"
-              className="absolute right-1 top-[42px] p-1 rounded-md hover:bg-gray-100"
-              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-            >
-              <img
-                src={isPasswordVisible ? eyesolid : eyeslashsolid}
-                alt={isPasswordVisible ? "Hide password" : "Show password"}
-                className="w-5 h-5"
-              />
-            </button> */}
           </div>
 
           <div className="relative">
@@ -214,23 +203,12 @@ const SignUp = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            {/* <button
-              type="button"
-              className="absolute right-1 top-[42px] p-1 rounded-md hover:bg-gray-100"
-              onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
-            >
-              <img
-                src={isConfirmPasswordVisible ? eyesolid : eyeslashsolid}
-                alt={isConfirmPasswordVisible ? "Hide password" : "Show password"}
-                className="w-5 h-5"
-              />
-            </button> */}
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
+            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors overview-expense disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <div className="flex justify-center">

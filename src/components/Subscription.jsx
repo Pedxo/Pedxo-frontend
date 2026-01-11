@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const plans = [
   {
     name: "Starter",
-    priceMonthly: 42,
+    priceMonthly: 159,
     priceType: "/month per seat",
     description:
       "Great for small teams and founders hiring their first contractor",
@@ -26,7 +26,7 @@ const plans = [
   {
     name: "Growth",
     tag: "MOST POPULAR",
-    priceMonthly: 38,
+    priceMonthly: 138,
     priceType: "/month per seat",
     description:
       "For teams scaling remote hiring, save more when you scale your team.",

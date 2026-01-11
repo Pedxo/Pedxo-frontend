@@ -30,13 +30,13 @@ function Button({
 
   const styles = {
     primary:
-      "bg-primary text-white hover:bg-primary/80 rounded-md font-semibold",
+      "bg-primary text-white hover:bg-primary/80 overview-expense font-semibold",
     secondary:
-      "bg-white text-black hover:bg-gray-50 ring-1 ring-secondary rounded-md font-semibold",
+      "bg-white text-black hover:bg-gray-50 ring-1 ring-secondary overview-expense font-semibold",
     danger:
-      "bg-red-500 text-white hover:bg-brandRed/80 rounded-md font-semibold",
+      "bg-red-500 text-white hover:bg-brandRed/80 overview-expense font-semibold",
     accent:
-      "bg-white ring-1 ring-black font-medium hover:bg-gray-50 rounded-md",
+      "bg-white ring-1 ring-black font-medium hover:bg-gray-50 overview-expense",
   };
 
   if (link)

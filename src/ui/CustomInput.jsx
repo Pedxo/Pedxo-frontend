@@ -37,7 +37,7 @@ function CustomInput({
             disabled={disabled}
             onChange={onChange}
             required={required}
-            className=" w-full text-sm focus:outline-none disabled:cursor-not-allowed"
+            className=" w-full text-sm overview-expense-bgs focus:outline-none disabled:cursor-not-allowed"
           />
           <button
             type="button"
@@ -64,7 +64,7 @@ function CustomInput({
         {error && <p className="text-sm text-red-500">{errorMessage}</p>}
       </div>
       <input
-        className={`p-3 rounded-md bg-transparent disabled:cursor-not-allowed disabled:border-gray-500 focus:outline-none transition-all ease-in duration-200 focus:ring-1 focus:ring-primary text-sm border w-full ${
+        className={`p-3 rounded-md bg-transparent disabled:cursor-not-allowed disabled:border-gray-500 focus:outline-none overview-expense-bgs transition-all ease-in duration-200 focus:ring-1 focus:ring-primary text-sm border w-full ${
           error ? "border-red-500" : "border-[#0000004D]"
         }`}
         type={type}

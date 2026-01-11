@@ -90,7 +90,7 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="sm:py-4 py-3 font-medium pr-bg-clr text-white sm:text-base text-xs w-full mt-[6px] rounded-lg"
+            className="sm:py-4 py-3 font-medium pr-bg-clr text-white sm:text-base text-xs w-full mt-[6px] overview-expense"
           >
             {isLoggingIn ? <MiniLoader /> : "Continue"}
           </button>
