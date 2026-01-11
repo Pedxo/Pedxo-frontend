@@ -10,9 +10,9 @@ const GradientTextHeading = () => (
   <RevealAnimation delay={0.2} duration={0.8} className='w-full md:w-[80%]'>
     <h1 className='text-5xl md:text-[68px] font-bold leading-[60px] md:leading-[75px] text-center'>
       <span className='bg-gradient-to-r from-gradientPrimary via-violet to-gradientPrimary bg-clip-text text-transparent'>
-        Try Agent
+        Full Self-Driving recruiter for AI agents
       </span>
-      <span className='text-gray-900'> +  Prompt engineers on your codebase</span>
+      {/* <span className='text-gray-900'>{" "} Full Self-Driving recruiter for AI agents</span> */}
     </h1>
   </RevealAnimation>
 )
@@ -20,7 +20,7 @@ const GradientTextHeading = () => (
 const Description = () => (
   <RevealAnimation delay={0.4} duration={0.8} className='w-full md:w-1/2'>
     <p className='text-center text-lg text-gray-600'>
-      Add the right prompt engineer to support your agentic IDE using plain English
+      Add the right remote engineer in-the-loop to support your vibe coding tool through autonomous hiring
     </p>
   </RevealAnimation>
 )
@@ -33,7 +33,7 @@ const ActionButton = ({ children, variant = 'primary', ...props }) => {
       onClick={goToDashboard}
       className={`px-5 py-3 sm:text-base text-sm rounded-full font-medium transition-all shadow-sm ${
         variant === 'primary'
-          ? 'bg-gradient-to-r from-gradientPrimary via-violet to-gradientPrimary text-white hover:opacity-90'
+          ? 'bg-black shadow-md text-white hover:opacity-90'
           : 'border border-gray-300 text-gray-800 hover:bg-gray-50 bg-[#FFFFFF]'
       }`}
       {...props}

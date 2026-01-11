@@ -85,7 +85,7 @@ const Navbar = () => {
                 <SideBarMenuItems
                   to="payroll"
                   icon={PayRollIcon}
-                  title=" payroll"
+                  title="spending"
                 />
                 <SideBarMenuItems
                   to="expenses"
