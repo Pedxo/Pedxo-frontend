@@ -1,5 +1,5 @@
 import SignatureCanvas from "react-signature-canvas";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import useUploadSignature from "../../features/contracts/useUploadSignature";
@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 
 const FormFive = ({ nextStep, setSignatureFile }) => {
   const { uploadSignature, sendingForm } = useUploadSignature();
+  const [hasSignature, setHasSignature] = useState(false);
   const sigCanvas = useRef(null);
 
   const validationSchema = Yup.object({
@@ -20,7 +21,7 @@ const FormFive = ({ nextStep, setSignatureFile }) => {
     initialValues: { signature: null },
     onSubmit: (values, { setSubmitting }) => {
       const formData = new FormData();
-      
+
       formData.append("signature", values?.signature);
 
       uploadSignature(formData, {
@@ -58,6 +59,7 @@ const FormFive = ({ nextStep, setSignatureFile }) => {
   const clearSignature = () => {
     sigCanvas.current?.clear();
     formik.setFieldValue("signature", null);
+    setHasSignature(false)
   };
 
   return (
@@ -71,8 +73,9 @@ const FormFive = ({ nextStep, setSignatureFile }) => {
           ref={sigCanvas}
           onBegin={() => console.log("started")}
           onEnd={() => {
-            saveSignature();
-            console.log("ended");
+            if (!sigCanvas.current?.isEmpty()) {
+              setHasSignature(true);
+            }
           }}
           canvasProps={{
             className: "mx-auto",
@@ -88,19 +91,14 @@ const FormFive = ({ nextStep, setSignatureFile }) => {
 
       <CustomForm onSubmit={formik.handleSubmit}>
         <div className="mt-[50px] xl:mb-[66px] lg:flex lg:justify-center">
-          <Button
-            buttonType="submit"
-            onClick={saveSignature} //  Ensure signature is saved before submit
-            disabled={
-              formik.isSubmitting ||
-              sendingForm ||
-              !formik.isValid ||
-              !formik.dirty
-            }
-            isLoading={sendingForm}
-            type="primary"
-          >
-            Use Signature
+        <Button
+                buttonType="submit"
+                onClick={saveSignature}
+                disabled={sendingForm || !hasSignature}
+                isLoading={sendingForm}
+                type="primary"
+              >
+                Use Signature
           </Button>
         </div>
       </CustomForm>
