@@ -7,7 +7,7 @@ export default function useJobDetailsForm() {
     mutationFn: (details) => updateFormTwo(details),
     mutationKey: ["job-details"],
     onSuccess: (data) => {
-        toast.success("Form Saved")
+        toast.success("Action Saved")
       const contractData = data?.data;
       console.log(data)
       sessionStorage.setItem("personal-info", JSON.stringify(contractData));
