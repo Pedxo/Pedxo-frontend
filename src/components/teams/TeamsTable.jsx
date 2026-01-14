@@ -34,6 +34,8 @@ const profileImages = [
 const getEmployeeKey = (emp) =>
   emp._id || emp.userId || emp.email;
 
+
+
 // Stable image assignment
 const getProfileImagesMapping = (employees) => {
   const stored = JSON.parse(localStorage.getItem("employeeImages") || "{}");
@@ -96,11 +98,15 @@ useEffect(() => {
       console.log("Talent response:", talentJson);
 
       // SAFE EXTRACTION (VERY IMPORTANT)
+      // const talents =
+      //   Array.isArray(talentJson?.data)
+      //     ? talentJson.data
+      //     : Array.isArray(talentJson?.result?.talents)
+      //     ? talentJson.result.talents
+      //     : [];
       const talents =
-        Array.isArray(talentJson?.data)
-          ? talentJson.data
-          : Array.isArray(talentJson?.result?.talents)
-          ? talentJson.result.talents
+        Array.isArray(talentJson?.data?.contracts)
+          ? talentJson.data.contracts
           : [];
 
       if (!talents.length) {
