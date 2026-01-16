@@ -108,7 +108,7 @@ const InfoCard = ({ title, content, onTryNow }) => (
         transition={{ delay: 0.5 }}
         className="relative z-10"
       >
-        <p className="text-white text-2xl md:text-[48px] md:font-700 font-bold leading-[100%] text-center">
+        <p className="text-white text-xl md:text-[48px] md:font-700 font-bold leading-[100%] text-center">
           {title}
         </p>
       </motion.div>

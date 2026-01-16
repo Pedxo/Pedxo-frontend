@@ -11,7 +11,7 @@ const SectionHeading = ({ children }) => (
 
 const SectionDescription = ({ children }) => (
   <RevealAnimation delay={0.4} duration={0.8} direction="up">
-    <p className="text-center text-lg text-gray-600">{children}</p>
+    <p className="text-center text-md text-gray-600">{children}</p>
   </RevealAnimation>
 );
 
