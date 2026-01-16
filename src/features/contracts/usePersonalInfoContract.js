@@ -7,7 +7,7 @@ export default function usePersonalInfoContract() {
     mutationFn: (details) => createContractOne(details),
     mutationKey: ["personal-info-form"],
     onSuccess: (data) => {
-      toast.success("Form Saved")
+      toast.success("Action Saved")
       const contractData = data?.data;
       sessionStorage.setItem("personal-info", JSON.stringify(contractData))
     },

@@ -7,7 +7,10 @@ import Button from "../components/Button";
 import { FaUserPlus } from "react-icons/fa";
 import CreateContractIcon from "../assets/icons/CreateContractIcon";
 import Table from "../components/Table";
+
+
 const Teams = () => {
+  
   const onBoarding = [
     {
       id: nanoid(),

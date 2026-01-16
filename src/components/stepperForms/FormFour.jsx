@@ -1,83 +1,102 @@
 import sign from "../../assets/svg/sign.svg";
 import sendContract from "../../assets/svg/sendcontract.svg";
-
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { formatCurrency, formatDate } from "../../utility/helper";
 import useFinalizeContract from "../../features/contracts/useFinalizeContract";
 import Button from "../Button";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import FormFive from "./FormFive";
+import toast from "react-hot-toast";
 
 const FormFour = ({
   savedState,
   heading,
   nextStep,
   setCurrentStep,
-  signature,
-  hasSignature,
+  username,
+  userId,
 }) => {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const contractType = searchParams.get("contractType") ?? "";
   const { finalize, sendingForm } = useFinalizeContract();
-  const [hasChanges, setHasChanges] = useState(false);
+  const [signatureFile, setSignatureFile] = useState(null);
+  const [showSignatureForm, setShowSignatureForm] = useState(false);
+
   const getCompletionCount = () => {
     const count = sessionStorage.getItem("contractCompletionCount");
     return count ? parseInt(count) : 0;
   };
-
   const [completionCount, setCompletionCount] = useState(getCompletionCount());
+
+  const safeState = savedState || {};
+
   const userInfo = [
-    {
-      title: "Contract Type",
-      data: contractType.split("-").join(" "),
-    },
+    { title: "Contract Type", data: contractType.split("-").join(" ") },
     {
       title: "Start Date",
-      data: savedState.startDate ? formatDate(savedState.startDate) : "-",
+
+      data: savedState?.startDate ? formatDate(savedState?.startDate) : "-",
     },
     {
       title: "End Date",
-      data: savedState.endDate ? formatDate(savedState.endDate) : "-",
+      data: savedState?.endDate ? formatDate(savedState?.endDate) : "-",
     },
     {
       title: "Job Title",
-      data: savedState.roleTitle ?? "-",
+      data: savedState?.roleTitle ?? "-",
     },
     {
       title: "Seniority Level",
-      data: savedState.seniorityLevel ?? "-",
+      data: savedState?.seniorityLevel ?? "-",
     },
     {
       title: "Scope of Work",
-      data: savedState.scopeOfWork ?? "-",
+      data: savedState?.scopeOfWork ?? "-",
     },
+    { title: "Job Title", data: safeState.roleTitle ?? "-" },
+    { title: "Seniority Level", data: safeState.seniorityLevel ?? "-" },
+    { title: "Scope of Work", data: safeState.scopeOfWork ?? "-" },
     {
       title: "Payment Rate",
       data:
         formatCurrency(
-          savedState.paymentRate,
-          savedState.country === "Nigeria" ? "NGN" : "USD",
-          savedState.country === "Nigeria" ? "en-NG" : "en-US"
+          savedState?.paymentRate,
+          savedState?.country === "Nigeria" ? "NGN" : "USD",
+          savedState?.country === "Nigeria" ? "en-NG" : "en-US"
         ) ?? null,
     },
     {
       title: "Payment Frequency",
-      data: savedState.paymentFrequency ?? null,
+      data: savedState?.paymentFrequency ?? null,
     },
+    { title: "Payment Frequency", data: safeState.paymentFrequency ?? "-" },
   ];
 
   const sendFinalForm = () => {
-    // For the final form, we typically want to always submit when sending
-    finalize(savedState, {
+    if (!signatureFile) {
+      toast.error("Please sign the contract before sending.");
+      return;
+    }
+
+    const formData = new FormData();
+    for (const key in safeState) {
+      formData.append(key, safeState[key]);
+    }
+    formData.append("userId", userId);
+    formData.append("signature", signatureFile);
+
+    finalize(formData, {
       onSuccess: () => {
-        // nextStep();
+        toast.success("Contract sent successfully!");
+        sessionStorage.removeItem("currentStep");
+        const newCount = completionCount + 1;
+        setCompletionCount(newCount);
+        sessionStorage.setItem("contractCompletionCount", newCount.toString());
+      },
+      onError: () => {
+        toast.error("Failed to send contract.");
       },
     });
-    sessionStorage.removeItem("currentStep");
-    // Increment the completion count
-    const newCount = completionCount + 1;
-    setCompletionCount(newCount);
-    sessionStorage.setItem("contractCompletionCount", newCount.toString());
   };
 
   return (
@@ -89,41 +108,37 @@ const FormFour = ({
       <div className="bg-white rounded-lg border border-solid border-[#00000033] px-10 pt-[53px] text-[0.625rem] xl:text-[1.125rem]">
         {userInfo.map((item, index) => (
           <div className="flex justify-between mb-[45px]" key={index}>
-            <p className="text-[#00000080]">{item.title}</p>
-            <p className="text-right capitalize">{item.data}</p>
+            <p className="text-[#00000080]">{item?.title}</p>
+            <p className="text-right capitalize">{item?.data}</p>
           </div>
         ))}
 
-        <div className={`mb-[39px] ${signature ? "block" : "hidden"} `}>
-          <div className="w-full h-[0.5px] bg-[#0000004d]"></div>
-          <div className="mt-[39px] max-w-[100px] mx-auto">
-            {signature && <img src={signature} alt="user signature" />}
+        {signatureFile && (
+          <div className="mb-[39px]">
+            <div className="w-full h-[0.5px] bg-[#0000004d]"></div>
+            <div className="mt-[39px] max-w-[100px] mx-auto">
+              <img
+                src={URL.createObjectURL(signatureFile)}
+                alt="user signature"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <button
         type="button"
-        onClick={() => {
-          if (hasSignature) {
-            setCurrentStep(5);
-          } else {
-            nextStep();
-          }
-        }}
+        onClick={() => setShowSignatureForm(true)}
         className="flex items-center justify-between border border-solid border-[#00000033] px-[15px] py-[10px] bg-[#d9d9d980] rounded-lg xl:px-[30px] xl:py-[19px] cursor-pointer"
       >
         <div className="font-medium text-[0.6875rem] text-[#00000099] xl:text-[1.125rem]">
-          {hasSignature ? "Re-Sign Contract" : "Sign Contract"}
+          {signatureFile ? "Re-Sign Contract" : "Sign Contract"}
         </div>
-
-        <div>
-          <img src={sign} alt="sign icon" />
-        </div>
+        <img src={sign} alt="sign icon" />
       </button>
 
-      {hasSignature && (
-        <div className="w-full flex items-center justify-center">
+      {signatureFile && (
+        <div className="flex items-center justify-center w-full">
           <Button
             type="primary"
             onClick={sendFinalForm}
@@ -134,6 +149,28 @@ const FormFour = ({
           >
             Send Contract
           </Button>
+        </div>
+      )}
+
+      {/* Signature Form Modal */}
+      {showSignatureForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="relative w-full max-w-md p-6 bg-white rounded-lg">
+            <button
+              type="button"
+              onClick={() => setShowSignatureForm(false)}
+              className="absolute text-xl text-gray-500 cursor-pointer top-4 right-4 hover:text-gray-700"
+            >
+              ✕
+            </button>
+            <FormFive
+              setSignatureFile={(file) => {
+                setSignatureFile(file);
+                setShowSignatureForm(false);
+              }}
+              nextStep={() => setShowSignatureForm(false)}
+            />
+          </div>
         </div>
       )}
     </div>

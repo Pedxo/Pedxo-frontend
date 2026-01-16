@@ -20,7 +20,19 @@
     "Virtual Assistant",
     "Content Marketer",
     "Content Writer",
-    "Mobile Developer"
+    "Mobile Developer",
+     "AI Researcher",
+     "Prompt Engineer",
+     "Creative Engineer",
+     "Research Engineer",
+     "Vibe Coder",
+     "UX Experimenter",
+     "UI Researcher",
+     "Animation Designer",
+     "Code Annotator",
+     "ML Engineer",
+     "Design Engineer",
+     "Content Moderator & Rater"
   ],
   "seniorityLevels": [
     "Not applicable",
@@ -65,7 +77,20 @@
       "Senior Data Scientist",
       "Content Marketer",
       "Content Writer",
-      "Virtual Assistant"
+      "Virtual Assistant",
+      "Mobile Developer",
+     "AI Researcher",
+     "Prompt Engineer",
+     "Creative Engineer",
+     "Research Engineer",
+     "Vibe Coder",
+     "UX Experimenter",
+     "UI Researcher",
+     "Animation Designer",
+     "Code Annotator",
+     "ML Engineer",
+     "Design Engineer",
+     "Content Moderator & Rater"
     ],
     "explanation": [
       {
@@ -338,7 +363,128 @@
           "Manage a contact list.",
           "Organize the employer's files and calendars."
         ]
-      }
+      },
+      
+  {
+    "title": "AI Researcher",
+    "responsibilities": [
+      "Develop new models, algorithms, and methods to advance artificial intelligence.",
+      "Design and experiment with machine learning architectures.",
+      "Conduct research studies and publish findings.",
+      "Collaborate with academic and industry partners.",
+      "Prototype and validate new AI techniques."
+    ]
+  },
+  {
+    "title": "Prompt Engineer",
+    "responsibilities": [
+      "Design, write, and optimize prompts for large language models.",
+      "Test prompt variations to improve model outputs.",
+      "Tune instructions for specific tasks like summarization or coding.",
+      "Analyze model behavior and refine prompt strategies.",
+      "Document prompt patterns and performance outcomes."
+    ]
+  },
+  {
+    "title": "Creative Engineer",
+    "responsibilities": [
+      "Blend technical skills with creative thinking to build novel products.",
+      "Use generative AI tools to create interactive experiences.",
+      "Prototype artistic or experimental applications.",
+      "Collaborate with designers and developers.",
+      "Explore unconventional uses of code and AI."
+    ]
+  },
+  {
+    "title": "Research Engineer",
+    "responsibilities": [
+      "Apply research findings into practical systems.",
+      "Translate academic work into deployable prototypes.",
+      "Validate models and integrate them into applications.",
+      "Collaborate with researchers and product teams.",
+      "Document implementation of theoretical concepts."
+    ]
+  },
+  {
+    "title": "Vibe Coder",
+    "responsibilities": [
+      "Quickly prototype functional code using AI coding tools.",
+      "Focus on experimentation over structure.",
+      "Build MVPs and test ideas rapidly.",
+      "Use AI-assisted coding environments.",
+      "Iterate on feedback and refine prototypes."
+    ]
+  },
+  {
+    "title": "UX Experimenter",
+    "responsibilities": [
+      "Test and refine user experiences through rapid experimentation.",
+      "Conduct usability experiments and gather feedback.",
+      "Adjust interfaces to improve engagement.",
+      "Collaborate with design and product teams.",
+      "Document findings and iterate designs."
+    ]
+  },
+  {
+    "title": "UI Researcher",
+    "responsibilities": [
+      "Study interface usability and accessibility.",
+      "Analyze user interaction patterns.",
+      "Conduct accessibility audits and recommend improvements.",
+      "Collaborate with designers and developers.",
+      "Evaluate interface performance and user satisfaction."
+    ]
+  },
+  {
+    "title": "Animation Designer",
+    "responsibilities": [
+      "Create motion and visual animations using AI coding models.",
+      "Design animated elements for storytelling and engagement.",
+      "Use generative tools to enhance interface dynamics.",
+      "Collaborate with creative and technical teams.",
+      "Prototype and refine motion graphics."
+    ]
+  },
+  {
+    "title": "Code Annotator",
+    "responsibilities": [
+      "Label and document code or datasets for training and evaluation.",
+      "Add metadata and structured annotations.",
+      "Support machine learning training and benchmarking.",
+      "Maintain documentation standards.",
+      "Collaborate with data and engineering teams."
+    ]
+  },
+  {
+    "title": "ML Engineer",
+    "responsibilities": [
+      "Build, deploy, and scale machine learning models.",
+      "Develop training pipelines and model integrations.",
+      "Monitor and optimize model performance.",
+      "Collaborate with data scientists and engineers.",
+      "Maintain production ML systems."
+    ]
+  },
+  {
+    "title": "Design Engineer",
+    "responsibilities": [
+      "Integrate engineering principles with design.",
+      "Create functional and aesthetic products.",
+      "Apply design thinking to technical challenges.",
+      "Collaborate with designers and developers.",
+      "Prototype and test user-centric systems."
+    ]
+  },
+  {
+    "title": "Content Moderator & Rater",
+    "responsibilities": [
+      "Review, filter, and rate digital content for quality and safety.",
+      "Evaluate content against platform guidelines.",
+      "Flag inappropriate or harmful material.",
+      "Score relevance and quality for training datasets.",
+      "Maintain moderation standards and documentation."
+    ]
+  }
     ]
   }
 }
