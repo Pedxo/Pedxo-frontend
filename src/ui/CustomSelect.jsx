@@ -20,7 +20,7 @@ function CustomSelect({
         value={value}
         onChange={onChange}
         disabled={disabled}
-        className="appearance-none w-full disabled:cursor-not-allowed disabled:text-gray-500 disabled:opacity-90 cursor-pointer bg-transparent border border-[#00000033] outline-gray-400 rounded-lg p-4"
+        className="appearance-none w-full disabled:cursor-not-allowed disabled:text-gray-500 disabled:opacity-90 cursor-pointer overview-expense-bgs bg-transparent border border-[#00000033] outline-gray-400 rounded-lg p-4"
       >
         <option value="">{placeholder}</option>
         {options.map((el, i) => (

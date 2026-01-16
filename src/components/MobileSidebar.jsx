@@ -130,7 +130,7 @@ const MobileSideBar = () => {
                     onClick={() => setMobileNavOpen(false)}
                     to="payroll"
                     icon={PayRollIcon}
-                    title=" payroll"
+                    title="spending"
                   />
                   <SideBarMenuItems
                     onClick={() => setMobileNavOpen(false)}
@@ -147,7 +147,7 @@ const MobileSideBar = () => {
                     to="agreements"
                     onClick={() => setMobileNavOpen(false)}
                     icon={AgreementsIcon}
-                    title="agreements "
+                    title="contracts"
                   />
                 </div>
               </div>

@@ -90,7 +90,7 @@ export const FooterSection = () => {
         </div>
 
         <p className='text-center md:text-[15.521px] text-[10.521px] text-[#FFFFFF99]'>
-          © 2025 Pedxo. All rights reserved.
+          © 2026 Pedxo. All rights reserved.
         </p>
       </MaxScreenWrapper>
     </footer>

@@ -67,8 +67,8 @@ export const ToolsSection = () => {
     <MaxScreenWrapper className="px-4 md:px-24 flex flex-col items-center gap-6 md:gap-10">
       {/* First Header + Image Section */}
       <SectionHeader
-        title="Design-Gen and creative senses tools."
-        description="Works well with keeping creative human-in-loop to generate cool designs and creative videos using AI tools."
+        title=" Design and creative AI generation tools"
+        description="Works well with recruiting the right human-in-loop to generate cool designs and make creative videos using your AI platform."
       />
       <Subscription />
       <MaxScreenWrapper className="max-w-[1151px] w-full relative flex items-center">
@@ -79,8 +79,8 @@ export const ToolsSection = () => {
 
       {/* Second Header + Image Section */}
       <SectionHeader
-        title="Plug-in and onboard human labour."
-        description="Hire and keep creative humans to carry out tasks on-demand edge case scenarios."
+        title="👾 Full Self-Driving Recruiter for Adding the right remote engineer behind your AI agent."
+        description="Humans + AI agents = Faster shipping, better software, tighter security, quality of code and accurate debugging. Plug-in and onboard human labour"
       />
 
       <MaxScreenWrapper className="max-w-[1151px] w-full relative flex items-center">

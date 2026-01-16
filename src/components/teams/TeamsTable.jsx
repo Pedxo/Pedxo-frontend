@@ -31,12 +31,9 @@ const profileImages = [
 ];
 
 // ONE reliable employee key
-//const getEmployeeKey = (emp) =>
-  // emp._id || emp.userId || emp.email;
 
 const getEmployeeKey = (emp) =>
   `${emp.contractId || "no-contract"}::${emp.userId || emp._id || emp.email}`;
-
 
 
 
@@ -102,7 +99,6 @@ useEffect(() => {
       console.log("Talent response:", talentJson);
 
       // SAFE EXTRACTION (VERY IMPORTANT)
-      
       const talents =
         Array.isArray(talentJson?.data?.contracts)
           ? talentJson.data.contracts
@@ -144,7 +140,6 @@ useEffect(() => {
         }
       }
 
-      
       const sortedAssigned = [...assigned].sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
@@ -255,6 +250,7 @@ useEffect(() => {
                       className="text-blue-600 underline text-[0.8rem] mt-2"
                     >
                       Github
+
                     </a>
                   )}
 

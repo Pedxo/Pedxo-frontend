@@ -97,11 +97,6 @@ const FormFour = ({
         toast.error("Failed to send contract.");
       },
     });
-    sessionStorage.removeItem("currentStep");
-    // Increment the completion count
-    const newCount = completionCount + 1;
-    setCompletionCount(newCount);
-    sessionStorage.setItem("contractCompletionCount", newCount.toString());
   };
 
   return (
@@ -122,7 +117,10 @@ const FormFour = ({
           <div className="mb-[39px]">
             <div className="w-full h-[0.5px] bg-[#0000004d]"></div>
             <div className="mt-[39px] max-w-[100px] mx-auto">
-              <img src={URL.createObjectURL(signatureFile)} alt="user signature" />
+              <img
+                src={URL.createObjectURL(signatureFile)}
+                alt="user signature"
+              />
             </div>
           </div>
         )}
@@ -139,8 +137,8 @@ const FormFour = ({
         <img src={sign} alt="sign icon" />
       </button>
 
-      {hasSignature && (
-        <div className="w-full flex items-center justify-center">
+      {signatureFile && (
+        <div className="flex items-center justify-center w-full">
           <Button
             type="primary"
             onClick={sendFinalForm}
@@ -151,6 +149,28 @@ const FormFour = ({
           >
             Send Contract
           </Button>
+        </div>
+      )}
+
+      {/* Signature Form Modal */}
+      {showSignatureForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="relative w-full max-w-md p-6 bg-white rounded-lg">
+            <button
+              type="button"
+              onClick={() => setShowSignatureForm(false)}
+              className="absolute text-xl text-gray-500 cursor-pointer top-4 right-4 hover:text-gray-700"
+            >
+              ✕
+            </button>
+            <FormFive
+              setSignatureFile={(file) => {
+                setSignatureFile(file);
+                setShowSignatureForm(false);
+              }}
+              nextStep={() => setShowSignatureForm(false)}
+            />
+          </div>
         </div>
       )}
     </div>
