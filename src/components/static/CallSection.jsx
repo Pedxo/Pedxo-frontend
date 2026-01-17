@@ -25,7 +25,7 @@ const SectionHeader = ({
       initial={{ opacity: 0, x: position === "right" ? 50 : -50 }}
       animate={{ opacity: 1, x: 0 }}
       className={cn(
-        "text-3xl md:text-[48px] font-bold md:leading-[60px] leading-[40px] md:text-start text-center",
+        "text-lg md:text-[38px] font-bold md:leading-[60px] leading-[30px] md:text-start text-center",
         position === "right" && "md:text-end"
       )}
     >
@@ -108,7 +108,7 @@ const InfoCard = ({ title, content, onTryNow }) => (
         transition={{ delay: 0.5 }}
         className="relative z-10"
       >
-        <p className="text-white text-xl md:text-[48px] md:font-700 font-bold leading-[100%] text-center">
+        <p className="text-white text-lg md:text-[38px] md:font-700 font-bold leading-[20px] md:leading-[100%] text-center">
           {title}
         </p>
       </motion.div>

@@ -13,7 +13,7 @@ const SectionHeader = ({ title, description, width = "1/2" }) => (
     <motion.h2
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="text-white text-xl md:text-[48px] font-bold leading-[40px] text-center "
+      className="text-white text-lg md:text-[38px] font-bold leading-[30px] md:leading-[45px] text-center "
     >
       {title}
     </motion.h2>
@@ -86,7 +86,7 @@ const FeatureCard = ({ title, description, image }) => (
         transition={{ delay: 0.5 }}
         className="flex flex-col items-center mt-8 gap-2"
       >
-        <h2 className="text-white text-xl md:text-[38px] font-bold leading-[40px] md:leading-[60px] text-center">
+        <h2 className="text-white text-lg md:text-[30px] font-bold leading-[40px] md:leading-[60px] text-center">
           {title}
         </h2>
         <p className="text-center text-lg text-gray-600">{description}</p>
@@ -107,7 +107,7 @@ const InfoCard = ({ title, content, id }) => (
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="text-white text-xl md:text-[48px] md:font-700 font-bold leading-[100%] text-center"
+        className="text-white text-lg md:text-[38px] md:font-700 font-bold leading-[100%] text-center"
       >
         {title}
       </motion.p>

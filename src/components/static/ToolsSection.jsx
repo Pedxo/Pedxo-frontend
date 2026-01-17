@@ -14,7 +14,7 @@ const SectionHeader = ({ title, description, width = "1/2" }) => (
     <motion.h2
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="text-xl md:text-[48px] font-bold leading-[40px] text-center m-auto md:mt-6 mt-0"
+      className="text-lg md:text-[38px] font-bold leading-[30px] md:leading-[40px] text-center m-auto md:mt-6 mt-0"
     >
       {title}
     </motion.h2>

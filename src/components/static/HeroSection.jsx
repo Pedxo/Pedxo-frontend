@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 
 const GradientTextHeading = () => (
   <RevealAnimation delay={0.2} duration={0.8} className='w-full md:w-[80%]'>
-    <h1 className='text-5xl md:text-[68px] font-bold leading-[60px] md:leading-[75px] text-center'>
+    <h1 className='text-4xl md:text-[68px] font-bold leading-[50px] md:leading-[75px] text-center'>
       {/* <span className='bg-gradient-to-r from-gradientPrimary via-violet to-gradientPrimary bg-clip-text text-transparent'>
         Full Self-Driving recruiter for AI agents
       </span> */}
@@ -33,7 +33,7 @@ const ActionButton = ({ children, variant = 'primary', ...props }) => {
       onClick={goToDashboard}
       className={`px-5 py-3 sm:text-base text-sm rounded-full font-medium transition-all shadow-sm ${
         variant === 'primary'
-          ? 'bg-gray-800 shadow-md text-white hover:opacity-90'
+          ? 'bg-gray-800 shadow-md text-white hover:bg-gray-900'
           : 'border border-gray-300 text-gray-800 hover:bg-gray-50 bg-[#FFFFFF]'
       }`}
       {...props}
