@@ -143,7 +143,7 @@ const FormThree = ({ nextStep, savedState, username, userId }) => {
             value={formik.values?.paymentFrequency}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            className="w-full bg-transparent border outline-gray-400 rounded-lg p-3 text-sm appearance-none"
+            className="w-full bg-transparent border overview-expense-bgs outline-gray-400 rounded-lg p-3 text-sm appearance-none"
             style={{
               borderColor: "rgba(0, 0, 0, 0.20)",
             }}
