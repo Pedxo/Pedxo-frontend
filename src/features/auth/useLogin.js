@@ -13,7 +13,7 @@ export default function useLogin() {
       if (err && !err.response) {
         toast.error("Something went wrong");
       }
-      const errorMessage = err.response.data.message;
+      const errorMessage = err.response?.data.message;
       switch (errorMessage) {
         case "user is not found":
           toast.error("User does not exist");

@@ -242,8 +242,9 @@ useEffect(() => {
                   <div className="text-[0.8rem] mt-2">{employee?.paymentRate}</div>
                   <div className="text-[0.8rem] mt-2">{employee?.paymentFrequency}</div>
 
-                  {employee?.githubAccount && (
-                    <a
+                  {employee?.githubAccount && employee.portfolio && (
+                    <div className="flex flex-col">
+                      <a
                       href={employee?.githubAccount}
                       target="_blank"
                       rel="noreferrer"
@@ -252,6 +253,16 @@ useEffect(() => {
                       Github
 
                     </a>
+                    <a
+                      href={employee?.portfolio}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-blue-600 underline text-[0.8rem] mt-2"
+                    >
+                      portfolio
+
+                    </a>
+                    </div>
                   )}
 
                   <div className="mt-4">
@@ -316,14 +327,23 @@ useEffect(() => {
                   <div>{employee?.paymentFrequency}</div>
 
                   <div className="text-blue-600 underline">
-                    {employee?.githubAccount && (
-                      <a
+                    {employee?.githubAccount && employee.portfolio && (
+                      <div className="flex flex-col">
+                        <a
                         href={employee?.githubAccount}
                         target="_blank"
                         rel="noreferrer"
                       >
                         Github
                       </a>
+                      <a
+                        href={employee?.portfolio}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        portfolio
+                      </a>
+                      </div>
                     )}
                   </div>
 
