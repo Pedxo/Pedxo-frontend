@@ -11,19 +11,28 @@ import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { formatCurrency } from "../utility/helper";
 
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const Overview = () => {
   const { username } = useUser();
   const [isAnimating, setIsAnimating] = useState(false);
   const [currencyCode, setCurrencyCode] = useState("USD");
   const [locale, setLocale] = useState("en-US");
 
-  // ✅ Fetch contracts filtered by username
+
+  const [activeContractors, setActiveContractors] = useState(0);
+  const [onboardingCount, setOnboardingCount] = useState(0);
+  const [totalExpenses, setTotalExpenses] = useState(0);
+
+
+  // Fetch contracts filtered by username
   const { data: contracts, isLoading } = useQuery({
     queryKey: ["user-contracts", username],
     queryFn: () => getUserContracts(username),
   });
 
-  // ✅ Load user-specific currency
+  // Load user-specific currency
   useEffect(() => {
     const storedCode = localStorage.getItem(`${username}_userCurrencyCode`);
     if (storedCode === "NGN") {
@@ -35,13 +44,65 @@ const Overview = () => {
     }
   }, [username]);
 
+
+  // Fetch overview data
   useEffect(() => {
-    if ((contracts?.onboardingCount || 0) > 0) {
+    const fetchOverviewData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const contractRes = await fetch(
+        `${baseUrl}/contracts/get-user-contracts`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const contractJson = await contractRes.json();
+      const contracts = contractJson?.data?.contracts || [];
+
+      let assignedTalentsCount = 0;
+      let assignedContractIds = new Set();
+      let expenses = 0;
+
+      for (const contract of contracts) {
+        const assignedIds = contract.talentAssignedId || [];
+
+        if (assignedIds.length > 0) {
+          assignedTalentsCount += assignedIds.length;
+          assignedContractIds.add(contract._id);
+
+          // Expense counted ONLY if contract has assignment
+          expenses += Number(contract.paymentRate || 0);
+        }
+      }
+
+      setActiveContractors(assignedTalentsCount);
+
+      // Onboarding = contracts without assigned talents
+      setOnboardingCount(
+        contracts.length - assignedContractIds.size
+      );
+
+      setTotalExpenses(expenses);
+    };
+
+    fetchOverviewData();
+  }, [username]);
+
+
+  // useEffect(() => {
+  //   if ((contracts?.onboardingCount || 0) > 0) {
+  //     setIsAnimating(true);
+  //     const timer = setTimeout(() => setIsAnimating(false), 1000);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [contracts?.onboardingCount]);
+  useEffect(() => {
+    if (onboardingCount > 0) {
       setIsAnimating(true);
       const timer = setTimeout(() => setIsAnimating(false), 1000);
       return () => clearTimeout(timer);
     }
-  }, [contracts?.onboardingCount]);
+  }, [onboardingCount]);
 
   return (
     <section>
@@ -85,7 +146,8 @@ const Overview = () => {
                 <div className="flex items-center gap-4">
                   <img src={people} alt="" />
                   <span className="text-2xl font-semibold xl:text-[40px] overview-text">
-                    {contracts?.activeContractors || 0}
+                    {/* {contracts?.activeContractors || 0} */}
+                     {activeContractors}
                   </span>
                 </div>
                 <Link
@@ -108,7 +170,8 @@ const Overview = () => {
                 <div className="flex items-center gap-4">
                   {contracts?.onboardingCount === 0 && <img src={telegram} alt="" />}
                   <span className="text-2xl font-semibold xl:text-[40px]">
-                    {contracts?.onboardingCount || 0}
+                    {/* {contracts?.onboardingCount || 0} */}
+                     {onboardingCount}
                   </span>
                   {contracts?.onboardingCount > 0 && (
                     <span className="flex items-center relative">
