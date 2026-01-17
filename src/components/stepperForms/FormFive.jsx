@@ -21,7 +21,6 @@ const FormFive = ({ nextStep, setSignatureFile }) => {
     initialValues: { signature: null },
     onSubmit: (values, { setSubmitting }) => {
       const formData = new FormData();
-
       formData.append("signature", values?.signature);
 
       uploadSignature(formData, {
