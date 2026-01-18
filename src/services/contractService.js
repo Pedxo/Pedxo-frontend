@@ -32,15 +32,19 @@ export const getUserContracts = async () => {
     }
 
     const json = await response.json();
-    
-    const contracts = Array.isArray(json?.data) ? json.data : [];
-    
+    console.log('json', json);
+
+    const contracts = Array.isArray(json?.data?.contracts)
+      ? json.data.contracts
+      : [];
+
     return contracts;
   } catch (error) {
     console.error("Error fetching user contracts:", error);
     throw error;
   }
 };
+
 
 /**
  * 
