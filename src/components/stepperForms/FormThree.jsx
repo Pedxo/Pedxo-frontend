@@ -148,6 +148,15 @@ const FormThree = ({ nextStep, savedState, username, userId }) => {
               borderColor: "rgba(0, 0, 0, 0.20)",
             }}
           >
+            <option
+              className={`w-full bg-transparent border rounded-lg p-3 text-sm appearance-none
+  ${!formik.values.paymentFrequency ? "text-gray-400" : "text-gray-400"}
+`}
+              value=""
+              disabled
+            >
+              Select payment frequency
+            </option>
             <option value="Monthly">Monthly</option>
             <option value="Bi-weekly">Bi-weekly</option>
             <option value="Weekly">Weekly</option>
