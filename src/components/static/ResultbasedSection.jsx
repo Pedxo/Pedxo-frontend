@@ -44,10 +44,10 @@ const ContentSection = () => (
       transition={{ delay: 0.8 }}
       className="flex flex-col items-center mt-8 gap-2"
     >
-      <h2 className="text-gray-900 text-3xl md:text-[38px] font-bold leading-[40px] md:leading-[60px] text-center">
+      <h2 className="text-gray-900 text-lg md:text-[30px] font-bold leading-[35px] md:leading-[60px] text-center">
         Result-based payment
       </h2>
-      <p className="text-center text-lg text-gray-600">
+      <p className="text-center text-md text-gray-600">
         Pay the human for commit, work done at a time period and keep track of
         each spend in your pedxo dashboard
       </p>

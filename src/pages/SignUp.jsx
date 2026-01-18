@@ -121,7 +121,7 @@ const SignUp = () => {
     <section className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-lg bg-white rounded-xl shadow-md p-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-          Create account
+          Create account with
         </h1>
         {/* <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">
           <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px]">

@@ -227,8 +227,8 @@ const FormOne = ({ nextStep, savedState, contractType, username,userId }) => {
               id='state'
               onChange={(e) => formik.setFieldValue('state', e.target.value)}
               value={formik.values.state}
-
-              className='appearance-none w-full disabled:ring-gray-300  bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm '>
+              className='appearance-none w-full disabled:ring-gray-300 border overview-expense-bgs bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm '
+            >
               <option value=''>
                 {loadingStates
                   ? 'Loading States...'
