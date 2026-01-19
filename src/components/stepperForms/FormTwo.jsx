@@ -112,6 +112,7 @@ const FormTwo = ({ nextStep, savedState, username, userId }) => {
         <div className='text-sm font-medium leading-normal text-gray-500'>
           {contractType === 'full-time' ? 'Full Time Role' : 'Gig Based Role'}
         </div>
+        <p className='text-sm font-medium leading-normal italic text-gray-400'>The more context you give to pedxo agent the more correctly it&apos;ll hire the right engineer for you</p>
       </div>
 
       <CustomForm onSubmit={formik.handleSubmit}>

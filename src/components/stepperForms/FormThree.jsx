@@ -155,7 +155,7 @@ const FormThree = ({ nextStep, savedState, username, userId }) => {
               value=""
               disabled
             >
-              Select payment frequency
+              Select how often your developer will get paid
             </option>
             <option value="Monthly">Monthly</option>
             <option value="Bi-weekly">Bi-weekly</option>
