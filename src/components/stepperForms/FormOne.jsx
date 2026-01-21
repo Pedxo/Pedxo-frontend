@@ -114,7 +114,7 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
 
   useEffect(() => {
     const changesDetected = Object.keys(initialValues).some(
-      (key) => formik.values[key] !== initialValues[key]
+      (key) => formik.values[key] !== initialValues[key],
     );
     setHasChanges(changesDetected);
   }, [formik.values, initialValues]);
@@ -323,7 +323,7 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
         </div>
         {/* Fallback message when no states are available */}
         {states?.length === 0 && (
-          <p className="text-sm text-gray-500 italic mt-2">
+          <p className="mt-2 text-sm italic text-gray-500">
             No region/state required for your selected country.
           </p>
         )}

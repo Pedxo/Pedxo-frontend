@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 const CreateContractBtn = () => {
   return (
-    <div className="py-[14px] px-5 font-semibold text-base mt-[15px] border-clr rounded-lg flex items-center justify-center gap-[10px]">
+    <div className="py-[14px] px-5 font-semibold text-base mt-[15px] border-clr overview-expense flex items-center justify-center gap-[10px]">
       <NavLink
         to="/dashboard/create-contract"
         className="flex items-center gap-[10px]"

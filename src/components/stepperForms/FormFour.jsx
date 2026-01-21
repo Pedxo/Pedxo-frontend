@@ -97,11 +97,6 @@ const FormFour = ({
         toast.error("Failed to send contract.");
       },
     });
-    sessionStorage.removeItem("currentStep");
-    // Increment the completion count
-    const newCount = completionCount + 1;
-    setCompletionCount(newCount);
-    sessionStorage.setItem("contractCompletionCount", newCount.toString());
   };
 
   return (
@@ -143,7 +138,7 @@ const FormFour = ({
       </button>
 
       {signatureFile && (
-        <div className="w-full flex items-center justify-center">
+        <div className="flex items-center justify-center w-full">
           <Button
             type="primary"
             onClick={sendFinalForm}
@@ -159,12 +154,12 @@ const FormFour = ({
 
       {/* Signature Form Modal */}
       {showSignatureForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="relative w-full max-w-md p-6 bg-white rounded-lg">
             <button
               type="button"
               onClick={() => setShowSignatureForm(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl cursor-pointer"
+              className="absolute text-xl text-gray-500 cursor-pointer top-4 right-4 hover:text-gray-700"
             >
               ✕
             </button>

@@ -31,8 +31,11 @@ const profileImages = [
 ];
 
 // ONE reliable employee key
+
 const getEmployeeKey = (emp) =>
-  emp._id || emp.userId || emp.email;
+  `${emp.contractId || "no-contract"}::${emp.userId || emp._id || emp.email}`;
+
+
 
 // Stable image assignment
 const getProfileImagesMapping = (employees) => {
@@ -97,10 +100,8 @@ useEffect(() => {
 
       // SAFE EXTRACTION (VERY IMPORTANT)
       const talents =
-        Array.isArray(talentJson?.data)
-          ? talentJson.data
-          : Array.isArray(talentJson?.result?.talents)
-          ? talentJson.result.talents
+        Array.isArray(talentJson?.data?.contracts)
+          ? talentJson.data.contracts
           : [];
 
       if (!talents.length) {
@@ -139,10 +140,14 @@ useEffect(() => {
         }
       }
 
-      console.log("FINAL ASSIGNED:", assigned);
+      const sortedAssigned = [...assigned].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
 
-      setEmployees(assigned);
-      setProfileMap(getProfileImagesMapping(assigned));
+      console.log("FINAL ASSIGNED (sorted):", sortedAssigned);
+
+      setEmployees(sortedAssigned);
+      setProfileMap(getProfileImagesMapping(sortedAssigned));
 
     } catch (err) {
       console.error("Fetch error:", err);
@@ -237,15 +242,27 @@ useEffect(() => {
                   <div className="text-[0.8rem] mt-2">{employee?.paymentRate}</div>
                   <div className="text-[0.8rem] mt-2">{employee?.paymentFrequency}</div>
 
-                  {employee?.githubAccount && (
-                    <a
+                  {employee?.githubAccount && employee.portfolio && (
+                    <div className="flex flex-col">
+                      <a
                       href={employee?.githubAccount}
                       target="_blank"
                       rel="noreferrer"
                       className="text-blue-600 underline text-[0.8rem] mt-2"
                     >
-                      Profile
+                      Github
+
                     </a>
+                    <a
+                      href={employee?.portfolio}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-blue-600 underline text-[0.8rem] mt-2"
+                    >
+                      portfolio
+
+                    </a>
+                    </div>
                   )}
 
                   <div className="mt-4">
@@ -273,7 +290,7 @@ useEffect(() => {
             <div>Pay</div>
             <div>Seniority Level</div>
             <div>Frequency</div>
-            <div>GitHub</div>
+            <div>Profile</div>
             <div>Action</div>
           </div>
           <div>
@@ -310,14 +327,23 @@ useEffect(() => {
                   <div>{employee?.paymentFrequency}</div>
 
                   <div className="text-blue-600 underline">
-                    {employee?.githubAccount && (
-                      <a
+                    {employee?.githubAccount && employee.portfolio && (
+                      <div className="flex flex-col">
+                        <a
                         href={employee?.githubAccount}
                         target="_blank"
                         rel="noreferrer"
                       >
-                        Profile
+                        Github
                       </a>
+                      <a
+                        href={employee?.portfolio}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        portfolio
+                      </a>
+                      </div>
                     )}
                   </div>
 

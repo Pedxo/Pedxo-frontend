@@ -4,11 +4,17 @@ import useLogin from "../features/auth/useLogin";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import MiniLoader from "../components/MiniLoader";
-import Socials from "../components/Socials"
+import Socials from "../components/Socials";
+import { useState } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login, isLoggingIn } = useLogin();
+  const [socialLoading, setSocialLoading] = useState({ 
+    loading: false, 
+    provider: null 
+  });
+  
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string().required("Password is required"),
@@ -21,39 +27,70 @@ const Login = () => {
     },
     validationSchema,
     onSubmit: (values, { setSubmitting }) => {
+      if (socialLoading.loading) return; // Prevent form submission during social loading
+      
       login(values, {
         onSuccess: () => {
           navigate("/dashboard");
         },
-
         onSettled: () => setSubmitting(false),
       });
     },
   });
 
+  const handleSocialLoadingChange = ({ loading, provider }) => {
+    setSocialLoading({ loading, provider });
+  };
+
+  // Function to capitalize first letter of provider name
+  const capitalizeFirst = (str) => {
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+  };
+
   return (
     <section className="w-full mx-auto md:w-1/2 md:max-w-[38em] flex justify-center flex-col px-4 h-screen">
-      <div className="w-full max-w-lg bg-white rounded-xl shadow-md p-6">
+      <div className={`w-full max-w-lg bg-white rounded-xl shadow-md p-6 relative ${socialLoading.loading ? 'opacity-50 pointer-events-none' : ''}`}>
+        {/* Loading Overlay */}
+        {socialLoading.loading && (
+          <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10 rounded-xl">
+            <div className="flex flex-col items-center gap-3">
+              <svg
+                className="animate-spin h-8 w-8 text-gray-600"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
+                ></path>
+              </svg>
+              <span className="text-sm font-medium">
+                Redirecting to {capitalizeFirst(socialLoading.provider)}...
+              </span>
+            </div>
+          </div>
+        )}
+        
         <h1 className="mb-[39px] text-2xl font-semibold leading-normal 2xl:text-[30px] ">
           Login to continue
         </h1>
-        <Socials />
-        {/* <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">
-          <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px]">
-            <img src={GitHubLogo} alt="github logo" className="w-6 h-6" />
-            <span className="font-medium text-xs sm:text-sm">
-              Continue with Github
-            </span>
-          </button>
-          <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px]">
-            <img src={googleLogo} alt="google logo" />
-            <span className="font-medium text-xs sm:text-sm">
-              Continue with Google
-            </span>
-          </button>
-        </div> */}
-
+        
+        <Socials 
+          onLoadingChange={handleSocialLoadingChange}
+        />
+        
         <div className="text-lg font-medium line-with-text">Or</div>
+        
         <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
           <FormInput
             error={Boolean(formik.errors.email)}
@@ -67,6 +104,7 @@ const Login = () => {
             placeholder="email address"
             value={formik.values.email}
             onChange={formik.handleChange}
+            disabled={socialLoading.loading}
           />
 
           <div className="relative ">
@@ -82,106 +120,42 @@ const Login = () => {
               onChange={formik.handleChange}
               error={Boolean(formik.errors.password)}
               errorMessage={formik.errors.password}
+              disabled={socialLoading.loading}
             />
           </div>
 
           <div className="pr-text-clr font-medium text-right sm:text-base text-xs -mt-2">
-            <Link to="/reset-password">Forgot password?</Link>
+            <Link 
+              to="/reset-password" 
+              className={socialLoading.loading ? "pointer-events-none opacity-50" : ""}
+            >
+              Forgot password?
+            </Link>
           </div>
+          
           <button
             type="submit"
-            className="sm:py-4 py-3 font-medium pr-bg-clr text-white sm:text-base text-xs w-full mt-[6px] rounded-lg"
+            className={`sm:py-4 py-3 font-medium pr-bg-clr text-white sm:text-base text-xs w-full mt-[6px] overview-expense ${socialLoading.loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={socialLoading.loading || isLoggingIn}
           >
             {isLoggingIn ? <MiniLoader /> : "Continue"}
           </button>
         </form>
+        
         <div className="flex gap-1 flex-wrap justify-center sm:text-base text-xs items-center mt-[10px] font-medium">
           <span>Don&apos;t have an account?</span>
           <div className="pr-text-clr sm:text-base text-xs">
-            <Link to="/signup">Create account</Link>
+            <Link 
+              to="/signup" 
+              className={socialLoading.loading ? "pointer-events-none opacity-50" : ""}
+            >
+              Create account
+            </Link>
           </div>
         </div>
       </div>
     </section>
   );
 };
+
 export default Login;
-
-//  const [isLoading, setIsLoading] = useState(false);
-// const [formData, setFormData] = useState({
-//   email: "",
-//   password: "",
-// });
-
-// const { setUserBio } = useGlobalContext();
-// const navigate = useNavigate();
-
-// const validateForm = () => {
-//   if (!formData.email.trim()) {
-//     toast.error("email is required.");
-//     return false;
-//   } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-//     toast.error("invalid email format.");
-//     return false;
-//   } else if (!formData.password.trim()) {
-//     toast.error("password should not be empty.");
-//     return false;
-//   }
-
-//   return true;
-// };
-
-// const handleChange = (e) => {
-//   setFormData({
-//     ...formData,
-//     [e.target.name]: e.target.value,
-//   });
-// };
-
-// const handleFormSubmit = async (e) => {
-//   e.preventDefault();
-//   setIsLoading(true);
-
-//   if (validateForm()) {
-//     try {
-//       const response = await authFetch.post(
-//         "/auth/login",
-//         JSON.stringify(formData)
-//       );
-//       toast.success("Welcome!");
-//       const token = response.data.result;
-//       const accessTokenExpiration = Date.now() + 1200000;
-//       const refreshTokenExpiration = Date.now() + 604800000;
-
-//       const tokenData = {
-//         accessToken: token.accessToken,
-//         refreshToken: token.refreshToken,
-//         accessTokenExpiration,
-//         refreshTokenExpiration,
-//       };
-//       localStorage.setItem("user", JSON.stringify(tokenData));
-//       setTimeout(() => {
-//         navigate("/");
-//       }, 2000);
-//       console.log(response);
-
-//       const userBio = response.data.result;
-//       setUserBio(userBio);
-//       console.log(userBio);
-//     } catch (error) {
-//       console.log(error);
-//       if (error.status === 400) {
-//         toast.error("invalid email or password");
-//       } else if (error.response.data.message === "user is not found") {
-//         toast.error(error.response.data.message);
-//       } else {
-//         toast.error(error);
-//       }
-//       console.log(error);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   } else {
-//     setIsLoading(false);
-//   }
-// };

@@ -25,7 +25,7 @@ const FormInput = ({
           </label>
           {error && <p className="text-sm text-red-500">{errorMessage}</p>}
         </div>
-        <div className="flex focus-within:outline-gray-400 items-center border border-gray-400 sm:py-3 sm:px-4 py-2 px-3 rounded-lg">
+        <div className="flex focus-within:outline-gray-400 items-center border border-gray-400 sm:py-3 sm:px-4 py-2 px-3 rounded-lg overview-expense-bgs">
           <input
             type={showPassword ? "text" : "password"}
             name={name}
@@ -65,7 +65,7 @@ const FormInput = ({
         onBlur={onBlur}
         onChange={onChange}
         required={required}
-        className="border border-gray-400  placeholder:capitalize outline-gray-400 rounded-lg sm:p-3 p-2"
+        className="border border-gray-400  placeholder:capitalize outline-gray-400 rounded-lg sm:p-3 p-2 overview-expense-bgs"
       />
     </div>
   );

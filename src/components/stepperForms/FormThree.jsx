@@ -143,11 +143,20 @@ const FormThree = ({ nextStep, savedState, username, userId }) => {
             value={formik.values?.paymentFrequency}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            className="w-full bg-transparent border outline-gray-400 rounded-lg p-3 text-sm appearance-none"
+            className="w-full bg-transparent border overview-expense-bgs outline-gray-400 rounded-lg p-3 text-sm appearance-none"
             style={{
               borderColor: "rgba(0, 0, 0, 0.20)",
             }}
           >
+            <option
+              className={`w-full bg-transparent border rounded-lg p-3 text-sm appearance-none
+  ${!formik.values.paymentFrequency ? "text-gray-400" : "text-gray-400"}
+`}
+              value=""
+              disabled
+            >
+              Select how often your developer will get paid
+            </option>
             <option value="Monthly">Monthly</option>
             <option value="Bi-weekly">Bi-weekly</option>
             <option value="Weekly">Weekly</option>

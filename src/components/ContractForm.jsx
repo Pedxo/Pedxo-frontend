@@ -198,11 +198,8 @@ const ContractForm = ({ subHead, endDate }) => {
   };
 
   return (
-    <section className="p-4 w-full flex flex-col gap-10 pt-10">
-      <div
-        className="flex items-center gap-1 text-sm font-medium leading-normal pr-text-clr xl:gap-3"
-        onClick={handlePrevious}
-      >
+    <section className="flex flex-col w-full gap-10 p-4 pt-10">
+      <div className="flex items-center gap-1 text-sm font-medium leading-normal pr-text-clr xl:gap-3" onClick={handlePrevious}>
         <FaArrowLeft size={18} />
         <span className="cursor-pointer">Go back</span>
       </div>
@@ -221,21 +218,17 @@ const ContractForm = ({ subHead, endDate }) => {
           </p>
         </div>
 
-        <div className="flex-col flex md:flex-row gap-5 md:justify-between w-full">
+        <div className="flex flex-col w-full gap-5 md:flex-row md:justify-between">
           {/* Stepper */}
           <div className="flex overview-expense-bg border-[2px] border-[#E1E2DD] mb-3 md:mb-0 rounded-2xl h-fit md:p-8 px-8 p-2 flex-shrink-0 lg:w-96 gap-4 md:flex-col md:order-2 items-center">
             {steps.map((step, i) => (
-              <div key={i} className="flex w-full items-center gap-4">
-                <p
-                  className={`w-8 h-8 md:w-10 md:h-10 flex-shrink-0 flex items-center justify-center rounded-full ${
-                    currentStep >= i + 1
-                      ? "bg-[#008000] text-white"
-                      : "text-[#E1E2DD] ring-1 ring-[#E1E2DD]"
-                  }`}
-                >
+              <div key={i} className="flex items-center w-full gap-4">
+                <p className={`w-8 h-8 md:w-10 md:h-10 flex-shrink-0 flex items-center justify-center rounded-full ${
+                  currentStep >= i + 1 ? 'bg-[#008000] text-white' : 'text-[#E1E2DD] ring-1 ring-[#E1E2DD]'
+                }`}>
                   {i + 1}
                 </p>
-                <p className="hidden md:block text-center text-sm lg:text-base truncate font-medium leading-normal">
+                <p className="hidden text-sm font-medium leading-normal text-center truncate md:block lg:text-base">
                   {step}
                 </p>
               </div>
