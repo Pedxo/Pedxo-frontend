@@ -11,30 +11,28 @@ import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { formatCurrency } from "../utility/helper";
 
-
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Overview = () => {
-  const { username } = useUser();
+  const { username, userId } = useUser();
   const [isAnimating, setIsAnimating] = useState(false);
   const [currencyCode, setCurrencyCode] = useState("USD");
   const [locale, setLocale] = useState("en-US");
-
 
   const [activeContractors, setActiveContractors] = useState(0);
   const [onboardingCount, setOnboardingCount] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
 
-
   // Fetch contracts filtered by username
   const { data: contracts, isLoading } = useQuery({
-    queryKey: ["user-contracts", username],
-    queryFn: () => getUserContracts(username),
+    queryKey: ["user-contracts", userId],
+    queryFn: () => getUserContracts(userId),
+    enabled: !!userId,
   });
 
   // Load user-specific currency
   useEffect(() => {
-    const storedCode = localStorage.getItem(`${username}_userCurrencyCode`);
+    const storedCode = localStorage.getItem(`${userId}_userCurrencyCode`);
     if (storedCode === "NGN") {
       setCurrencyCode("NGN");
       setLocale("en-NG");
@@ -42,8 +40,7 @@ const Overview = () => {
       setCurrencyCode("USD");
       setLocale("en-US");
     }
-  }, [username]);
-
+  }, [userId]);
 
   // Fetch overview data
   useEffect(() => {
@@ -53,7 +50,7 @@ const Overview = () => {
 
       const contractRes = await fetch(
         `${baseUrl}/contracts/get-user-contracts`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       const contractJson = await contractRes.json();
@@ -78,16 +75,13 @@ const Overview = () => {
       setActiveContractors(assignedTalentsCount);
 
       // Onboarding = contracts without assigned talents
-      setOnboardingCount(
-        contracts.length - assignedContractIds.size
-      );
+      setOnboardingCount(contracts.length - assignedContractIds.size);
 
       setTotalExpenses(expenses);
     };
 
     fetchOverviewData();
   }, [username]);
-
 
   // useEffect(() => {
   //   if ((contracts?.onboardingCount || 0) > 0) {
@@ -122,7 +116,9 @@ const Overview = () => {
           <div className="px-[22px] pt-[21px] pb-[39px] mt-[62px] rounded-3xl overview-expense-bg flex flex-col gap-6 xl:px-[92px]">
             {/* Total Expenses */}
             <div>
-              <h2 className="font-semibold xl:text-[27px] overview-text">Total Expenses</h2>
+              <h2 className="font-semibold xl:text-[27px] overview-text">
+                Total Expenses
+              </h2>
               <p className="mb-2 text-sm grey-text xl:text-[16px]">
                 Total amount you've spent on your contractors
               </p>
@@ -130,7 +126,11 @@ const Overview = () => {
                 <div className="flex items-center gap-4">
                   <img src={moneybag} alt="" />
                   <span className="text-2xl font-semibold xl:text-[40px] overview-text">
-                    {formatCurrency(contracts?.totalExpenses || 0, currencyCode, locale)}
+                    {formatCurrency(
+                      contracts?.totalExpenses || 0,
+                      currencyCode,
+                      locale,
+                    )}
                   </span>
                 </div>
               </div>
@@ -138,7 +138,9 @@ const Overview = () => {
 
             {/* Active Contractors */}
             <div>
-              <h2 className="font-semibold xl:text-[27px] overview-text">Active Contractors</h2>
+              <h2 className="font-semibold xl:text-[27px] overview-text">
+                Active Contractors
+              </h2>
               <p className="mb-2 text-sm grey-text xl:text-[16px]">
                 Current contractors on your team
               </p>
@@ -147,7 +149,7 @@ const Overview = () => {
                   <img src={people} alt="" />
                   <span className="text-2xl font-semibold xl:text-[40px] overview-text">
                     {/* {contracts?.activeContractors || 0} */}
-                     {activeContractors}
+                    {activeContractors}
                   </span>
                 </div>
                 <Link
@@ -162,16 +164,20 @@ const Overview = () => {
 
             {/* Onboarding */}
             <div>
-              <h2 className="font-semibold xl:text-[27px] overview-text">Onboarding</h2>
+              <h2 className="font-semibold xl:text-[27px] overview-text">
+                Onboarding
+              </h2>
               <p className="mb-2 text-sm grey-text xl:text-[16px]">
                 Pending contracts on their way
               </p>
               <div className="flex justify-between items-center bg-white border rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16 overview-text">
                 <div className="flex items-center gap-4">
-                  {contracts?.onboardingCount === 0 && <img src={telegram} alt="" />}
+                  {contracts?.onboardingCount === 0 && (
+                    <img src={telegram} alt="" />
+                  )}
                   <span className="text-2xl font-semibold xl:text-[40px]">
                     {/* {contracts?.onboardingCount || 0} */}
-                     {onboardingCount}
+                    {onboardingCount}
                   </span>
                   {contracts?.onboardingCount > 0 && (
                     <span className="flex items-center relative">

@@ -1,16 +1,20 @@
 import SignatureCanvas from "react-signature-canvas";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import useUploadSignature from "../../features/contracts/useUploadSignature";
 import Button from "../Button";
 import CustomForm from "../../ui/CustomForm";
 import toast from "react-hot-toast";
+import { useGlobalContext } from "../../Context";
 
 const FormFive = ({ nextStep, setSignatureFile }) => {
+  const { currentUser } = useGlobalContext();
   const { uploadSignature, sendingForm } = useUploadSignature();
   const [hasSignature, setHasSignature] = useState(false);
   const sigCanvas = useRef(null);
+
+  const userId = currentUser?.id || sessionStorage.getItem("userId");
 
   const validationSchema = Yup.object({
     signature: Yup.mixed().required("Signature is required"),
@@ -40,26 +44,59 @@ const FormFive = ({ nextStep, setSignatureFile }) => {
   });
 
   const saveSignature = () => {
-    const canvas = sigCanvas.current?.getCanvas();
-    if (!canvas || sigCanvas.current.isEmpty()) {
+    if (!sigCanvas.current || sigCanvas.current.isEmpty()) {
       formik.setFieldError("signature", "Please provide a signature.");
       return;
     }
 
-    canvas.toBlob((blob) => {
-      const signatureFile = new File([blob], "signature.png", {
-        type: "image/png",
+    const dataUrl = sigCanvas.current.toDataURL("image/png");
+
+    // store in localStorage
+    localStorage.setItem(`${userId}_signature`, dataUrl);
+
+    // convert back to file for upload
+    fetch(dataUrl)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const file = new File([blob], "signature.png", {
+          type: "image/png",
+        });
+
+        formik.setFieldValue("signature", file);
+        setSignatureFile(file);
+        setHasSignature(true);
       });
-      formik.setFieldValue("signature", signatureFile);
-      setSignatureFile(signatureFile); //  Keep FormFour in sync
-    }, "image/png");
   };
 
   const clearSignature = () => {
     sigCanvas.current?.clear();
     formik.setFieldValue("signature", null);
-    setHasSignature(false)
+    setHasSignature(false);
+    localStorage.removeItem(`${userId}_signature`);
   };
+
+  // Load signature automatically on page load
+  useEffect(() => {
+    const savedSignature = localStorage.getItem(`${userId}_signature`);
+
+    if (savedSignature && sigCanvas.current) {
+      sigCanvas.current.fromDataURL(savedSignature);
+      setHasSignature(true);
+
+      // recreate file so formik knows about it
+      fetch(savedSignature)
+        .then((res) => res.blob())
+        .then((blob) => {
+          const file = new File([blob], "signature.png", {
+            type: "image/png",
+          });
+
+          formik.setFieldValue("signature", file);
+          // Don't call setSignatureFile here - it closes the modal in FormFour
+          // The signature file is passed to parent only when user clicks "Use Signature"
+        });
+    }
+  }, []);
 
   return (
     <div className="overflow-hidden">
@@ -90,14 +127,14 @@ const FormFive = ({ nextStep, setSignatureFile }) => {
 
       <CustomForm onSubmit={formik.handleSubmit}>
         <div className="mt-[50px] xl:mb-[66px] lg:flex lg:justify-center">
-        <Button
-                buttonType="submit"
-                onClick={saveSignature}
-                disabled={sendingForm || !hasSignature}
-                isLoading={sendingForm}
-                type="primary"
-              >
-                Use Signature
+          <Button
+            buttonType="submit"
+            onClick={saveSignature}
+            disabled={sendingForm || !hasSignature}
+            isLoading={sendingForm}
+            type="primary"
+          >
+            Use Signature
           </Button>
         </div>
       </CustomForm>

@@ -1,18 +1,25 @@
 import { nanoid } from "nanoid";
-// import SearchingDoc from "../components/SearchingDoc";
+import { useQuery } from "@tanstack/react-query";
+import { getUserContracts } from "../api";
+import { useUser } from "../context/UserContext";
 import AddDeveloperBtn from "../components/AddDeveloperBtn";
 import CreateContractBtn from "../components/CreateContractBtn";
-import AgreementTable from "../components/agreements/AgreementTable";
 import { NavLink } from "react-router-dom";
 import { SearchingDoc } from "../components";
 import SearchInput from "../components/SearchInput";
 import AgreementsCard from "../components/agreements/AgreementsCard";
 import expenseavatar from "../assets/svg/expenseavatar.svg";
-
-// import { NavLink } from "react-router-dom";
-// import add from "../assets/svg/add.svg";
+import MiniLoader from "../components/MiniLoader";
 
 const Agreements = () => {
+  const { userId } = useUser();
+
+  const { data: contractsData, isLoading } = useQuery({
+    queryKey: ["user-contracts", userId],
+    queryFn: () => getUserContracts(userId),
+    enabled: !!userId,
+  });
+
   const onBoarding = [
     {
       id: nanoid(),
@@ -26,32 +33,7 @@ const Agreements = () => {
     },
   ];
 
-  const agreementsCards = [
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract1",
-      link: "View contract",
-    },
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract2",
-      link: "View contract",
-    },
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract3",
-      link: "View contract",
-    },
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract4",
-      link: "View contract",
-    },
-  ];
+  const contracts = contractsData?.data?.contracts || [];
 
   return (
     <div className="mt-[62px] mx-5 flex flex-col xl:ml-[86px] xl:mr-[65px] ">
@@ -76,13 +58,25 @@ const Agreements = () => {
             style={{ backgroundColor: "#008000" }}
           ></div>
         </div>
-          <SearchInput />
+        <SearchInput />
       </div>
 
-      {agreementsCards.length > 0 ? (
+      {isLoading ? (
+        <div className="flex justify-center mt-20">
+          <MiniLoader />
+        </div>
+      ) : contracts.length > 0 ? (
         <div className="mt-[23px] grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-[30px] lg:mt-[33px]">
-          {agreementsCards.map((el, i) => (
-            <AgreementsCard key={i} card={el} />
+          {contracts.map((el, i) => (
+            <AgreementsCard
+              key={el._id || i}
+              card={{
+                avatar: expenseavatar,
+                name: el.clientName || "Unnamed Contract",
+                id: el._id,
+                link: "View contract",
+              }}
+            />
           ))}
         </div>
       ) : (

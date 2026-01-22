@@ -4,7 +4,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { formatCurrency, formatDate } from "../../utility/helper";
 import useFinalizeContract from "../../features/contracts/useFinalizeContract";
 import Button from "../Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormFive from "./FormFive";
 import toast from "react-hot-toast";
 
@@ -22,6 +22,22 @@ const FormFour = ({
   const [signatureFile, setSignatureFile] = useState(null);
   const [showSignatureForm, setShowSignatureForm] = useState(false);
 
+  // Load signature from localStorage on mount
+  useEffect(() => {
+    const savedSignature = localStorage.getItem(`${userId}_signature`);
+    if (savedSignature && !signatureFile) {
+      // Convert data URL back to File
+      fetch(savedSignature)
+        .then((res) => res.blob())
+        .then((blob) => {
+          const file = new File([blob], "signature.png", {
+            type: "image/png",
+          });
+          setSignatureFile(file);
+        })
+        .catch((err) => console.error("Failed to load signature:", err));
+    }
+  }, [userId]);
   const getCompletionCount = () => {
     const count = sessionStorage.getItem("contractCompletionCount");
     return count ? parseInt(count) : 0;
@@ -62,7 +78,7 @@ const FormFour = ({
         formatCurrency(
           savedState?.paymentRate,
           savedState?.country === "Nigeria" ? "NGN" : "USD",
-          savedState?.country === "Nigeria" ? "en-NG" : "en-US"
+          savedState?.country === "Nigeria" ? "en-NG" : "en-US",
         ) ?? null,
     },
     {
@@ -88,7 +104,28 @@ const FormFour = ({
     finalize(formData, {
       onSuccess: () => {
         toast.success("Contract sent successfully!");
-        sessionStorage.removeItem("currentStep");
+        // Reset step to 1 for next contract
+        sessionStorage.removeItem(`${username}_currentStep`);
+
+        // Clear only FormTwo and FormThree fields while preserving FormOne data
+        const savedInfo =
+          JSON.parse(localStorage.getItem(`${username}_personalInfo`)) || {};
+        const formTwoAndThreeFields = [
+          "roleTitle",
+          "seniorityLevel",
+          "scopeOfWork",
+          "startDate",
+          "endDate",
+          "explanationOfScopeOfWork",
+          "paymentRate",
+          "paymentFrequency",
+        ];
+        formTwoAndThreeFields.forEach((field) => delete savedInfo[field]);
+        localStorage.setItem(
+          `${username}_personalInfo`,
+          JSON.stringify(savedInfo),
+        );
+
         const newCount = completionCount + 1;
         setCompletionCount(newCount);
         sessionStorage.setItem("contractCompletionCount", newCount.toString());

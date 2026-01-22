@@ -3,11 +3,8 @@ import authFetch from "../api";
 // Helper function to clear all auth-related storage
 const clearAuthStorage = () => {
   localStorage.removeItem("user");
-  localStorage.clear();
-  // Add any other storage mechanisms you use
+  localStorage.removeItem("token");
 };
-
-
 
 export async function loginUser(details) {
   const response = await authFetch.post("/auth/login", details);
@@ -15,7 +12,6 @@ export async function loginUser(details) {
   const accessToken = response.data.accessToken;
   const refreshToken = response.data.result.refreshToken;
 
-  
   if (!accessToken) {
     throw new Error("Login failed: access token missing");
   }
@@ -23,6 +19,7 @@ export async function loginUser(details) {
   const userData = {
     accessToken,
     refreshToken,
+    userId: response.data.result._id,
     userName: response.data.result.firstName,
     email: response.data.result.email,
     accessTokenExpiration: Date.now() + 20 * 60 * 1000,
@@ -36,9 +33,8 @@ export async function loginUser(details) {
   return userData;
 }
 
-// BACKWARD-COMPATIBLE ALIAS 
+// BACKWARD-COMPATIBLE ALIAS
 export const handleLoginDetails = loginUser;
-
 
 export async function signUpUserAPI(details) {
   const response = await authFetch.post("/auth/signup", details);
@@ -49,18 +45,18 @@ export async function logoutUser() {
   try {
     // 1. First try server-side logout if your API has one
     await authFetch.post("/auth/logout");
-    
+
     // 2. Clear client-side storage
     clearAuthStorage();
-    
+
     // 3. Remove auth headers
-    delete authFetch.defaults.headers.common['Authorization'];
-    
+    delete authFetch.defaults.headers.common["Authorization"];
+
     return "Logged out successfully";
   } catch (error) {
     // Fallback: Force client-side cleanup if server logout fails
     clearAuthStorage();
-    delete authFetch.defaults.headers.common['Authorization'];
+    delete authFetch.defaults.headers.common["Authorization"];
     return "Logged out (server unavailable)";
   }
 }
