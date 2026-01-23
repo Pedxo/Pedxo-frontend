@@ -118,3 +118,38 @@
     position: relative;
   }
 }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes scale-1110 {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.scale-1110 {
+  animation: scale-1110 1s ease-in-out infinite;
+}
+
+.continuous-pulse {
+  animation-iteration-count: infinite;
+}
+
+.continuous-bounce {
+  animation-iteration-count: infinite;
+}
