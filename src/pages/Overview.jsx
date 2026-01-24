@@ -256,7 +256,7 @@ const Overview = () => {
                     {formatCurrency(displayTotalExpenses, currencyCode, locale)}
                   </span> */}
                   <span className="text-2xl font-semibold xl:text-[40px] overview-text">
-                    $00.00
+                    $0.00
                   </span>
                 </div>
               </div>
