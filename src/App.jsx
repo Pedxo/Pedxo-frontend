@@ -153,7 +153,7 @@ const router = createBrowserRouter([
         element: <GigBasedContract />,
       },
       {
-        path: 'agreement-contract',
+         path: 'agreements/:contractId',
         element: <AgreementContract />,
       },
     ],

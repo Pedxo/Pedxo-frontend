@@ -1,18 +1,27 @@
+import React, {useState, useEffect} from "react";
 import { nanoid } from "nanoid";
-// import SearchingDoc from "../components/SearchingDoc";
+import SearchingDoc from "../components/SearchingDoc";
 import AddDeveloperBtn from "../components/AddDeveloperBtn";
 import CreateContractBtn from "../components/CreateContractBtn";
 import AgreementTable from "../components/agreements/AgreementTable";
 import { NavLink } from "react-router-dom";
-import { SearchingDoc } from "../components";
+//import { SearchingDoc } from "../components";
 import SearchInput from "../components/SearchInput";
 import AgreementsCard from "../components/agreements/AgreementsCard";
-import expenseavatar from "../assets/svg/expenseavatar.svg";
+//import expenseavatar from "../assets/svg/expenseavatar.svg";
+import {getEmployeeKey, getProfileImagesMapping} from "../utility/profileImages";
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // import { NavLink } from "react-router-dom";
 // import add from "../assets/svg/add.svg";
 
 const Agreements = () => {
+  const [assignedContracts, setAssignedContracts] = useState([]);
+  const [profileMap, setProfileMap] = useState({});
+  const [loading, setLoading] = useState(true);
+
+
   const onBoarding = [
     {
       id: nanoid(),
@@ -26,32 +35,82 @@ const Agreements = () => {
     },
   ];
 
-  const agreementsCards = [
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract1",
-      link: "View contract",
-    },
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract2",
-      link: "View contract",
-    },
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract3",
-      link: "View contract",
-    },
-    {
-      avatar: expenseavatar,
-      name: "Mike Santos",
-      id: "contract4",
-      link: "View contract",
-    },
-  ];
+  
+
+
+useEffect(() => {
+    const fetchAgreements = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        /** FETCH REAL CONTRACTS */
+        const contractRes = await fetch(
+          `${baseUrl}/contracts/get-user-contracts`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        
+
+        const contractJson = await contractRes.json();
+        const contracts = Array.isArray(contractJson?.data?.contracts)
+          ? contractJson.data.contracts
+          : [];
+
+          console.log("Contract created", contracts);
+        /** FETCH ASSIGNMENTS USING REAL CONTRACT IDs */
+        const assigned = [];
+
+        for (const contract of contracts) {
+          // const realContractId = contract?._id;
+          // if (!realContractId) continue;
+          if(!contract?._id) continue;
+
+          const res = await fetch(
+            `${baseUrl}/hire/assigned-by-contract?contractId=${contract._id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+
+          if (!res.ok) continue;
+
+          const json = await res.json();
+
+          if (Array.isArray(json?.data)) {
+            json.data.forEach((dev) => {
+              assigned.push({
+                ...dev,
+                //contractId: realContractId, // ONLY REAL CONTRACT ID
+                contractId: contract._id,
+               // _id: contract._id,
+                contract,                  // PASS FULL CONTRACT
+              });
+              
+            });
+            
+          }
+          
+        }
+
+        /** 3️⃣ SORT + PROFILE MAP */
+        assigned.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        console.log("Assigned Fetched", assigned);
+
+        setAssignedContracts(assigned);
+        setProfileMap(getProfileImagesMapping(assigned));
+      } catch (err) {
+        console.error("Failed to fetch agreements:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAgreements();
+  }, []);
+
+
+
 
   return (
     <div className="mt-[62px] mx-5 flex flex-col xl:ml-[86px] xl:mr-[65px] ">
@@ -79,19 +138,43 @@ const Agreements = () => {
           <SearchInput />
       </div>
 
-      {agreementsCards.length > 0 ? (
+      {!loading && assignedContracts.length > 0 ? (
         <div className="mt-[23px] grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-[30px] lg:mt-[33px]">
-          {agreementsCards.map((el, i) => (
-            <AgreementsCard key={i} card={el} />
+          
+          {assignedContracts.map((emp) => (
+            <AgreementsCard
+              key={`${emp.contractId}-${emp.email}`}
+              card={{
+                contractId: emp.contractId,
+                name: emp.fullName,
+                avatar: profileMap[getEmployeeKey(emp)],
+                link: "View contract",
+              }}
+            />
           ))}
+        {/* {assignedContracts.map((emp) => {
+            const contractId =
+              emp.contractId || emp.contract?._id;
+
+            return (
+              <AgreementsCard
+                key={getEmployeeKey(emp)}
+                card={{
+                  contractId,
+                  name: emp.fullName,
+                  avatar: profileMap[getEmployeeKey(emp)],
+                  link: "View contract",
+                }}
+              />
+            );
+          })} */}
         </div>
       ) : (
+        !loading && (
         <SearchingDoc
-          noticeText="Add devs and pay them to see their 
-records here."
+          noticeText="Add devs and pay them to see their records here."
           searchingdocTitle="No Agreement yet"
-          searchingdocText="They would be generated when you have
-created a contract"
+          searchingdocText="They would be generated when you have created a contract"
           onBoarding={onBoarding}
         >
           <div className="mt-[33px]">
@@ -103,7 +186,7 @@ created a contract"
             </NavLink>
           </div>
         </SearchingDoc>
-      )}
+      ))}
     </div>
   );
 };

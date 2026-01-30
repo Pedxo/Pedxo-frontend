@@ -2,65 +2,14 @@ import { useEffect, useState, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
 import { GoDotFill } from "react-icons/go";
-
-//import default svg profile images into local storage
-import image1 from "../../assets/svg/image1.svg";
-import image2 from "../../assets/svg/image2.svg";
-import image3 from "../../assets/svg/image3.svg";
-import image4 from "../../assets/svg/image4.svg";
-import image5 from "../../assets/svg/image5.svg";
-import image6 from "../../assets/svg/image6.svg";
-import image7 from "../../assets/svg/image7.svg";
-import image8 from "../../assets/svg/image8.svg";
-import image9 from "../../assets/svg/image9.svg";
-import image10 from "../../assets/svg/image10.svg";
-import image11 from "../../assets/svg/image11.svg";
-import image12 from "../../assets/svg/image12.svg";
-import image13 from "../../assets/svg/image13.svg";
-import image14 from "../../assets/svg/image14.svg";
-import image15 from "../../assets/svg/image15.svg";
+import {getProfileImagesMapping, getEmployeeKey, profileImages} from "../../utility/profileImages";
 
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
-const profileImages = [
-  image1, image2, image3, image4, image5,
-  image6, image7, image8, image9, image10,
-  image11, image12, image13, image14, image15,
-];
-
-// ONE reliable employee key
-
-const getEmployeeKey = (emp) =>
-  `${emp.contractId || "no-contract"}::${emp.userId || emp._id || emp.email}`;
-
-
-
-// Stable image assignment
-const getProfileImagesMapping = (employees) => {
-  const stored = JSON.parse(localStorage.getItem("employeeImages") || "{}");
-  const mapping = { ...stored };
-
-  let imageIndex = Object.keys(mapping).length;
-
-  employees.forEach((emp) => {
-    const key = getEmployeeKey(emp);
-    if (!key) return;
-
-    if (!mapping[key]) {
-      mapping[key] = profileImages[imageIndex % profileImages.length];
-      imageIndex++;
-    }
-  });
-
-  localStorage.setItem("employeeImages", JSON.stringify(mapping));
-  return mapping;
-};
 
 const TeamsTable = () => {
- 
-
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -68,8 +17,6 @@ const TeamsTable = () => {
   const [profileMap, setProfileMap] = useState({});
 
   
-
-
 useEffect(() => {
   const fetchEmployees = async () => {
     setLoading(true);

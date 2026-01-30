@@ -1,46 +1,31 @@
 import { useGlobalContext } from "../../Context";
 
-const UpdateContract = ({ heading, currentStep }) => {
+const UpdateContract = ({ heading, currentStep, contract }) => {
   const { signature } = useGlobalContext();
   const { formStepperData } = useGlobalContext();
 
   const userInfo = [
+    { title: "Contract Type", data: contract.contractType || "N/A" },
     {
-      title: "Contract Type",
-      data: "Contract type",
-    },
-
-    {
-      title: "Payment Rate",
-      data: "Contract type",
+      title: "Start Date",
+      data: contract.startDate
+        ? new Date(contract.startDate).toDateString()
+        : "N/A",
     },
     {
-      title: "Payment Frequency",
-      data: "Contract type",
+      title: "End Date",
+      data: contract.endDate
+        ? new Date(contract.endDate).toDateString()
+        : "N/A",
     },
-    {
-      title: "Contract Type",
-      data: "Contract type",
-    },
-
-    {
-      title: "Payment Rate",
-      data: "Contract type",
-    },
-    {
-      title: "Payment Frequency",
-      data: "Contract type",
-    },
-    {
-      title: "Contract Type",
-      data: "Contract type",
-    },
-
-    {
-      title: "Payment Rate",
-      data: "Contract type",
-    },
+    { title: "Role Title", data: contract.roleTitle || "N/A" },
+    { title: "Seniority Level", data: contract.seniorityLevel || "N/A" },
+    { title: "Scope of Work", data: contract.scopeOfWork || "N/A" },
+    { title: "Payment Rate", data: contract.paymentRate ? `$${contract.paymentRate}` : "N/A" },
+    { title: "Payment Frequency", data: contract.paymentFrequency || "N/A" },
   ];
+
+  
 
   console.log(formStepperData);
 
