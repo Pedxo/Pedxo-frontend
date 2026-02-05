@@ -3,7 +3,7 @@ import { RevealAnimation } from "../RevealAnimation";
 
 const SectionHeading = ({ children }) => (
   <RevealAnimation delay={0.2} duration={0.8} className="w-full md:w-[80%]">
-    <h2 className="text-gray-900 text-3xl md:text-[48px] font-bold leading-[40px] md:leading-[60px] text-center">
+    <h2 className="text-gray-900 text-lg md:text-[38px] font-bold leading-[30px] md:leading-[50px] text-center">
       {children}
     </h2>
   </RevealAnimation>
@@ -11,7 +11,7 @@ const SectionHeading = ({ children }) => (
 
 const SectionDescription = ({ children }) => (
   <RevealAnimation delay={0.4} duration={0.8} direction="up">
-    <p className="text-center text-lg text-gray-600">{children}</p>
+    <p className="text-center text-md text-gray-600">{children}</p>
   </RevealAnimation>
 );
 

@@ -1,12 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-// import googleLogo from "../assets/svg/google-logo.svg";
-// import GitHubLogo from '../assets/svg/githubLogo.svg';
 import FormInput from "../components/FormInput";
 import { useState } from "react";
 import { useGlobalContext } from "../Context";
 import toast from "react-hot-toast";
 import authFetch from "../api";
-import Socials from "../components/Socials"
+import Socials from "../components/Socials";
 
 const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,6 +12,10 @@ const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
+  const [socialLoading, setSocialLoading] = useState({ 
+    loading: false, 
+    provider: null 
+  });
   const { setUserBio } = useGlobalContext();
 
   const [formData, setFormData] = useState({
@@ -67,6 +69,8 @@ const SignUp = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (socialLoading.loading) return; // Prevent form submission during social loading
+    
     setIsLoading(true);
 
     if (validateForm()) {
@@ -117,23 +121,57 @@ const SignUp = () => {
     }
   };
 
+  const handleSocialLoadingChange = ({ loading, provider }) => {
+    setSocialLoading({ loading, provider });
+  };
+
+  // Function to capitalize first letter of provider name
+  const capitalizeFirst = (str) => {
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+  };
+
   return (
     <section className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-white rounded-xl shadow-md p-6">
+      <div className={`w-full max-w-lg bg-white rounded-xl shadow-md p-6 relative ${socialLoading.loading ? 'opacity-50 pointer-events-none' : ''}`}>
+        {/* Loading Overlay */}
+        {socialLoading.loading && (
+          <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10 rounded-xl">
+            <div className="flex flex-col items-center gap-3">
+              <svg
+                className="animate-spin h-8 w-8 text-gray-600"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
+                ></path>
+              </svg>
+              <span className="text-sm font-medium">
+                Redirecting to {capitalizeFirst(socialLoading.provider)}...
+              </span>
+            </div>
+          </div>
+        )}
+        
         <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-          Create account
+          Create account with
         </h1>
-        {/* <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0">
-          <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px]">
-            <img src={GitHubLogo} alt="github logo" className="w-6 h-6" />
-            <span className="font-medium text-xs sm:text-base">Github</span>
-          </button>
-          <button className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px]">
-            <img src={googleLogo} alt="google logo" />
-            <span className="font-medium text-xs sm:text-base">Google</span>
-          </button>
-        </div> */}
-        <Socials isRegisterPage />
+        
+        <Socials 
+          isRegisterPage 
+          onLoadingChange={handleSocialLoadingChange}
+        />
 
         <div className="flex items-center my-6">
           <div className="flex-grow border-t border-gray-300"></div>
@@ -153,6 +191,7 @@ const SignUp = () => {
               value={formData.firstName}
               onChange={handleChange}
               className="w-full"
+              disabled={socialLoading.loading}
             />
 
             <FormInput
@@ -165,6 +204,7 @@ const SignUp = () => {
               value={formData.lastName}
               onChange={handleChange}
               className="w-full"
+              disabled={socialLoading.loading}
             />
           </div>
 
@@ -177,6 +217,7 @@ const SignUp = () => {
             placeholder="Enter your email"
             value={formData.email}
             onChange={handleChange}
+            disabled={socialLoading.loading}
           />
 
           <div className="relative">
@@ -189,6 +230,7 @@ const SignUp = () => {
               placeholder="Create a password"
               value={formData.password}
               onChange={handleChange}
+              disabled={socialLoading.loading}
             />
           </div>
 
@@ -202,12 +244,13 @@ const SignUp = () => {
               placeholder="Confirm your password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={socialLoading.loading}
             />
           </div>
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || socialLoading.loading}
             className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors overview-expense disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
             {isLoading ? (
@@ -224,7 +267,7 @@ const SignUp = () => {
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            className={`text-blue-600 hover:text-blue-800 font-medium ${socialLoading.loading ? 'pointer-events-none opacity-50' : ''}`}
           >
             Login
           </Link>

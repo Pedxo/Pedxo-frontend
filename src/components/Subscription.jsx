@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const plans = [
   {
     name: "Starter",
-    priceMonthly: 159,
+    priceMonthly: 499,
     priceType: "/month per seat",
     description:
       "Great for small teams and founders hiring their first contractor",
@@ -26,7 +26,7 @@ const plans = [
   {
     name: "Growth",
     tag: "MOST POPULAR",
-    priceMonthly: 138,
+    priceMonthly: 485,
     priceType: "/month per seat",
     description:
       "For teams scaling remote hiring, save more when you scale your team.",
@@ -64,7 +64,7 @@ const plans = [
   },
 ];
 
-const DISCOUNT_RATE = 0.17; // 17% discount
+const DISCOUNT_RATE = 0.20; // 20% discount
 const DASHBOARD_URL = "/dashboard/create-contract";
 
 const calculateYearlyPrice = (monthlyPrice) => {
@@ -129,7 +129,7 @@ const PlanCard = ({ plan, isYearly, isLoggedIn }) => {
       {isPopular && isYearly && (
         <span>
           <p className="text-xs text-gray-500 mb-4">billed annually</p>
-          <p className="text-sm mb-8">Save 17% vs monthly</p>
+          <p className="text-sm mb-8">Save {DISCOUNT_RATE * 100}% vs monthly</p>
         </span>
       )}
       {/* Button */}
@@ -196,7 +196,7 @@ const Subscription = () => {
             >
               Yearly
               <span className="absolute top-0 right-0 -mt-2 -mr-3 bg-red-500 text-white text-[10px] font-bold px-1.5 rounded-full rotate-6">
-                -17%
+                -{DISCOUNT_RATE * 100}%
               </span>
             </button>
           </div>
@@ -206,7 +206,7 @@ const Subscription = () => {
           <p className="max-w-sm text-xl">
             {isYearly ? (
               <span className="bg-gray-300 py-1 px-4 text-black text-sm rounded-full">
-                💰 Save 17% with yearly billing
+                💰 Save {DISCOUNT_RATE * 100}% with yearly billing
               </span>
             ) : (
               ""

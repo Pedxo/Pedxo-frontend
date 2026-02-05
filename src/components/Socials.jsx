@@ -1,11 +1,10 @@
 import { useState } from "react";
 import googleLogo from "../assets/svg/google.svg";
 import GitHubLogo from "../assets/svg/githubLogo.svg";
-// import { FaGithub } from "react-icons/fa";
 import { baseURL } from "../api";
 import toast from "react-hot-toast";
 
-const Socials = ({ isRegisterPage = false }) => {
+const Socials = ({ isRegisterPage = false, onLoadingChange }) => {
   const [loadingProvider, setLoadingProvider] = useState(null);
 
   const oAuthHandler = async (type) => {
@@ -17,6 +16,10 @@ const Socials = ({ isRegisterPage = false }) => {
 
     try {
       setLoadingProvider(type);
+      // Notify parent component that loading has started with provider name
+      if (onLoadingChange) {
+        onLoadingChange({ loading: true, provider: type });
+      }
 
       await fetch(baseURL, { method: "GET" });
 
@@ -26,13 +29,16 @@ const Socials = ({ isRegisterPage = false }) => {
       window.location.href = `${baseURL}/auth/${type}`;
     } finally {
       setLoadingProvider(null);
+      if (onLoadingChange) {
+        onLoadingChange({ loading: false, provider: null });
+      }
     }
   };
 
   return (
     <div className="flex sm:space-x-4 sm:flex-row flex-col space-x-0 relative">
       <button
-        className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px] relative"
+        className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px] relative disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={() => oAuthHandler("github")}
         disabled={!!loadingProvider}
       >
@@ -70,7 +76,7 @@ const Socials = ({ isRegisterPage = false }) => {
       </button>
 
       <button
-        className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px] relative"
+        className="w-full flex items-center justify-center p-2 gap-[5px] sm:gap-[1-px] border-[2px] overview-expense-bg rounded-lg mb-[15px] relative disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={() => oAuthHandler("google")}
         disabled={!!loadingProvider}
       >

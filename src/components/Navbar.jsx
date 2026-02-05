@@ -19,22 +19,29 @@ const Navbar = () => {
   const { username, email } = useUser();
   const navigate = useNavigate();
   const [toggleLogout, setToggleLogout] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { logout } = useLogout();
-  const { desktopNavOpen } = useNavBar(); // Only need read access here
+  const { desktopNavOpen } = useNavBar();
 
-  const navRef = useOutsideClick(() => setToggleLogout(false), []);
-  // Only close when clicking outside the sidebar
-  const handleClickOutside = (e) => {
-    if (!navRef.current?.contains(e.target)) {
+  const navRef = useOutsideClick(() => {
+    // Don't close if logout is in progress
+    if (!isLoggingOut) {
       setToggleLogout(false);
     }
-  };
+  }, [isLoggingOut]); // Add isLoggingOut as dependency
 
-  useOutsideClick(navRef, handleClickOutside);
-
-  const handleLogout = () => {
-    logout();
-    setToggleLogout(false);
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true); // Start loading
+      await logout(); // Assuming logout returns a promise
+      // Only close after logout is complete
+      // setToggleLogout(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Keep the button open so user can retry
+    } finally {
+      setIsLoggingOut(false); // Stop loading regardless of success/failure
+    }
   };
 
   return (
@@ -42,7 +49,8 @@ const Navbar = () => {
       {desktopNavOpen && (
         <nav
           ref={navRef}
-          className="hidden md:flex border-r-2 w-full max-w-[13em] pt-8 justify-between h-screen flex-col fixed overview-expense-bg">
+          className="hidden md:flex border-r-2 w-full max-w-[13em] pt-8 justify-between h-screen flex-col fixed overview-expense-bg"
+        >
           <div className="flex-col px-8">
             <img
               role="button"
@@ -110,7 +118,12 @@ const Navbar = () => {
           <div className="user-bg-clr flex-shrink-0 flex flex-col w-full p-2">
             <div
               role="button"
-              onClick={() => setToggleLogout(!toggleLogout)}
+              onClick={() => {
+                // Only toggle if not currently logging out
+                if (!isLoggingOut) {
+                  setToggleLogout(!toggleLogout);
+                }
+              }}
               className="flex w-full hover:shadow-md p-2 items-center gap-2 cursor-pointer"
             >
               <div className="w-10 h-10 flex-shrink-0 rounded-full uppercase user-avatar text-white font-semibold flex items-center justify-center">
@@ -129,10 +142,20 @@ const Navbar = () => {
             {toggleLogout && (
               <button
                 onClick={handleLogout}
-                className="p-3 font-medium text-[13px] pr-bg-clr text-white mt-[15px] rounded-lg flex items-center justify-center gap-[10px] hover:opacity-90 transition-opacity"
+                disabled={isLoggingOut}
+                className="p-3 font-medium text-[13px] pr-bg-clr text-white mt-[15px] rounded-lg flex items-center justify-center gap-[10px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <img src={logoutsvg} alt="logout icon" />
-                Log Out
+                {isLoggingOut ? (
+                  <>
+                    <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Logging Out...
+                  </>
+                ) : (
+                  <>
+                    <img src={logoutsvg} alt="logout icon" />
+                    Log Out
+                  </>
+                )}
               </button>
             )}
           </div>
