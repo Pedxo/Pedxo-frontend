@@ -389,7 +389,7 @@ useEffect(() => {
 
                   <div
                     onClick={() => handleTerminate(employee)}
-                    className="py-[1em] px-[2em] font-semibold text-[0.625rem] text-center text-white rounded-lg max-w-max xl:text-[0.75rem] xl:p-[9px]"
+                    className="py-[1em] px-[2em] font-semibold text-[0.625rem] text-center text-white rounded-lg max-w-max xl:text-[0.75rem] xl:p-[9px] cursor-pointer"
                     style={{ backgroundColor: "#FF0000" }}
                   >
                     Terminate
