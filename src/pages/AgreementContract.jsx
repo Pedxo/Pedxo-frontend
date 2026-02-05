@@ -18,10 +18,10 @@ const AgreementContract = () => {
   const { contractId } = useParams(); 
   
   const [contract, setContract] = useState(null);
+  const [editedContract, setEditedContract] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-
   const [currentStep, setCurrentStep] = useState(1);
   const [complete, setComplete] = useState(false);
   const [isPaymentDue, setIsPaymentDue] = useState(false);
@@ -31,46 +31,110 @@ const AgreementContract = () => {
 
   
    // fetch contract details
-  useEffect(() => {
-  if (!contractId) {
-    setError("Invalid contract ID");
-    setLoading(false);
-    return;
-  }
 
-  const fetchContract = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(
-        `${baseUrl}/contracts/get-user-contracts`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      const json = await res.json();
-      const contracts = json?.data?.contracts || [];
-      console.log("contract created", contracts);
-
-      const foundContract = contracts.find(
-        (c) => c._id === contractId
-      );
-
-      if (!foundContract) {
-        throw new Error("Contract not found");
-      }
-
-      setContract(foundContract);
-    } catch (err) {
-      console.error(err);
-      setError(err.message);
-    } finally {
+useEffect(() => {
+    if (!contractId) {
+      setError("Invalid contract ID");
       setLoading(false);
+      return;
     }
+
+    const fetchContract = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(
+          `${baseUrl}/contracts/get-contract?contractId=${contractId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!res.ok) throw new Error("Failed to fetch contract");
+
+        const json = await res.json();
+       
+         // FIX: extract the real contract object
+        setContract(json?.data);
+        setEditedContract(json?.data); 
+        console.log("Contract fetched (correct):", json?.data);
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContract();
+  }, [contractId]);
+
+   
+  // ------------------ Update Contract Function ------------------
+
+ const handleUpdateContract = async () => {
+  if (!editedContract) return;
+
+  // MAP FRONTEND → BACKEND SCHEMA
+  const payload = {
+    contractType: editedContract.contractType,
+    startDate: editedContract.startDate,
+    endDate: editedContract.endDate,
+    roleTitle: editedContract.roleTitle,
+    seniorityLevel: editedContract.seniorityLevel,
+
+    // IMPORTANT MAPPING
+    explanationOfScopeOfWork: editedContract.scopeOfWork,
+
+    paymentRate: Number(editedContract.paymentRate),
+
+    paymentFrequency: editedContract.paymentFrequency,
+    
+    isCompleted: true,
   };
 
-  fetchContract();
-}, [contractId]);
-  
+  console.log("PATCH payload → /contracts/:id", payload);
+
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(
+      `${baseUrl}/contracts/${contractId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!res.ok) throw new Error("Update failed");
+
+    // DO NOT TRUST PATCH RESPONSE
+    // ALWAYS REFETCH
+    const refetch = await fetch(
+      `${baseUrl}/contracts/get-contract?contractId=${contractId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const refetched = await refetch.json();
+
+    setContract(refetched.data);
+    setEditedContract(refetched.data);
+
+    alert("Contract updated successfully");
+    setCurrentStep(1);
+
+  } catch (err) {
+    console.error(err);
+    setError(err.message);
+  }
+};
+
   // const handleSubmit = (e) => {
   //   e.preventDefault();
   // };
@@ -91,6 +155,8 @@ const AgreementContract = () => {
     setIsTransactionHistoryVisible(true);
   };
 
+
+ 
   if (loading) return null;
   if (error)
     return (
@@ -104,7 +170,11 @@ const AgreementContract = () => {
       <UpdateContract
         heading={`${contract?.clientName || "Client"} Contract`}
         currentStep={currentStep}
-        contract={contract}
+        value={editedContract}
+        onChange={(data) => {
+          console.log("Live edit:", data);
+          setEditedContract(data);
+        }}// pass update function to child
       />
     );
   };
@@ -177,7 +247,7 @@ const AgreementContract = () => {
                   <span className="font-semibold">
                     {/* Jul 16, 2024 - Jul 29, 2024 */}
                     {formatDate(contract?.startDate) && formatDate(contract?.endDate)
-                    ? `${formatDate(contract.startDate)} - ${formatDate(contract.endDate)}`
+                    ? `${formatDate(contract?.startDate)} - ${formatDate(contract?.endDate)}`
                     : "N/A"}
                   </span>
                 </div>
@@ -223,11 +293,11 @@ const AgreementContract = () => {
                   className={`pr-bg-clr mt-[18px] w-full rounded-lg text-white text-[0.75rem] py-[14px] lg:w-auto lg:mx-auto lg:px-[60px] lg:py-6 xl:text-base xl:mt-[36px] ${
                     currentStep === 3 ? "hidden" : "block"
                   } `}
-                  onClick={() => {
-                    currentStep === 2
-                      ? setComplete(true)
-                      : setCurrentStep((prev) => prev + 1);
-                  }}
+                  onClick={() =>
+                  currentStep === 2
+                    ? handleUpdateContract()
+                    : setCurrentStep(2)
+                    }
                 >
                   {currentStep === 2 ? (
                     <div className="flex items-center justify-center">
