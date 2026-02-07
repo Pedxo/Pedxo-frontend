@@ -10,6 +10,11 @@ const PerformanceReviewModal = ({
     const [rating, setRating] = useState(0);
     const [note, setNote] = useState("");
 
+  // ----------------------- NEW LOGIC -----------------------
+  // Confirm button should only be enabled if rating > 0 AND note is not empty
+  const isConfirmDisabled = loading || rating === 0 || note.trim() === "";
+  // ---------------------------------------------------------
+
   if (!isOpen) return null;
 
   return (
@@ -51,7 +56,7 @@ const PerformanceReviewModal = ({
           </button>
 
           <button
-            disabled={!rating || loading}
+            disabled={isConfirmDisabled} // new logic
             onClick={() => onConfirm({ rating, note })}
             className="px-4 py-2 rounded text-white bg-red-600 disabled:opacity-50"
           >
