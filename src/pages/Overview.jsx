@@ -42,26 +42,12 @@ const Overview = () => {
   const [searchStartTime, setSearchStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
 
-  // NEW: loader state
 
-   const [showLoader, setShowLoader] = useState(true);
-
-
-    // ----------------- FORCE 10s LOADER -----------------
-   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowLoader(false);
-    }, 5000); // EXACT duration
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  
  
   // ----------------- REACT QUERY (API NOT REMOVED) -----------------
   const {
     data: contracts,
-    //isLoading,
+    isLoading,
     refetch,
   } = useQuery({
     queryKey: ["user-contracts", username],
@@ -233,15 +219,6 @@ const Overview = () => {
 
   const displayTotalExpenses = totalExpenses;
 
-     // ----------------- LOADER (BEFORE PAGE LOAD) -----------------
-     if (showLoader) {
-      return (
-        <div className="min-h-screen flex flex-col items-center justify-center">
-          <div className="w-24 h-24 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-2xl font-semibold">Loading Home...</p>
-        </div>
-      );
-  }
 
   // ----------------- JSX (UNCHANGED LAYOUT) -----------------
   return (

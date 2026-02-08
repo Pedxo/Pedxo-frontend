@@ -145,9 +145,9 @@ useEffect(() => {
    // ----------------- LOADER (BEFORE PAGE LOAD) -----------------
    if (shouldShowLoader) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
-        <div className="w-24 h-24 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-2xl font-semibold">Loading Contracts...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-8">
+        <div className="w-16 h-16 border-4 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-sm font-normal text-gray-700">Loading page...</p>
       </div>
     );
   }
