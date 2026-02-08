@@ -2,64 +2,17 @@ import { useEffect, useState, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
 import { GoDotFill } from "react-icons/go";
-
-//import default svg profile images into local storage
-import image1 from "../../assets/svg/image1.svg";
-import image2 from "../../assets/svg/image2.svg";
-import image3 from "../../assets/svg/image3.svg";
-import image4 from "../../assets/svg/image4.svg";
-import image5 from "../../assets/svg/image5.svg";
-import image6 from "../../assets/svg/image6.svg";
-import image7 from "../../assets/svg/image7.svg";
-import image8 from "../../assets/svg/image8.svg";
-import image9 from "../../assets/svg/image9.svg";
-import image10 from "../../assets/svg/image10.svg";
-import image11 from "../../assets/svg/image11.svg";
-import image12 from "../../assets/svg/image12.svg";
-import image13 from "../../assets/svg/image13.svg";
-import image14 from "../../assets/svg/image14.svg";
-import image15 from "../../assets/svg/image15.svg";
+import {getProfileImagesMapping, getEmployeeKey, profileImages} from "../../utility/profileImages";
+import {useGlobalContext} from "../../Context";
+import PerformanceReviewModal from "../PerformanceReviewModal";
 
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
-const profileImages = [
-  image1, image2, image3, image4, image5,
-  image6, image7, image8, image9, image10,
-  image11, image12, image13, image14, image15,
-];
-
-// ONE reliable employee key
-
-const getEmployeeKey = (emp) =>
-  `${emp.contractId || "no-contract"}::${emp.userId || emp._id || emp.email}`;
-
-
-
-// Stable image assignment
-const getProfileImagesMapping = (employees) => {
-  const stored = JSON.parse(localStorage.getItem("employeeImages") || "{}");
-  const mapping = { ...stored };
-
-  let imageIndex = Object.keys(mapping).length;
-
-  employees.forEach((emp) => {
-    const key = getEmployeeKey(emp);
-    if (!key) return;
-
-    if (!mapping[key]) {
-      mapping[key] = profileImages[imageIndex % profileImages.length];
-      imageIndex++;
-    }
-  });
-
-  localStorage.setItem("employeeImages", JSON.stringify(mapping));
-  return mapping;
-};
 
 const TeamsTable = () => {
- 
+  const { signature} = useGlobalContext();
 
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,26 +20,61 @@ const TeamsTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [profileMap, setProfileMap] = useState({});
 
-  
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [terminating, setTerminating] = useState(false);
 
 
-useEffect(() => {
-  const fetchEmployees = async () => {
-    setLoading(true);
-    setError("");
 
-    try {
-      const token = localStorage.getItem("token");
-      console.log("JWT token:", token);
+  /* ---------------- FETCH EMPLOYEES ---------------- */
+const fetchEmployees = async () => {
+  setLoading(true);
+  setError("");
 
-      if (!token || !token.includes(".")) {
-        setError("Authentication expired. Please log in again.");
-        return;
+  try {
+    const token = localStorage.getItem("token");
+    if (!token || !token.includes(".")) {
+      setError("Authentication expired. Please log in again.");
+      return;
+    }
+
+    /* FETCH USER CONTRACTS */
+    const res = await fetch(
+      `${baseUrl}/contracts/get-user-contracts`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
       }
+    );
 
-      // FETCH TALENTS (USER ACCESSIBLE)
-      const talentRes = await fetch(
-        `${baseUrl}/contracts/get-user-contracts`,
+    const json = await res.json();
+    console.log("Total Contracts created:", json);
+    const rawContracts = Array.isArray(json?.data?.contracts)
+      ? json.data.contracts
+      : [];
+
+    /*  NORMALIZE CONTRACT IDS  */
+    const normalizedContracts = rawContracts
+      .map(c => ({
+        contractId: c._id || c.contractId || null,
+        talentAssignedId: c.talentAssignedId?.[0] || null,
+      }))
+      .filter(c => c.contractId); // no undefined allowed
+
+    if (!normalizedContracts.length) {
+      setEmployees([]);
+      return;
+    }
+    console.log("Contract fetched:", normalizedContracts);
+
+    /* FETCH ASSIGNED TALENTS */
+    const assigned = [];
+
+    for (const contract of normalizedContracts) {
+      const res = await fetch(
+        `${baseUrl}/hire/assigned-by-contract?contractId=${contract.contractId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -95,70 +83,42 @@ useEffect(() => {
         }
       );
 
-      const talentJson = await talentRes.json();
-      console.log("Talent response:", talentJson);
+      if (!res.ok) continue;
 
-      // SAFE EXTRACTION (VERY IMPORTANT)
-      const talents =
-        Array.isArray(talentJson?.data?.contracts)
-          ? talentJson.data.contracts
-          : [];
+      const data = await res.json();
 
-      if (!talents.length) {
-        console.warn("No talents returned");
-        setEmployees([]);
-        return;
-      }
-
-      const contractIds = talents
-        .map(t => t.contractId || t._id)
-        .filter(Boolean);
-
-      console.log("Contract IDs:", contractIds);
-
-      //FETCH ASSIGNED BY CONTRACT
-      const assigned = [];
-
-      for (const contractId of contractIds) {
-        const res = await fetch(
-          `${baseUrl}/hire/assigned-by-contract?contractId=${contractId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          }
+      if (Array.isArray(data?.data)) {
+        assigned.push(
+          ...data.data.map(emp => ({
+            ...emp,
+            contractId: contract.contractId,
+            talentAssignedId: contract.talentAssignedId,
+          }))
         );
-
-        if (!res.ok) continue;
-
-        const json = await res.json();
-        console.log(`Assigned for ${contractId}:`, json);
-
-        if (Array.isArray(json?.data)) {
-          assigned.push(...json.data);
-        }
       }
-
-      const sortedAssigned = [...assigned].sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-
-      console.log("FINAL ASSIGNED (sorted):", sortedAssigned);
-
-      setEmployees(sortedAssigned);
-      setProfileMap(getProfileImagesMapping(sortedAssigned));
-
-    } catch (err) {
-      console.error("Fetch error:", err);
-      setError("Failed to load employees");
-    } finally {
-      setLoading(false);
     }
-  };
 
+    const sorted = assigned.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    console.log("Fetch Assigned Sorted", sorted);
+
+    setEmployees(sorted);
+    setProfileMap(getProfileImagesMapping(sorted));
+
+  } catch (err) {
+    console.error("Fetch error:", err);
+    setError("Failed to load employees");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+useEffect(() => {
   fetchEmployees();
 }, []);
+
 
 
 
@@ -176,6 +136,81 @@ useEffect(() => {
   }, [searchTerm, employees]);
 
 
+  /* ---------------- STATE FLAGS ---------------- */
+  const showEmptyState = !loading && filteredEmployees.length === 0;
+  const showTable = !loading && filteredEmployees.length > 0;
+
+
+  /* ---------------- TERMINATION ---------------- */
+  const handleTerminate = (employee) => {
+      console.log("Terminate clicked:", employee); // debug
+      setSelectedEmployee(employee);
+      setShowModal(true);
+    };
+
+  const confirmTermination = async ({ rating, note }) => {
+    console.log("Confirm clicked", { selectedEmployee, rating, note });
+
+
+  if (
+      !selectedEmployee?.contractId ||
+      !selectedEmployee?.talentAssignedId
+    ) {
+      console.error("Missing termination identifiers", selectedEmployee);
+      return;
+    }
+
+    setTerminating(true);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      await fetch(
+        `${baseUrl}/contracts/${selectedEmployee.contractId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            rating,
+            terminationNote: note,
+            removeTalentIds: [selectedEmployee.talentAssignedId],
+            emailNotification: {
+              to: "victor@pedxo.com",
+              employeeName: selectedEmployee.fullName,
+              roleTitle: selectedEmployee.roleTitle,
+              paymentRate: selectedEmployee.paymentRate,
+              paymentFrequency: selectedEmployee.paymentFrequency,
+            },
+          }),
+        }
+      );
+
+      setShowModal(false);
+      setSelectedEmployee(null);
+      fetchEmployees();
+    } catch (err) {
+      console.error("Termination failed:", err);
+    } finally {
+      setTerminating(false);
+    }
+  };
+
+
+  // ---------------- SIGNATURE BLOCK ----------------
+  const SignatureBlock = () => (
+    <div className={`mb-[39px] ${signature ? "block" : "hidden"}`}>
+      <div className="w-full h-[0.5px] bg-[#0000004d]"></div>
+      <div className="mt-[39px] max-w-[100px] mx-auto">
+        {signature && <img src={signature} alt="user signature" />}
+      </div>
+    </div>
+  );
+
+  
+
   return (
     <section>
       <div>
@@ -192,7 +227,7 @@ useEffect(() => {
         {/* -------- MOBILE VIEW -------- */}
         <div className="flex flex-col gap-4 mt-[21px] xl:flex-col-reverse xl:gap-[10px] xl:w-full lg:hidden">
           {loading
-            ? Array.from({ length: 3 }).map((_, index) => (
+            && Array.from({ length: 3 }).map((_, index) => (
                 <div
                   key={index}
                   className="flex flex-col font-medium px-[18px] py-[22px] rounded-lg"
@@ -202,8 +237,9 @@ useEffect(() => {
                   <div className="h-4 w-1/3 bg-gray-200 rounded mb-2"></div>
                   <div className="h-4 w-1/4 bg-gray-200 rounded mb-2"></div>
                 </div>
-              ))
-            : filteredEmployees.map((employee, index) => (
+              )) }
+            {showTable && 
+              filteredEmployees.map((employee, index) => (
                 <div
                   key={index}
                   className="flex flex-col font-medium px-[18px] py-[22px] rounded-lg xl:flex-row xl:items-center xl:px-10 xl:py-[20px]"
@@ -267,18 +303,22 @@ useEffect(() => {
 
                   <div className="mt-4">
                     <button
+                      onClick={() => handleTerminate(employee)}
                       className="py-[7px] px-[12px] font-semibold text-[0.7rem] text-center text-white rounded-lg"
                       style={{ backgroundColor: "#FF0000" }}
                     >
-                      <Link>Terminate</Link>
+                      Terminate
                     </button>
                   </div>
                 </div>
               ))}
+            {showEmptyState && <SignatureBlock />}
         </div>
 
         {/* -------- DESKTOP VIEW -------- */}
         <div className="mt-[21px] hidden xl:w-full lg:block">
+          {showTable && (
+            <>
           <div
             className="grid grid-cols-9 gap-5 font-medium mb-[15px] px-10 text-sm whitespace-nowrap"
             style={{ color: "rgba(0, 0, 0, 0.60)" }}
@@ -348,17 +388,28 @@ useEffect(() => {
                   </div>
 
                   <div
-                    className="py-[1em] px-[2em] font-semibold text-[0.625rem] text-center text-white rounded-lg max-w-max xl:text-[0.75rem] xl:p-[9px]"
+                    onClick={() => handleTerminate(employee)}
+                    className="py-[1em] px-[2em] font-semibold text-[0.625rem] text-center text-white rounded-lg max-w-max xl:text-[0.75rem] xl:p-[9px] cursor-pointer"
                     style={{ backgroundColor: "#FF0000" }}
                   >
-                    <Link>Terminate</Link>
+                    Terminate
                   </div>
                 </div>
               </div>
             ))}
           </div>
+         </> 
+        )}
+        {showEmptyState && <SignatureBlock />}
         </div>
       </div>
+      {/* MODAL */}
+      <PerformanceReviewModal
+        isOpen={showModal}
+        loading={terminating}
+        onClose={() => setShowModal(false)}
+        onConfirm={confirmTermination}
+      />
     </section>
   );
 };
