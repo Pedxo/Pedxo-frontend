@@ -117,6 +117,7 @@ useEffect(() => {
     fetchAgreements();
   }, []);
 
+
   
   // ----------------- FORCE 10s LOADER -----------------
   useEffect(() => {
@@ -193,22 +194,7 @@ useEffect(() => {
               assignedName={emp.fullName}
             />
           ))}
-        {/* {assignedContracts.map((emp) => {
-            const contractId =
-              emp.contractId || emp.contract?._id;
-
-            return (
-              <AgreementsCard
-                key={getEmployeeKey(emp)}
-                card={{
-                  contractId,
-                  name: emp.fullName,
-                  avatar: profileMap[getEmployeeKey(emp)],
-                  link: "View contract",
-                }}
-              />
-            );
-          })} */}
+        
         </div>
       ) : (
         !loading && (

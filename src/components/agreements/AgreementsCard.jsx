@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import rightarrow from "../../assets/svg/rightarrow.svg";
 
+
 const AgreementsCard = ({ card, assignedName }) => {
   // Normalize contract id once
   const { contractId, avatar, name, link } = card

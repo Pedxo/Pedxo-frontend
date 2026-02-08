@@ -43,6 +43,7 @@ const Overview = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
 
   // NEW: loader state
+
    const [showLoader, setShowLoader] = useState(true);
 
 
@@ -57,7 +58,6 @@ const Overview = () => {
 
   
  
-
   // ----------------- REACT QUERY (API NOT REMOVED) -----------------
   const {
     data: contracts,
@@ -233,7 +233,6 @@ const Overview = () => {
 
   const displayTotalExpenses = totalExpenses;
 
-  
      // ----------------- LOADER (BEFORE PAGE LOAD) -----------------
      if (showLoader) {
       return (
@@ -242,9 +241,7 @@ const Overview = () => {
           <p className="text-2xl font-semibold">Loading Home...</p>
         </div>
       );
-    }
-
-  
+  }
 
   // ----------------- JSX (UNCHANGED LAYOUT) -----------------
   return (

@@ -18,6 +18,7 @@ const PerformanceReviewModal = ({
   // - rating is selected
   // - note has at least 10 words
   const isConfirmDisabled = loading || rating === 0 || countWords(note) < 2;  
+
   // ---------------------------------------------------------
 
   if (!isOpen) return null;
