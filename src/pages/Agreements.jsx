@@ -143,14 +143,14 @@ useEffect(() => {
 
 
    // ----------------- LOADER (BEFORE PAGE LOAD) -----------------
-   if (shouldShowLoader) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-8">
-        <div className="w-16 h-16 border-4 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-sm font-normal text-gray-700">Loading page...</p>
-      </div>
-    );
-  }
+  //  if (shouldShowLoader) {
+  //   return (
+  //     <div className="min-h-screen flex flex-col items-center justify-center gap-8">
+  //       <div className="w-12 h-12 border-4 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+  //       <p className="text-[12px] font-normal text-gray-700">Loading page...</p>
+  //     </div>
+  //   );
+  // }
 
 
   return (
@@ -178,6 +178,14 @@ useEffect(() => {
         </div>
           <SearchInput />
       </div>
+
+       {/* ADDED: inline loader (header stays visible) */}
+        {shouldShowLoader && (
+          <div className="flex flex-col items-center justify-center py-10 gap-4">
+            <div className="w-10 h-10 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
+            <p className="text-[12px] text-gray-600">Loading page...</p>
+          </div>
+        )}
 
       {!loading && assignedContracts.length > 0 ? (
         <div className="mt-[23px] grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-[30px] lg:mt-[33px]">

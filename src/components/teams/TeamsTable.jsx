@@ -24,6 +24,18 @@ const TeamsTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [terminating, setTerminating] = useState(false);
 
+  // ADDED: reset key for modal state
+  const [modalResetKey, setModalResetKey] = useState(0);
+  
+  
+  // NEW: loader state
+  const [showLoader, setShowLoader] = useState(true);
+  
+  
+  // prevents blank screen before effects run
+  const [hasMounted, setHasMounted] = useState(false);
+  
+
 
 
   /* ---------------- FETCH EMPLOYEES ---------------- */
@@ -148,6 +160,7 @@ useEffect(() => {
       setShowModal(true);
     };
 
+
   const confirmTermination = async ({ rating, note }) => {
     console.log("Confirm clicked", { selectedEmployee, rating, note });
 
@@ -188,6 +201,9 @@ useEffect(() => {
         }
       );
 
+      // ADDED: reset modal state after confirm
+      setModalResetKey(prev => prev + 1);
+
       setShowModal(false);
       setSelectedEmployee(null);
       fetchEmployees();
@@ -209,12 +225,35 @@ useEffect(() => {
     </div>
   );
 
+   
+    // ----------------- FORCE 10s LOADER -----------------
+    useEffect(() => {
+      setHasMounted(true);
   
+      const loaderShown = sessionStorage.getItem("overview_loader_shown");
+  
+      if (loaderShown) {
+        setShowLoader(false);
+        return;
+      }
+  
+      const timer = setTimeout(() => {
+        setShowLoader(false);
+        sessionStorage.setItem("overview_loader_shown", "true");
+      }, 5000);
+  
+      return () => clearTimeout(timer);
+    }, []);
+  
+    // SINGLE SOURCE OF TRUTH
+    const shouldShowLoader = !hasMounted || showLoader || loading;
+
+
 
   return (
     <section>
       <div>
-        {/* Header */}
+        {/* Header section*/}
         <div className="flex items-center px-4 justify-between font-medium gap-10 lg:justify-self-start xl:text-xl">
           <h2 className="flex items-center gap-1 ">
             Active Developers
@@ -223,6 +262,14 @@ useEffect(() => {
           {/* Pass state + setter */}
           <SearchInput value={searchTerm} onChange={setSearchTerm} />
         </div>
+
+        {/* ADDED: inline loader (header stays visible) */}
+        {shouldShowLoader && (
+          <div className="flex flex-col items-center justify-center py-10 gap-4">
+            <div className="w-10 h-10 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
+            <p className="text-[12px] text-gray-600">Loading page...</p>
+          </div>
+        )}
 
         {/* -------- MOBILE VIEW -------- */}
         <div className="flex flex-col gap-4 mt-[21px] xl:flex-col-reverse xl:gap-[10px] xl:w-full lg:hidden">
@@ -407,7 +454,11 @@ useEffect(() => {
       <PerformanceReviewModal
         isOpen={showModal}
         loading={terminating}
-        onClose={() => setShowModal(false)}
+        resetKey={modalResetKey} // ADDED
+        onClose={() => {
+          setModalResetKey(prev => prev + 1); // ADDED
+          setShowModal(false);
+        }}
         onConfirm={confirmTermination}
       />
     </section>

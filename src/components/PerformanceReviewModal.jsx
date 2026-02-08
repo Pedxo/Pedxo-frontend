@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { FaStar } from "react-icons/fa";
 
 const PerformanceReviewModal = ({
@@ -6,9 +6,15 @@ const PerformanceReviewModal = ({
   onClose,
   onConfirm,
   loading,
+  resetKey, // ADDED
 }) => {
     const [rating, setRating] = useState(0);
     const [note, setNote] = useState("");
+    // ADDED: reset state when parent signals
+  useEffect(() => {
+    setRating(0);
+    setNote("");
+  }, [resetKey]);
 
    // ----------------------- NEW LOGIC -----------------------
    // Function to count words in the note
