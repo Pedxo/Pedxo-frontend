@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link} from "react-router-dom";
+import { useParams, Link, useLocation} from "react-router-dom";
 
 import leftarrorw from "../assets/svg/leftarrow.svg";
 import edit from "../assets/svg/edit.svg";
@@ -16,6 +16,10 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const AgreementContract = () => {
   const { contractId } = useParams(); 
+
+  const location = useLocation();
+  const assignedName = location.state?.assignedName || null;
+
   
   const [contract, setContract] = useState(null);
   const [editedContract, setEditedContract] = useState(null);
@@ -168,7 +172,7 @@ useEffect(() => {
 
     return (
       <UpdateContract
-        heading={`${contract?.clientName || "Client"} Contract`}
+        heading={`${assignedName || contract?.clientName || "Client"} Contract`}
         currentStep={currentStep}
         value={editedContract}
         onChange={(data) => {

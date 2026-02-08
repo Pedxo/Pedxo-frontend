@@ -10,9 +10,14 @@ const PerformanceReviewModal = ({
     const [rating, setRating] = useState(0);
     const [note, setNote] = useState("");
 
-  // ----------------------- NEW LOGIC -----------------------
-  // Confirm button should only be enabled if rating > 0 AND note is not empty
-  const isConfirmDisabled = loading || rating === 0 || note.trim() === "";
+   // ----------------------- NEW LOGIC -----------------------
+   // Function to count words in the note
+  const countWords = (text) => text.trim().split(/\s+/).filter(Boolean).length;
+
+  // Confirm button should only be enabled if:
+  // - rating is selected
+  // - note has at least 10 words
+  const isConfirmDisabled = loading || rating === 0 || countWords(note) < 2;  
   // ---------------------------------------------------------
 
   if (!isOpen) return null;

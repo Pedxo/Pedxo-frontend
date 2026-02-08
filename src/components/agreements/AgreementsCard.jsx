@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import rightarrow from "../../assets/svg/rightarrow.svg";
 
-const AgreementsCard = ({ card }) => {
+const AgreementsCard = ({ card, assignedName }) => {
   // Normalize contract id once
   const { contractId, avatar, name, link } = card
 
@@ -26,7 +26,10 @@ const AgreementsCard = ({ card }) => {
       <div className="font-medium text-center lg:text-[1.4rem]">
         {name}
       </div>
-      <Link to={`/dashboard/agreements/${contractId}`} className="flex gap-[6px]">
+      <Link to={`/dashboard/agreements/${contractId}`}
+        state={{ assignedName }}
+        className="flex gap-[6px]"
+      >
         <span className="font-medium text-[0.625rem] pr-text-clr md:text-[0.75rem] lg:text-base">
           {link}
         </span>

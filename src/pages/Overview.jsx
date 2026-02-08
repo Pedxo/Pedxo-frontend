@@ -43,18 +43,31 @@ const Overview = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
 
   // NEW: loader state
-  const [showLoader, setShowLoader] = useState(true);
+   const [showLoader, setShowLoader] = useState(true);
 
+
+    // ----------------- FORCE 10s LOADER -----------------
+   useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoader(false);
+    }, 5000); // EXACT duration
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  
+ 
 
   // ----------------- REACT QUERY (API NOT REMOVED) -----------------
   const {
     data: contracts,
-    isLoading,
+    //isLoading,
     refetch,
   } = useQuery({
     queryKey: ["user-contracts", username],
     queryFn: () => getUserContracts(username),
     enabled: !!username,
+    suspense: false,
   });
 
   // ----------------- USER CURRENCY -----------------
@@ -220,32 +233,18 @@ const Overview = () => {
 
   const displayTotalExpenses = totalExpenses;
 
-   // ----------------- FORCE 10s LOADER -----------------
-  useEffect(() => {
-  const loaderShown = sessionStorage.getItem("overview_loader_shown");
+  
+     // ----------------- LOADER (BEFORE PAGE LOAD) -----------------
+     if (showLoader) {
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center">
+          <div className="w-24 h-24 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-2xl font-semibold">Loading Home...</p>
+        </div>
+      );
+    }
 
-  if (loaderShown) {
-    setShowLoader(false);
-    return;
-  }
-
-  const timer = setTimeout(() => {
-    setShowLoader(false);
-    sessionStorage.setItem("overview_loader_shown", "true");
-  }, 10000); // force 10 seconds
-
-  return () => clearTimeout(timer);
-}, []);
-
-
-  // ----------------- LOADER (BEFORE PAGE LOAD) -----------------
-  if (showLoader) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+  
 
   // ----------------- JSX (UNCHANGED LAYOUT) -----------------
   return (

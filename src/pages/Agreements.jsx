@@ -22,6 +22,14 @@ const Agreements = () => {
   const [loading, setLoading] = useState(true);
 
 
+  // NEW: loader state
+  const [showLoader, setShowLoader] = useState(true);
+
+
+  // prevents blank screen before effects run
+  const [hasMounted, setHasMounted] = useState(false);
+
+
   const onBoarding = [
     {
       id: nanoid(),
@@ -91,7 +99,7 @@ useEffect(() => {
           
         }
 
-        /** 3️⃣ SORT + PROFILE MAP */
+        /** SORT + PROFILE MAP */
         assigned.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
@@ -109,7 +117,39 @@ useEffect(() => {
     fetchAgreements();
   }, []);
 
+  
+  // ----------------- FORCE 10s LOADER -----------------
+  useEffect(() => {
+    setHasMounted(true);
 
+    const loaderShown = sessionStorage.getItem("overview_loader_shown");
+
+    if (loaderShown) {
+      setShowLoader(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setShowLoader(false);
+      sessionStorage.setItem("overview_loader_shown", "true");
+    }, 6000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // SINGLE SOURCE OF TRUTH
+  const shouldShowLoader = !hasMounted || showLoader || loading;
+
+
+   // ----------------- LOADER (BEFORE PAGE LOAD) -----------------
+   if (shouldShowLoader) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="w-24 h-24 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-2xl font-semibold">Loading Contracts...</p>
+      </div>
+    );
+  }
 
 
   return (
@@ -150,6 +190,7 @@ useEffect(() => {
                 avatar: profileMap[getEmployeeKey(emp)],
                 link: "View contract",
               }}
+              assignedName={emp.fullName}
             />
           ))}
         {/* {assignedContracts.map((emp) => {
