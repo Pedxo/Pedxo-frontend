@@ -22,6 +22,14 @@ const Agreements = () => {
   const [loading, setLoading] = useState(true);
 
 
+  // NEW: loader state
+  const [showLoader, setShowLoader] = useState(true);
+
+
+  // prevents blank screen before effects run
+  const [hasMounted, setHasMounted] = useState(false);
+
+
   const onBoarding = [
     {
       id: nanoid(),
@@ -91,7 +99,7 @@ useEffect(() => {
           
         }
 
-        /** 3️⃣ SORT + PROFILE MAP */
+        /** SORT + PROFILE MAP */
         assigned.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
@@ -110,6 +118,39 @@ useEffect(() => {
   }, []);
 
 
+  
+  // ----------------- FORCE 10s LOADER -----------------
+  useEffect(() => {
+    setHasMounted(true);
+
+    const loaderShown = sessionStorage.getItem("overview_loader_shown");
+
+    if (loaderShown) {
+      setShowLoader(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setShowLoader(false);
+      sessionStorage.setItem("overview_loader_shown", "true");
+    }, 6000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // SINGLE SOURCE OF TRUTH
+  const shouldShowLoader = !hasMounted || showLoader || loading;
+
+
+   // ----------------- LOADER (BEFORE PAGE LOAD) -----------------
+  //  if (shouldShowLoader) {
+  //   return (
+  //     <div className="min-h-screen flex flex-col items-center justify-center gap-8">
+  //       <div className="w-12 h-12 border-4 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+  //       <p className="text-[12px] font-normal text-gray-700">Loading page...</p>
+  //     </div>
+  //   );
+  // }
 
 
   return (
@@ -138,6 +179,14 @@ useEffect(() => {
           <SearchInput />
       </div>
 
+       {/* ADDED: inline loader (header stays visible) */}
+        {shouldShowLoader && (
+          <div className="flex flex-col items-center justify-center py-10 gap-4">
+            <div className="w-10 h-10 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
+            <p className="text-[12px] text-gray-600">Loading page...</p>
+          </div>
+        )}
+
       {!loading && assignedContracts.length > 0 ? (
         <div className="mt-[23px] grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-[30px] lg:mt-[33px]">
           
@@ -150,24 +199,10 @@ useEffect(() => {
                 avatar: profileMap[getEmployeeKey(emp)],
                 link: "View contract",
               }}
+              assignedName={emp.fullName}
             />
           ))}
-        {/* {assignedContracts.map((emp) => {
-            const contractId =
-              emp.contractId || emp.contract?._id;
-
-            return (
-              <AgreementsCard
-                key={getEmployeeKey(emp)}
-                card={{
-                  contractId,
-                  name: emp.fullName,
-                  avatar: profileMap[getEmployeeKey(emp)],
-                  link: "View contract",
-                }}
-              />
-            );
-          })} */}
+        
         </div>
       ) : (
         !loading && (
