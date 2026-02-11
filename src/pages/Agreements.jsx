@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import { nanoid } from "nanoid";
 import SearchingDoc from "../components/SearchingDoc";
 import AddDeveloperBtn from "../components/AddDeveloperBtn";
@@ -28,6 +28,9 @@ const Agreements = () => {
 
   // prevents blank screen before effects run
   const [hasMounted, setHasMounted] = useState(false);
+
+  // ADDED: search state
+  const [searchTerm, setSearchTerm] = useState("");
 
 
   const onBoarding = [
@@ -70,8 +73,6 @@ useEffect(() => {
         const assigned = [];
 
         for (const contract of contracts) {
-          // const realContractId = contract?._id;
-          // if (!realContractId) continue;
           if(!contract?._id) continue;
 
           const res = await fetch(
@@ -86,10 +87,8 @@ useEffect(() => {
           if (Array.isArray(json?.data)) {
             json.data.forEach((dev) => {
               assigned.push({
-                ...dev,
-                //contractId: realContractId, // ONLY REAL CONTRACT ID
-                contractId: contract._id,
-               // _id: contract._id,
+                ...dev, 
+                contractId: contract._id,   // ONLY REAL CONTRACT ID
                 contract,                  // PASS FULL CONTRACT
               });
               
@@ -138,19 +137,23 @@ useEffect(() => {
     return () => clearTimeout(timer);
   }, []);
 
+   /* ---------------- SEARCH FILTER ---------------- */
+   const filteredAgreements = useMemo(() => {
+    if(!searchTerm) return assignedContracts;
+
+    const lower = searchTerm.toLowerCase();
+
+    return assignedContracts.filter(
+      (emp) =>
+        emp.fullName?.toLowerCase().includes(lower) ||
+        emp.roleTitle?.toLowerCase().includes(lower) ||
+        emp.country?.toLowerCase().includes(lower) ||
+        String(emp.paymentRate || "").toLowerCase().includes(lower)
+      )
+   }, [searchTerm, assignedContracts]);
+
   // SINGLE SOURCE OF TRUTH
   const shouldShowLoader = !hasMounted || showLoader || loading;
-
-
-   // ----------------- LOADER (BEFORE PAGE LOAD) -----------------
-  //  if (shouldShowLoader) {
-  //   return (
-  //     <div className="min-h-screen flex flex-col items-center justify-center gap-8">
-  //       <div className="w-12 h-12 border-4 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
-  //       <p className="text-[12px] font-normal text-gray-700">Loading page...</p>
-  //     </div>
-  //   );
-  // }
 
 
   return (
@@ -176,7 +179,8 @@ useEffect(() => {
             style={{ backgroundColor: "#008000" }}
           ></div>
         </div>
-          <SearchInput />
+          {/* FIXED: wired SearchInput */}
+        <SearchInput value={searchTerm} onChange={setSearchTerm} />
       </div>
 
        {/* ADDED: inline loader (header stays visible) */}
@@ -187,10 +191,10 @@ useEffect(() => {
           </div>
         )}
 
-      {!loading && assignedContracts.length > 0 ? (
+      {!loading && filteredAgreements.length > 0 ? (
         <div className="mt-[23px] grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-[30px] lg:mt-[33px]">
           
-          {assignedContracts.map((emp) => (
+          {filteredAgreements.map((emp) => (
             <AgreementsCard
               key={`${emp.contractId}-${emp.email}`}
               card={{
