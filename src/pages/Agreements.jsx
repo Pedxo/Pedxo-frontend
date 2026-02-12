@@ -29,6 +29,7 @@ const Agreements = () => {
   // prevents blank screen before effects run
   const [hasMounted, setHasMounted] = useState(false);
 
+
   // ADDED: search state
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -137,6 +138,7 @@ useEffect(() => {
     return () => clearTimeout(timer);
   }, []);
 
+
    /* ---------------- SEARCH FILTER ---------------- */
    const filteredAgreements = useMemo(() => {
     if(!searchTerm) return assignedContracts;
@@ -151,6 +153,7 @@ useEffect(() => {
         String(emp.paymentRate || "").toLowerCase().includes(lower)
       )
    }, [searchTerm, assignedContracts]);
+
 
   // SINGLE SOURCE OF TRUTH
   const shouldShowLoader = !hasMounted || showLoader || loading;
@@ -191,7 +194,9 @@ useEffect(() => {
           </div>
         )}
 
+
       {!loading && filteredAgreements.length > 0 ? (
+
         <div className="mt-[23px] grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-[30px] lg:mt-[33px]">
           
           {filteredAgreements.map((emp) => (
