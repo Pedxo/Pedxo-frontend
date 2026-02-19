@@ -178,7 +178,7 @@ useEffect(() => {
     try {
       const token = localStorage.getItem("token");
 
-      await fetch(
+      const res = await fetch(
         `${baseUrl}/contracts/${selectedEmployee.contractId}`,
         {
           method: "PATCH",
@@ -187,8 +187,8 @@ useEffect(() => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            rating,
-            terminationNote: note,
+            performanceRating: rating, 
+            terminationReason: note, 
             removeTalentIds: [selectedEmployee.talentAssignedId],
             emailNotification: {
               to: "victor@pedxo.com",
@@ -200,6 +200,15 @@ useEffect(() => {
           }),
         }
       );
+
+      const data = await res.json();
+
+      console.log("PATCH status:", res.status);
+      console.log("PATCH response:", data);
+
+      if (!res.ok) {
+        throw new Error(data?.message || "Termination failed");
+      }
 
       // ADDED: reset modal state after confirm
       setModalResetKey(prev => prev + 1);
