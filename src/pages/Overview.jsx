@@ -353,10 +353,10 @@ const Overview = () => {
                       <div key={step.id} className="flex items-center gap-4">
                         <div className="flex-1">
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-700 capitalize">
+                            <span className="text-xs sm:text-base text-gray-700 capitalize">
                               {step.name}
                             </span>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-xs sm:text-sm text-gray-500">
                               {stepProgress?.status === "completed" ? (
                                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
                               <span className="text-white text-sm">✓</span>
