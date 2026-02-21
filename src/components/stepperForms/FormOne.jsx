@@ -135,7 +135,8 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
   return (
     <div className="flex flex-col gap-5">
       <div className="text-lg font-semibold leading-normal xl:text-2xl xl:mb-[18px]">
-        Personal Information
+        <h2>Create your organization</h2> 
+       <p className="mt-2 text-sm font-medium italic text-gray-600">Entering this correctly can help your agent make smarter decisions when recruiting</p>
       </div>
 
       <CustomForm onSubmit={formik.handleSubmit}>

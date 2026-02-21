@@ -26,7 +26,7 @@ const FormFive = ({ nextStep, setSignatureFile }) => {
       uploadSignature(formData, {
         onSuccess: () => {
           setSignatureFile(values.signature); // Pass file to FormFour
-          toast.success("Signature uploaded successfully!");
+          // toast.success("Signature uploaded successfully!");
           nextStep();
         },
         onError: () => {
