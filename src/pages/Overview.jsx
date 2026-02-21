@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query"; // Add useQueryClient
+import { useQuery } from "@tanstack/react-query";
 import { getUserContracts } from "../api";
 import moneybag from "../assets/svg/moneybag.svg";
 import people from "../assets/svg/people.svg";
@@ -7,7 +7,7 @@ import telegram from "../assets/svg/telegram.svg";
 import onboardIcon1 from "../assets/svg/onboardIcon1.svg";
 import onboardIcon2 from "../assets/svg/onboardIcon2.svg";
 import add from "../assets/svg/add.svg";
-import { Link, useLocation } from "react-router-dom"; // Add useLocation
+import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { formatCurrency } from "../utility/helper";
 
@@ -21,17 +21,14 @@ const onboardingSteps = [
   { id: 4, name: "deciding", duration: 5000 },
   { id: 5, name: "indexing", duration: 5000 },
   { id: 6, name: "searching engineer", duration: 30000 },
-  { id: 7, name: "onboarding engineer", duration: null },
+  { id: 7, name: "onboarding engineer", duration: null }, // Continues until talent is assigned
 ];
 
 const Overview = () => {
   const { username } = useUser();
-  const location = useLocation();
-  const queryClient = useQueryClient();
   const [isAnimating, setIsAnimating] = useState(false);
   const [currencyCode, setCurrencyCode] = useState("USD");
   const [locale, setLocale] = useState("en-US");
-  const [refreshKey, setRefreshKey] = useState(0); // Add refresh key
 
   const [activeContractors, setActiveContractors] = useState(0);
   const [onboardingCount, setOnboardingCount] = useState(0);
@@ -44,42 +41,15 @@ const Overview = () => {
   const [searchStartTime, setSearchStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
 
-  // Force refresh when component mounts or location changes
-  useEffect(() => {
-    console.log("Overview mounted or location changed, refreshing data");
-    setRefreshKey(prev => prev + 1);
-    
-    // Invalidate and refetch
-    if (username) {
-      queryClient.invalidateQueries({ 
-        queryKey: ["user-contracts", username] 
-      });
-    }
-  }, [location.pathname, username, queryClient]);
-
-  // Fetch contracts - with refreshKey in queryKey to force refetch
+  // Fetch contracts filtered by username
   const {
     data: contracts,
     isLoading,
-    isFetching,
     refetch,
   } = useQuery({
-    queryKey: ["user-contracts", username, refreshKey], // Add refreshKey to force refetch
+    queryKey: ["user-contracts", username],
     queryFn: () => getUserContracts(username),
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    enabled: !!username,
   });
-
-  // Log when data updates
-  useEffect(() => {
-    if (contracts) {
-      console.log("Contracts updated:", contracts);
-    }
-  }, [contracts]);
 
   // Load user-specific currency
   useEffect(() => {
@@ -93,13 +63,13 @@ const Overview = () => {
     }
   }, [username]);
 
-  // Process contracts data - updates whenever contracts changes
+  // Process contracts data
   useEffect(() => {
     if (contracts?.data?.contracts) {
-      console.log("Processing contracts data:", contracts.data.contracts);
       const contractsData = contracts.data.contracts;
 
       let assignedTalentsCount = 0;
+      let assignedContractIds = new Set();
       let expenses = 0;
 
       for (const contract of contractsData) {
@@ -107,6 +77,7 @@ const Overview = () => {
 
         if (assignedIds.length > 0) {
           assignedTalentsCount += assignedIds.length;
+          assignedContractIds.add(contract._id);
           expenses += Number(contract.paymentRate || 0);
         }
       }
@@ -119,11 +90,10 @@ const Overview = () => {
           !contract.talentAssignedId || contract.talentAssignedId.length === 0,
       ).length;
 
-      console.log("Onboarding count:", onboardingContracts);
       setOnboardingCount(onboardingContracts);
       setTotalExpenses(expenses);
 
-      // Check if onboarding is complete
+      // Check if onboarding is complete (all contracts have talentAssignedId)
       const hasUnassignedContracts = contractsData.some(
         (contract) =>
           !contract.talentAssignedId || contract.talentAssignedId.length === 0,
@@ -143,14 +113,6 @@ const Overview = () => {
 
   // Onboarding progress simulation
   useEffect(() => {
-    // Reset progress when onboarding count changes to 0
-    if (onboardingCount === 0) {
-      setOnboardingProgress({});
-      setCurrentStep(0);
-      setIsOnboardingComplete(true);
-      return;
-    }
-
     if (onboardingCount > 0 && !isOnboardingComplete) {
       let stepIndex = 0;
       let timers = [];
@@ -175,10 +137,34 @@ const Overview = () => {
           setSearchStartTime(Date.now());
         }
 
-        // For step 7, we don't need polling anymore since the query will auto-refresh
+        // For step 7 (onboarding engineer), we need to check for talent assignment
         if (step.id === 7) {
-          // This step will complete when contracts data shows assigned talents
-          // The useEffect above will handle updating isOnboardingComplete
+          // Start polling for contract updates
+          const pollInterval = setInterval(async () => {
+            await refetch(); // Refetch contracts to check for updates
+
+            if (contracts?.data?.contracts) {
+              const contractsData = contracts.data.contracts;
+
+              // Check if any contract has talentAssignedId
+              const hasTalentAssigned = contractsData.some(
+                (contract) =>
+                  contract.talentAssignedId &&
+                  contract.talentAssignedId.length > 0,
+              );
+
+              if (hasTalentAssigned) {
+                clearInterval(pollInterval);
+                setOnboardingProgress((prev) => ({
+                  ...prev,
+                  [step.id]: { status: "completed", name: step.name },
+                }));
+                setIsOnboardingComplete(true);
+              }
+            }
+          }, 5000); // Poll every 5 seconds
+
+          timers.push(pollInterval);
           return;
         }
 
@@ -204,11 +190,13 @@ const Overview = () => {
         timers.forEach((timer) => {
           if (typeof timer === "number") {
             clearTimeout(timer);
+          } else {
+            clearInterval(timer);
           }
         });
       };
     }
-  }, [onboardingCount, isOnboardingComplete]);
+  }, [onboardingCount, isOnboardingComplete, contracts, refetch]);
 
   // Timer for searching engineer step
   useEffect(() => {
@@ -237,17 +225,6 @@ const Overview = () => {
   // Use contracts directly for total expenses if available
   const displayTotalExpenses = contracts?.totalExpenses || totalExpenses;
 
-  // Show loading state
-  if (isLoading && !contracts) {
-    return (
-      <section>
-        <div className="flex justify-center items-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section>
       <div>
@@ -275,15 +252,13 @@ const Overview = () => {
               <div className="flex justify-between bg-white border rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16">
                 <div className="flex items-center gap-4">
                   <img src={moneybag} alt="" />
-                  <span className="text-2xl font-semibold xl:text-[40px] overview-text">
+                  {/* <span className="text-2xl font-semibold xl:text-[40px] overview-text">
                     {formatCurrency(displayTotalExpenses, currencyCode, locale)}
+                  </span> */}
+                  <span className="text-2xl font-semibold xl:text-[40px] overview-text">
+                    $0.00
                   </span>
                 </div>
-                {isFetching && (
-                  <div className="text-xs text-gray-400 animate-pulse">
-                    Refreshing...
-                  </div>
-                )}
               </div>
             </div>
 
@@ -361,7 +336,7 @@ const Overview = () => {
                   </p>
                 )}
                 <div className="text-[10px] pl-5 py-[14px] rounded-lg font-medium xl:text-[16px] text-gray-500">
-                  {isFetching ? "Refreshing..." : "Pending"}
+                  Pending
                 </div>
               </div>
             </div>
@@ -378,7 +353,7 @@ const Overview = () => {
                       <div key={step.id} className="flex items-center gap-4">
                         <div className="flex-1">
                           <div className="flex justify-between items-center">
-                            <span className="text-xs sm:text-base text-gray-700 capitalize">
+                            <span className="text-sm sm:text-base text-gray-700 capitalize">
                               {step.name}
                             </span>
                             <span className="text-xs sm:text-sm text-gray-500">
