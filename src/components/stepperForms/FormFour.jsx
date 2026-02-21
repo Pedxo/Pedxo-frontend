@@ -62,7 +62,7 @@ const FormFour = ({
         formatCurrency(
           savedState?.paymentRate,
           savedState?.country === "Nigeria" ? "NGN" : "USD",
-          savedState?.country === "Nigeria" ? "en-NG" : "en-US"
+          savedState?.country === "Nigeria" ? "en-NG" : "en-US",
         ) ?? null,
     },
     {
@@ -85,17 +85,10 @@ const FormFour = ({
     formData.append("userId", userId);
     formData.append("signature", signatureFile);
 
-    finalize(formData, {
-      onSuccess: () => {
-        toast.success("Contract sent successfully!");
-        sessionStorage.removeItem("currentStep");
-        const newCount = completionCount + 1;
-        setCompletionCount(newCount);
-        sessionStorage.setItem("contractCompletionCount", newCount.toString());
-      },
-      onError: () => {
-        toast.error("Failed to send contract.");
-      },
+    // Pass username along with formData
+    finalize({
+      data: formData,
+      username: username,
     });
   };
 

@@ -23,6 +23,17 @@ authFetch.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    // SPECIAL HANDLING FOR CONTRACTS - NEVER CACHE
+    if (config.url?.includes('/contracts/')) {
+      // Add a timestamp to bust cache for contracts
+      config.params = {
+        ...config.params,
+        _t: Date.now() // Add timestamp to make URL unique
+      };
+      return config; // Skip cache for contracts
+    }
+
+    // For other GET requests, use caching
     if (config.method?.toLowerCase() === "get") {
       const cacheKey = JSON.stringify({
         url: config.url,
@@ -46,10 +57,12 @@ authFetch.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor: stores GET responses in cache and handles retries
+// Response interceptor: stores GET responses in cache (only for non-contract endpoints)
 authFetch.interceptors.response.use(
   (response) => {
-    if (response.config.method?.toLowerCase() === "get") {
+    // Don't cache contract endpoints
+    if (!response.config.url?.includes('/contracts/') && 
+        response.config.method?.toLowerCase() === "get") {
       const cacheKey = JSON.stringify({
         url: response.config.url,
         params: response.config.params,
@@ -92,6 +105,7 @@ authFetch.interceptors.response.use(
 // Updated to use userId instead of username
 export async function getUserContracts(userId) {
   try {
+    // The interceptor will now add _t timestamp to bust cache
     const response = await authFetch.get("/contracts/get-user-contracts", {
       params: { userId },
     });
