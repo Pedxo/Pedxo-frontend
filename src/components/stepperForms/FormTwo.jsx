@@ -175,7 +175,7 @@ const FormTwo = ({ nextStep, savedState, username, userId }) => {
               htmlFor='endDate'
               className={`font-semibold leading-normal ${!showSwitch && 'opacity-40'}`}
             >
-              End Date
+              End Date {contractType === 'gig-based' && <span className='text-red-500'>*</span>}
             </label>
             {contractType === 'full-time' && (
               <Switch
