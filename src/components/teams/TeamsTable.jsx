@@ -45,6 +45,7 @@ const fetchEmployees = async () => {
 
   try {
     const token = localStorage.getItem("token");
+    console.log("User loggedIn token: ", token);
     if (!token || !token.includes(".")) {
       setError("Authentication expired. Please log in again.");
       return;
@@ -68,17 +69,23 @@ const fetchEmployees = async () => {
       : [];
 
     /*  NORMALIZE CONTRACT IDS  */
-    const normalizedContracts = rawContracts
-      .map(c => ({
-        contractId: c._id || c.contractId || null,
-        talentAssignedId: c.talentAssignedId?.[0] || null,
-      }))
-      .filter(c => c.contractId); // no undefined allowed
 
-    if (!normalizedContracts.length) {
+    const normalizedContracts = rawContracts
+      .map((c) => ({
+        contractId: c._id || c.contractId || null,
+        talentAssignedIds: Array.isArray(c.talentAssignedId)
+          ? c.talentAssignedId.filter(
+              (id) => typeof id === "string" && id.trim() !== ""
+            )
+          : [],
+      }))
+      .filter((c) => c.contractId);
+
+  if (!normalizedContracts.length) {
       setEmployees([]);
       return;
     }
+
     console.log("Contract fetched:", normalizedContracts);
 
     /* FETCH ASSIGNED TALENTS */
@@ -97,19 +104,25 @@ const fetchEmployees = async () => {
 
       if (!res.ok) continue;
 
-      const data = await res.json();
+      const assignedJson = await res.json();
+     
+      if (Array.isArray(assignedJson?.data)) {
+          assignedJson.data.forEach((emp, index) => {
+            assigned.push({
+              ...emp,
+              contractId: contract.contractId,
 
-      if (Array.isArray(data?.data)) {
-        assigned.push(
-          ...data.data.map(emp => ({
-            ...emp,
-            contractId: contract.contractId,
-            talentAssignedId: contract.talentAssignedId,
-          }))
-        );
+              // Correct mapping by index
+              talentAssignedId:
+                contract.talentAssignedIds[index] || null,
+            });
+          });
+        }
+
       }
-    }
 
+
+    /* ---------------- SORT ---------------- */
     const sorted = assigned.sort(
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
     );
@@ -164,14 +177,23 @@ useEffect(() => {
   const confirmTermination = async ({ rating, note }) => {
     console.log("Confirm clicked", { selectedEmployee, rating, note });
 
+    if (
+        !selectedEmployee?.contractId ||
+        !selectedEmployee?.talentAssignedId ||
+        typeof selectedEmployee.talentAssignedId !== "string"
+      ) {
+        console.error("Missing termination identifiers", selectedEmployee);
+        return;
+        }
 
-  if (
-      !selectedEmployee?.contractId ||
-      !selectedEmployee?.talentAssignedId
-    ) {
-      console.error("Missing termination identifiers", selectedEmployee);
-      return;
-    }
+
+  // if (
+  //     !selectedEmployee?.contractId ||
+  //     !selectedEmployee?.talentAssignedId
+  //   ) {
+  //     console.error("Missing termination identifiers", selectedEmployee);
+  //     return;
+  //   }
 
     setTerminating(true);
 
@@ -196,6 +218,9 @@ useEffect(() => {
               roleTitle: selectedEmployee.roleTitle,
               paymentRate: selectedEmployee.paymentRate,
               paymentFrequency: selectedEmployee.paymentFrequency,
+
+              performanceRating: rating,        //ADDED
+              terminationReason: note,          //ADDED 
             },
           }),
         }
