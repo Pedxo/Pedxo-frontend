@@ -3,8 +3,8 @@ import authFetch from "../api";
 // Helper function to clear all auth-related storage
 const clearAuthStorage = () => {
   localStorage.removeItem("user");
-  localStorage.clear();
-  // Add any other storage mechanisms you use
+  localStorage.removeItem("token");
+  localStorage.removeItem("refreshToken");
 };
 
 
@@ -16,7 +16,7 @@ export async function loginUser(details) {
   const refreshToken = response.data.result.refreshToken;
 
   
-  if (!accessToken) {
+  if (!accessToken || !refreshToken) {
     throw new Error("Login failed: access token missing");
   }
 
@@ -30,6 +30,7 @@ export async function loginUser(details) {
 
   localStorage.setItem("user", JSON.stringify(userData));
   localStorage.setItem("token", accessToken); // SINGLE SOURCE
+  localStorage.setItem("refreshToken", refreshToken);
 
   authFetch.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 

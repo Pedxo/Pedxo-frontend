@@ -116,4 +116,3 @@ export default UpdateContract;
 //   title: "Payment Frequency",
 //   data: "Contract type",
 // },
-
