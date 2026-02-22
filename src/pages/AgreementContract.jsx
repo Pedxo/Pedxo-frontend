@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, Link, useLocation} from "react-router-dom";
+
 import leftarrorw from "../assets/svg/leftarrow.svg";
 import edit from "../assets/svg/edit.svg";
-import { Link } from "react-router-dom";
 import document from "../assets/svg/document.svg";
 
 import PrimaryBtn from "../components/PrimaryBtn";
@@ -10,8 +11,21 @@ import UpdateContract from "../components/agreements/UpdateContract";
 import { BsArrowLeft } from "react-icons/bs";
 import { FaArrowLeft } from "react-icons/fa6";
 
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const AgreementContract = () => {
-  // const { id } = useParams();
+  const { contractId } = useParams(); 
+
+  const location = useLocation();
+  const assignedName = location.state?.assignedName || null;
+
+  
+  const [contract, setContract] = useState(null);
+  const [editedContract, setEditedContract] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const [currentStep, setCurrentStep] = useState(1);
   const [complete, setComplete] = useState(false);
   const [isPaymentDue, setIsPaymentDue] = useState(false);
@@ -19,6 +33,115 @@ const AgreementContract = () => {
     useState(false);
   const [prevStep, setPrevStep] = useState(null);
 
+  
+   // fetch contract details
+
+useEffect(() => {
+    if (!contractId) {
+      setError("Invalid contract ID");
+      setLoading(false);
+      return;
+    }
+
+    const fetchContract = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(
+          `${baseUrl}/contracts/get-contract?contractId=${contractId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!res.ok) throw new Error("Failed to fetch contract");
+
+        const json = await res.json();
+       
+         // FIX: extract the real contract object
+        setContract(json?.data);
+        setEditedContract(json?.data); 
+        console.log("Contract fetched (correct):", json?.data);
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContract();
+  }, [contractId]);
+
+   
+  // ------------------ Update Contract Function ------------------
+
+ const handleUpdateContract = async () => {
+  if (!editedContract) return;
+
+  // MAP FRONTEND → BACKEND SCHEMA
+  const payload = {
+    contractType: editedContract.contractType,
+    startDate: editedContract.startDate,
+    endDate: editedContract.endDate,
+    roleTitle: editedContract.roleTitle,
+    seniorityLevel: editedContract.seniorityLevel,
+
+    // IMPORTANT MAPPING
+    explanationOfScopeOfWork: editedContract.scopeOfWork,
+
+    paymentRate: Number(editedContract.paymentRate),
+
+    paymentFrequency: editedContract.paymentFrequency,
+    
+    isCompleted: true,
+  };
+
+  console.log("PATCH payload → /contracts/:id", payload);
+
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(
+      `${baseUrl}/contracts/${contractId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!res.ok) throw new Error("Update failed");
+
+    // DO NOT TRUST PATCH RESPONSE
+    // ALWAYS REFETCH
+    const refetch = await fetch(
+      `${baseUrl}/contracts/get-contract?contractId=${contractId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const refetched = await refetch.json();
+
+    setContract(refetched.data);
+    setEditedContract(refetched.data);
+
+    alert("Contract updated successfully");
+    setCurrentStep(1);
+
+  } catch (err) {
+    console.error(err);
+    setError(err.message);
+  }
+};
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  // };
   const handlePrevious = () => {
     if (isTransactionHistoryVisible) {
       setIsTransactionHistoryVisible(false);
@@ -27,7 +150,7 @@ const AgreementContract = () => {
         setPrevStep(null);
       }
     } else if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep((prev) => prev - 1);
     }
   };
 
@@ -36,32 +159,39 @@ const AgreementContract = () => {
     setIsTransactionHistoryVisible(true);
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  // };
+
+ 
+  if (loading) return null;
+  if (error)
+    return (
+      <div className="px-10 pt-20 text-red-600 font-semibold">{error}</div>
+    );
 
   const renderStep = () => {
-    if (isTransactionHistoryVisible) return null;
+   if (isTransactionHistoryVisible) return null;
 
-    switch (currentStep) {
-      case 1:
-        return (
-          <div>
-            <UpdateContract heading="Mike Santos Contract" />
-          </div>
-        );
-
-      case 2:
-        return (
-          <div>
-            <UpdateContract
-              heading="Mike Santos Contract"
-              currentStep={currentStep}
-            />
-          </div>
-        );
-    }
+    return (
+      <UpdateContract
+        heading={`${assignedName || contract?.clientName || "Client"} Contract`}
+        currentStep={currentStep}
+        value={editedContract}
+        onChange={(data) => {
+          console.log("Live edit:", data);
+          setEditedContract(data);
+        }}// pass update function to child
+      />
+    );
   };
+
+  const formatDate = (date) => {
+  if (!date) return null;
+  const d = new Date(date);
+  return isNaN(d.getTime()) ? null : d.toDateString();
+  };
+
+  // ---------------- UI GUARDS ----------------
+
+  if (loading) return null;
 
   return (
     <section className="w-full px-10 pt-20">
@@ -106,20 +236,23 @@ const AgreementContract = () => {
             >
               <div className="flex flex-col gap-[15px] px-5 py-[18px] user-bg-clr rounded-lg mx-[21px]  text-[0.75rem] font-medium xl:mx-0  xl:max-w-[454px] xl:gap-[21px] xl:pl-[50px] xl:pr-[38px] xl:py-[52px] xl:text-[1.125rem] ">
                 <div className="text-base font-semibold xl:text-[2.3125rem] xl:leading-normal">
-                  Total Amount Paid : $20,000
+                  Total Amount Paid : ${contract?.totalPaid || 0}
                 </div>
                 <div className="">
-                  <span>Pay Schedule: </span>
-                  <span className="font-semibold">BiWeekly</span>
+                  <span>Pay Schedule:{" "} </span>
+                  <span className="font-semibold">{contract?.paymentFrequency || "N/A"}</span>
                 </div>
                 <div className="">
-                  <span> Pay Rate: </span>
-                  <span className="font-semibold">$5,000</span>
+                  <span> Pay Rate:{" "} </span>
+                  <span className="font-semibold">${contract?.paymentRate || 0}</span>
                 </div>
                 <div className="">
-                  <span>Pay Period: </span>
+                  <span>Pay Period: {" "}</span>
                   <span className="font-semibold">
-                    Jul 16, 2024 - Jul 29, 2024
+                    {/* Jul 16, 2024 - Jul 29, 2024 */}
+                    {formatDate(contract?.startDate) && formatDate(contract?.endDate)
+                    ? `${formatDate(contract?.startDate)} - ${formatDate(contract?.endDate)}`
+                    : "N/A"}
                   </span>
                 </div>
 
@@ -132,7 +265,8 @@ const AgreementContract = () => {
                   <div className="">
                     <span>Due by </span>
                     <span className="font-semibold">
-                      Aug 29, 2023 at 11:00pm
+                      {/* Aug 29, 2023 at 11:00pm */}
+                      {formatDate(contract?.endDate) || "N/A"}
                     </span>
                   </div>
                 )}
@@ -163,11 +297,11 @@ const AgreementContract = () => {
                   className={`pr-bg-clr mt-[18px] w-full rounded-lg text-white text-[0.75rem] py-[14px] lg:w-auto lg:mx-auto lg:px-[60px] lg:py-6 xl:text-base xl:mt-[36px] ${
                     currentStep === 3 ? "hidden" : "block"
                   } `}
-                  onClick={() => {
-                    currentStep === 2
-                      ? setComplete(true)
-                      : setCurrentStep((prev) => prev + 1);
-                  }}
+                  onClick={() =>
+                  currentStep === 2
+                    ? handleUpdateContract()
+                    : setCurrentStep(2)
+                    }
                 >
                   {currentStep === 2 ? (
                     <div className="flex items-center justify-center">

@@ -1,7 +1,16 @@
 import { Link } from "react-router-dom";
 import rightarrow from "../../assets/svg/rightarrow.svg";
 
-const AgreementsCard = ({ card }) => {
+
+const AgreementsCard = ({ card, assignedName }) => {
+  // Normalize contract id once
+  const { contractId, avatar, name, link } = card
+
+  if (!contractId) {
+    console.error("Agreement card missing contractId:", card);
+    return null;
+  }
+
   return (
     <div
       className="flex flex-col items-center rounded-lg  py-[30px]"
@@ -11,16 +20,19 @@ const AgreementsCard = ({ card }) => {
             user profile picture comes here
           </div> */}
       <img
-        src={card.avatar}
+        src={avatar}
         alt="profile photo"
         className="mb-[18px] w-[60px] h-[60px]"
       />
       <div className="font-medium text-center lg:text-[1.4rem]">
-        {card.name}
+        {name}
       </div>
-      <Link to={`/dashboard/agreements/${card.id}`} className="flex gap-[6px]">
+      <Link to={`/dashboard/agreements/${contractId}`}
+        state={{ assignedName }}
+        className="flex gap-[6px]"
+      >
         <span className="font-medium text-[0.625rem] pr-text-clr md:text-[0.75rem] lg:text-base">
-          {card.link}
+          {link}
         </span>
         <img src={rightarrow} alt="" className="w-[6px]" />
       </Link>
