@@ -37,24 +37,6 @@ const TeamsTable = () => {
   const [hasMounted, setHasMounted] = useState(false);
 
 
-   // SAME STYLE AS AGREEMENT
-  // const onBoarding = [
-  //   {
-  //     id: nanoid(),
-  //     title: "Add Developers",
-  //     desp: "Create a contract and assign developers to see them listed here.",
-  //   },
-  //   {
-  //     id: nanoid(),
-  //     title: "Manage Active Developers",
-  //     desp: "You can terminate or review performance from this page.",
-  //   },
-  // ];
-
-  
-
-
-
   /* ---------------- FETCH EMPLOYEES ---------------- */
 const fetchEmployees = async () => {
   setLoading(true);
