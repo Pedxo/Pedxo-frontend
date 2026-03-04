@@ -3,13 +3,11 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useGlobalContext } from "../Context";
 import authFetch from "../api";
-import { useUser } from "../context/UserContext";
 
 const AuthSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { setUserBio } = useGlobalContext();
-  const { login } = useUser(); // <-- use login function from context
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -44,15 +42,7 @@ const AuthSuccess = () => {
           refreshToken,
           ...user,
         };
-        
-        //Save to localStorage
         localStorage.setItem("user", JSON.stringify(tokenData));
-        localStorage.setItem("token", token);
-        localStorage.setItem("refreshToken", refreshToken);
-
-        // Update React state via UserContext
-        login(tokenData);
-
 
         toast.success("Login successful!");
         setTimeout(() => {
@@ -69,7 +59,7 @@ const AuthSuccess = () => {
       toast.error("No token found in redirect.");
       navigate("/login", { replace: true });
     }
-  }, [location.search, login, navigate, setUserBio]);
+  }, []);
 
   return (
     <section className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
