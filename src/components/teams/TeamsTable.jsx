@@ -1,10 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, NavLink, useSearchParams } from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
 import { GoDotFill } from "react-icons/go";
 import {getProfileImagesMapping, getEmployeeKey, profileImages} from "../../utility/profileImages";
 import {useGlobalContext} from "../../Context";
 import PerformanceReviewModal from "../PerformanceReviewModal";
+import SearchingDoc from "../../components/SearchingDoc"; 
 
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -34,6 +35,22 @@ const TeamsTable = () => {
   
   // prevents blank screen before effects run
   const [hasMounted, setHasMounted] = useState(false);
+
+
+   // SAME STYLE AS AGREEMENT
+  // const onBoarding = [
+  //   {
+  //     id: nanoid(),
+  //     title: "Add Developers",
+  //     desp: "Create a contract and assign developers to see them listed here.",
+  //   },
+  //   {
+  //     id: nanoid(),
+  //     title: "Manage Active Developers",
+  //     desp: "You can terminate or review performance from this page.",
+  //   },
+  // ];
+
   
 
 
@@ -186,7 +203,6 @@ useEffect(() => {
         return;
         }
 
-
   // if (
   //     !selectedEmployee?.contractId ||
   //     !selectedEmployee?.talentAssignedId
@@ -249,14 +265,34 @@ useEffect(() => {
   };
 
 
-  // ---------------- SIGNATURE BLOCK ----------------
-  const SignatureBlock = () => (
-    <div className={`mb-[39px] ${signature ? "block" : "hidden"}`}>
-      <div className="w-full h-[0.5px] bg-[#0000004d]"></div>
-      <div className="mt-[39px] max-w-[100px] mx-auto">
-        {signature && <img src={signature} alt="user signature" />}
+ /* ---------------- EMPTY STATE COMPONENT ---------------- */
+  const EmptyTeamsState = () => (
+    <SearchingDoc
+      noticeText="Add devs and pay them to see their records here."
+      searchingdocTitle="No Active Developer yet"
+      searchingdocText="They would appear here once a developer has been assigned to a contract"
+      onBoarding={[
+        {
+          id: "1",
+          title: "Create a contract",
+          desp: "Start by creating a contract for your developer.",
+        },
+        {
+          id: "2",
+          title: "Assign a developer",
+          desp: "Once assigned, they will appear in this Active Developers tab.",
+        },
+      ]}
+    >
+      <div className="mt-[33px]">
+        <NavLink
+          to="/dashboard/create-contract"
+          className="flex items-center text-[0.8rem] text-white px-3 py-[10px] sm:px-5 sm:py-[14px] pr-bg-clr rounded-lg font-semibold xl:text-[16px]"
+        >
+          <img src={""} alt="" className="w-4 mr-1" /> Create new contract
+        </NavLink>
       </div>
-    </div>
+    </SearchingDoc>
   );
 
    
@@ -393,7 +429,8 @@ useEffect(() => {
                   </div>
                 </div>
               ))}
-            {showEmptyState && <SignatureBlock />}
+            {/* EMPTY STATE (MOBILE) */}
+            {showEmptyState && <EmptyTeamsState />}
         </div>
 
         {/* -------- DESKTOP VIEW -------- */}
@@ -481,7 +518,8 @@ useEffect(() => {
           </div>
          </> 
         )}
-        {showEmptyState && <SignatureBlock />}
+        {/* EMPTY STATE (DESKTOP) */}
+        {showEmptyState && <EmptyTeamsState />}
         </div>
       </div>
       {/* MODAL */}

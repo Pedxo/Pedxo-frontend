@@ -49,7 +49,7 @@ export async function signUpUserAPI(details) {
 export async function logoutUser() {
   try {
     // 1. First try server-side logout if your API has one
-    await authFetch.post("/auth/logout");
+    //await authFetch.post("/auth/logout");
     
     // 2. Clear client-side storage
     clearAuthStorage();
