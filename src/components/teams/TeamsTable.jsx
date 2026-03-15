@@ -3,9 +3,11 @@ import { Link, NavLink, useSearchParams } from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
 import { GoDotFill } from "react-icons/go";
 import {getProfileImagesMapping, getEmployeeKey, profileImages} from "../../utility/profileImages";
-import {useGlobalContext} from "../../Context";
+// import {useGlobalContext} from "../../Context";
 import PerformanceReviewModal from "../PerformanceReviewModal";
 import SearchingDoc from "../../components/SearchingDoc"; 
+import { useUser } from "../../context/UserContext";
+import authFetch from "../../api"; 
 
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -13,7 +15,7 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
 const TeamsTable = () => {
-  const { signature} = useGlobalContext();
+  const { userId } = useUser();
 
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,30 +45,33 @@ const fetchEmployees = async () => {
   setError("");
 
   try {
-    const token = localStorage.getItem("token");
-    console.log("User loggedIn token: ", token);
-    if (!token || !token.includes(".")) {
-      setError("Authentication expired. Please log in again.");
-      return;
-    }
+    //const token = localStorage.getItem("token");
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const token =
+        localStorage.getItem("token") ||
+        storedUser?.accessToken;
+
+    console.log("User loggedIn token:", storedUser?.accessToken);
+    console.log("User ID:", userId);
+
+  
 
     /* FETCH USER CONTRACTS */
-    const res = await fetch(
-      `${baseUrl}/contracts/get-user-contracts`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }
-    );
+    
+    const response = await authFetch.get(
+        "/contracts/get-user-contracts",
+        { params: { userId } }
+      );
 
-    const json = await res.json();
-    console.log("Total Contracts created:", json);
-    const rawContracts = Array.isArray(json?.data?.contracts)
-      ? json.data.contracts
+    //const json = response.data;
+
+
+    console.log("Contracts fetched:", response.data);
+    const rawContracts = Array.isArray(response?.data?.data?.contracts)
+      ? response.data.data.contracts
       : [];
 
+    console.log("Total Contracts created:", rawContracts.length); // This should also display
     /*  NORMALIZE CONTRACT IDS  */
 
     const normalizedContracts = rawContracts
@@ -85,38 +90,47 @@ const fetchEmployees = async () => {
       return;
     }
 
-    console.log("Contract fetched:", normalizedContracts);
+    console.log("normalized Contract fetched:", normalizedContracts); //This should display on console
 
     /* FETCH ASSIGNED TALENTS */
     const assigned = [];
 
     for (const contract of normalizedContracts) {
-      const res = await fetch(
-        `${baseUrl}/hire/assigned-by-contract?contractId=${contract.contractId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
+      
+      try {
+          const assignedRes = await authFetch.get(
+            "/hire/assigned-by-contract",
+            {
+              params: { contractId: contract.contractId },
+            }
+          );
 
-      if (!res.ok) continue;
+          console.log(
+            "Assigned developers for contract",
+            contract.contractId,
+            assignedRes.data
+          );
 
-      const assignedJson = await res.json();
-     
-      if (Array.isArray(assignedJson?.data)) {
-          assignedJson.data.forEach((emp, index) => {
-            assigned.push({
-              ...emp,
-              contractId: contract.contractId,
+          const assignedJson = assignedRes.data;
 
-              // Correct mapping by index
-              talentAssignedId:
-                contract.talentAssignedIds[index] || null,
+          if (Array.isArray(assignedJson?.data)) {
+            assignedJson.data.forEach((emp, index) => {
+              assigned.push({
+                ...emp,
+                contractId: contract.contractId,
+                talentAssignedId:
+                  contract.talentAssignedIds[index] || null,
+              });
             });
-          });
+          }
+        } catch (err) {
+          console.error(
+            "Failed fetching assigned devs for contract:",
+            contract.contractId,
+            err
+          );
         }
+
 
       }
 
@@ -125,7 +139,7 @@ const fetchEmployees = async () => {
     const sorted = assigned.sort(
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
     );
-    console.log("Fetch Assigned Sorted", sorted);
+    console.log("Fetch Assigned Sorted", sorted); // This should render as supposed
 
     setEmployees(sorted);
     setProfileMap(getProfileImagesMapping(sorted));
@@ -140,8 +154,13 @@ const fetchEmployees = async () => {
 
 
 useEffect(() => {
+  if (!userId) {
+      console.warn("UserId not ready yet");
+      return;
+    }
+
   fetchEmployees();
-}, []);
+}, [userId]);
 
 
 
@@ -185,46 +204,36 @@ useEffect(() => {
         return;
         }
 
-  // if (
-  //     !selectedEmployee?.contractId ||
-  //     !selectedEmployee?.talentAssignedId
-  //   ) {
-  //     console.error("Missing termination identifiers", selectedEmployee);
-  //     return;
-  //   }
-
+ 
     setTerminating(true);
 
     try {
-      const token = localStorage.getItem("token");
+      //const token = localStorage.getItem("token");
+      const token =
+        localStorage.getItem("token") ||
+        JSON.parse(localStorage.getItem("user"))?.accessToken;
 
-      const res = await fetch(
-        `${baseUrl}/contracts/${selectedEmployee.contractId}`,
+      
+      const res = await authFetch.patch(
+        `/contracts/${selectedEmployee.contractId}`,
         {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            performanceRating: rating, 
-            terminationReason: note, 
-            removeTalentIds: [selectedEmployee.talentAssignedId],
-            emailNotification: {
-              to: "victor@pedxo.com",
-              employeeName: selectedEmployee.fullName,
-              roleTitle: selectedEmployee.roleTitle,
-              paymentRate: selectedEmployee.paymentRate,
-              paymentFrequency: selectedEmployee.paymentFrequency,
+          performanceRating: rating,
+          terminationReason: note,
+          removeTalentIds: [selectedEmployee.talentAssignedId],
 
-              performanceRating: rating,        //ADDED
-              terminationReason: note,          //ADDED 
-            },
-          }),
+          emailNotification: {
+            to: "victor@pedxo.com",
+            employeeName: selectedEmployee.fullName,
+            roleTitle: selectedEmployee.roleTitle,
+            paymentRate: selectedEmployee.paymentRate,
+            paymentFrequency: selectedEmployee.paymentFrequency,
+            performanceRating: rating,
+            terminationReason: note,
+          },
         }
       );
 
-      const data = await res.json();
+      const data = await res.data;
 
       console.log("PATCH status:", res.status);
       console.log("PATCH response:", data);
@@ -377,7 +386,7 @@ useEffect(() => {
                   <div className="text-[0.8rem] mt-2">{employee?.paymentRate}</div>
                   <div className="text-[0.8rem] mt-2">{employee?.paymentFrequency}</div>
 
-                  {employee?.githubAccount && employee.portfolio && (
+                  {(employee?.githubAccount || employee?.portfolio) && (
                     <div className="flex flex-col">
                       <a
                       href={employee?.githubAccount}
@@ -467,7 +476,7 @@ useEffect(() => {
                   <div>{employee?.paymentFrequency}</div>
 
                   <div className="text-blue-600 underline">
-                    {employee?.githubAccount && employee.portfolio && (
+                    {(employee?.githubAccount || employee?.portfolio) && (
                       <div className="flex flex-col">
                         <a
                         href={employee?.githubAccount}

@@ -10,6 +10,8 @@ import SearchInput from "../components/SearchInput";
 import AgreementsCard from "../components/agreements/AgreementsCard";
 //import expenseavatar from "../assets/svg/expenseavatar.svg";
 import {getEmployeeKey, getProfileImagesMapping} from "../utility/profileImages";
+import { useUser } from "../context/UserContext";
+import authFetch from "../api";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -20,6 +22,7 @@ const Agreements = () => {
   const [assignedContracts, setAssignedContracts] = useState([]);
   const [profileMap, setProfileMap] = useState({});
   const [loading, setLoading] = useState(true);
+  const { userId } = useUser();
 
 
   // NEW: loader state
@@ -53,37 +56,55 @@ const Agreements = () => {
 useEffect(() => {
     const fetchAgreements = async () => {
       try {
-        const token = localStorage.getItem("token");
+        //const token = localStorage.getItem("token");
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        const token = storedUser?.accessToken;
 
-        /** FETCH REAL CONTRACTS */
-        const contractRes = await fetch(
-          `${baseUrl}/contracts/get-user-contracts`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+        console.log("User ID:", userId);
+
+
+         /** FETCH CONTRACTS USING AUTHFETCH */
+        const contractRes = await authFetch.get(
+          "/contracts/get-user-contracts",
+          { params: { userId } }
         );
+
+        const contractJson = contractRes.data;
+
+        console.log("Contracts fetched:", contractJson);
         
 
-        const contractJson = await contractRes.json();
+       // const contractJson = await contractRes.json();
         const contracts = Array.isArray(contractJson?.data?.contracts)
           ? contractJson.data.contracts
           : [];
 
           console.log("Contract created", contracts);
+          console.log("Total Contracts:", contracts.length);
+
         /** FETCH ASSIGNMENTS USING REAL CONTRACT IDs */
         const assigned = [];
 
         for (const contract of contracts) {
           if(!contract?._id) continue;
 
-          const res = await fetch(
-            `${baseUrl}/hire/assigned-by-contract?contractId=${contract._id}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+          // const res = await fetch(
+          //   `${baseUrl}/hire/assigned-by-contract?contractId=${contract._id}`,
+          //   { headers: { Authorization: `Bearer ${token}` } }
+          // );
+
+          const res = await authFetch.get(
+            "/hire/assigned-by-contract",
+            { params: { contractId: contract._id } }
           );
 
-          if (!res.ok) continue;
+          const json = res.data;
 
-          const json = await res.json();
+          console.log(
+            "Assigned developers for contract:",
+            contract._id,
+            json
+          );
 
           if (Array.isArray(json?.data)) {
             json.data.forEach((dev) => {

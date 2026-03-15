@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useGlobalContext } from "../Context";
 import authFetch from "../api";
 import { useUser } from "../context/UserContext";
+import {jwtDecode} from "jwt-decode";
 
 const AuthSuccess = () => {
   const location = useLocation();
@@ -11,65 +12,84 @@ const AuthSuccess = () => {
   const { setUserBio } = useGlobalContext();
   const { login } = useUser(); // <-- use login function from context
 
+
   useEffect(() => {
+
+    if (!location.search) return;
+
     const params = new URLSearchParams(location.search);
-    const token = params.get("token");
 
-    if (token) {
-        const fetchUser = async() => {
-      try {
-       
+    // BACKEND SENDS `token`
+    const accessToken =
+      params.get("accessToken") ||
+      params.get("token");
 
-        const result = await authFetch.get("/user/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-      });
+    const refreshToken =
+      params.get("refreshToken") || null;
 
-      const user = result.data;
-            const refreshToken = user?.refreshToken;
+    if (!accessToken) {
+      toast.error("OAuth login failed");
+      navigate("/login");
+      return;
+    }
 
-        if (!user || !refreshToken) {
-          toast.error("Unable to get user details");
-          navigate("/login", { replace: true });
-          return;
-        }
-        setUserBio(user);
-         const accessTokenExpiration = Date.now() + 1200000;
-         
-        const refreshTokenExpiration = Date.now() + 604800000;
-        const tokenData = {
-          accessToken: token,
-          accessTokenExpiration,
-          userName: user?.firstName,
-          refreshTokenExpiration,
-          refreshToken,
-          ...user,
-        };
-        
-        //Save to localStorage
-        localStorage.setItem("user", JSON.stringify(tokenData));
-        localStorage.setItem("token", token);
+    try {
+
+      const payload = jwtDecode(accessToken);
+
+      const userData = {
+        accessToken,
+        refreshToken,
+
+        userName: payload.firstName,
+        email: payload.email,
+
+        _id: payload._id,
+        userId: payload._id,
+
+        accessTokenExpiration: Date.now() + 20 * 60 * 1000,
+        refreshTokenExpiration: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      };
+
+      // STORE USER
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", accessToken);
+
+      if (refreshToken) {
         localStorage.setItem("refreshToken", refreshToken);
-
-        // Update React state via UserContext
-        login(tokenData);
-
-
-        toast.success("Login successful!");
-        setTimeout(() => {
-          navigate("/dashboard", { replace: true });
-        }, 2000);
-      } catch (error) {
-        toast.error("Something went wrong. Please try again.");
-        navigate("/login", { replace: true });
       }
-    }
-    fetchUser();
 
-    } else {
-      toast.error("No token found in redirect.");
-      navigate("/login", { replace: true });
+      // SET AXIOS HEADER
+      authFetch.defaults.headers.common.Authorization =
+        `Bearer ${accessToken}`;
+
+      // UPDATE CONTEXT
+      login(userData);
+
+      // REMOVE TOKEN FROM URL (SECURITY)
+      window.history.replaceState(
+        {},
+        document.title,
+        "/auth/success"
+      );
+
+      toast.success("Login successful");
+
+      navigate("/dashboard", { replace: true });
+
+    } catch (err) {
+
+      console.error("Token decode failed:", err);
+
+      toast.error("Authentication failed");
+
+      navigate("/login");
     }
-  }, [location.search, login, navigate, setUserBio]);
+
+  }, [location.search]);
+
+
+
 
   return (
     <section className="min-h-screen bg-gray-50 flex items-center justify-center p-4">

@@ -25,6 +25,8 @@ export async function loginUser(details) {
     refreshToken,
     userName: response.data.result.firstName,
     email: response.data.result.email,
+    _id: response.data.result._id,
+    userId: response.data.result._id,
     accessTokenExpiration: Date.now() + 20 * 60 * 1000,
   };
 
