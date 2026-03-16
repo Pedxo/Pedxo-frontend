@@ -241,7 +241,7 @@ const TeamsTable = () => {
       <div className="mt-[39px] max-w-[100px] mx-auto">
         {signature && <img src={signature} alt="user signature" />}
       </div>
-    </SearchingDoc>
+    </div>
   );
 
   // ----------------- FORCE 10s LOADER -----------------
