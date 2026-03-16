@@ -238,11 +238,11 @@ useEffect(() => {
 
        /* ---------------- OPTIMISTIC UI UPDATE ---------------- */
 
-      setEmployees((prev) =>
-        prev.filter(
-          (emp) => emp.talentAssignedId !== selectedEmployee.talentAssignedId
-        )
-      );
+      setEmployees(prevEmployees =>
+      prevEmployees.filter(
+        emp => emp.talentAssignedId !== selectedEmployee.talentAssignedId
+       )
+     );
 
 
 
@@ -254,9 +254,9 @@ useEffect(() => {
       setModalResetKey(prev => prev + 1);
 
       /* ---------------- OPTIONAL BACKGROUND REFRESH ---------------- */
-      setTimeout(() => {
-        fetchEmployees();
-      }, 1500);
+      // setTimeout(() => {
+      //   fetchEmployees();
+      // }, 1500);
 
     } catch (err) {
       console.error("Termination failed:", err);
