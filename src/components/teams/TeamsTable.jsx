@@ -242,7 +242,17 @@ useEffect(() => {
       if (res.status < 200 || res.status >= 300) {
         throw new Error(res?.data?.message || "Termination failed");
       }
-      
+
+
+       /* ---------------- OPTIMISTIC UI UPDATE ---------------- */
+
+      setEmployees((prev) =>
+        prev.filter(
+          (emp) => emp.talentAssignedId !== selectedEmployee.talentAssignedId
+        )
+      );
+
+    
       // ADDED: reset modal state after confirm
       setModalResetKey(prev => prev + 1);
 
