@@ -5,41 +5,49 @@ import authFetch from "../api";
 const UserContext = createContext(null);
 
 function UserProvider({ children }) {
+
   const [user, setUser] = useState(null);
+  const [initialized, setInitialized] = useState(false);
 
- 
-useEffect(() => {
+  useEffect(() => {
 
-  const storedUser = localStorage.getItem("user");
+    try {
 
-  if (!storedUser) return;
+      const storedUser = localStorage.getItem("user");
 
-  try {
+      if (storedUser) {
 
-    const parsedUser = JSON.parse(storedUser);
+        const parsedUser = JSON.parse(storedUser);
 
-    setUser(parsedUser);
+        setUser(parsedUser);
 
-    if (parsedUser?.accessToken) {
+        if (parsedUser?.accessToken) {
+          authFetch.defaults.headers.common.Authorization =
+            `Bearer ${parsedUser.accessToken}`;
+        }
 
-      authFetch.defaults.headers.common.Authorization =
-        `Bearer ${parsedUser.accessToken}`;
+      }
+
+    } catch (err) {
+
+      console.error("User restore failed", err);
+      localStorage.removeItem("user");
+
+    } finally {
+
+      setInitialized(true);
 
     }
 
-  } catch (err) {
+  }, []);
 
-    localStorage.removeItem("user");
+  /* ================= LOGIN ================= */
 
-  }
+  const login = (userData) => {
 
-}, []);
-
-/* ================= LOGIN ================= */
-
-    const login = (userData) => {
     if (!userData?.accessToken) {
-      throw new Error("Invalid login payload");
+      console.warn("Login attempted without accessToken");
+      return;
     }
 
     setUser(userData);
@@ -55,15 +63,20 @@ useEffect(() => {
       `Bearer ${userData.accessToken}`;
   };
 
-
   /* ================= LOGOUT ================= */
 
   const logout = async () => {
+
     try {
+
       await logoutUser();
+
     } catch (error) {
+
       console.error("Logout error:", error);
+
     } finally {
+
       setUser(null);
 
       localStorage.removeItem("user");
@@ -74,27 +87,45 @@ useEffect(() => {
     }
   };
 
-  /* ================= DERIVED VALUES ================= */
-
   const username = user?.userName || "";
   const email = user?.email || "";
   const userId = user?._id || user?.userId || user?.id || null;
-  
 
   return (
     <UserContext.Provider
-      value={{ user, username, email, login, logout, userId }}
+      value={{
+        user,
+        username,
+        email,
+        login,
+        logout,
+        userId,
+        initialized
+      }}
     >
       {children}
     </UserContext.Provider>
   );
 }
 
+/* SAFE HOOK */
+
 function useUser() {
+
   const context = useContext(UserContext);
 
   if (!context) {
-    throw new Error("Context used outside Provider");
+
+    return {
+      user: null,
+      username: "",
+      email: "",
+      userId: null,
+      login: () => {},
+      logout: () => {},
+      initialized: false
+    };
+
   }
 
   return context;
