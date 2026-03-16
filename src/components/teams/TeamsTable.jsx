@@ -252,9 +252,13 @@ useEffect(() => {
         )
       );
 
+<<<<<<< HEAD
       /* ---------------- CLOSE MODAL ---------------- */
       setShowModal(false);
       setSelectedEmployee(null);
+=======
+    
+>>>>>>> origin/Head
       // ADDED: reset modal state after confirm
       setModalResetKey(prev => prev + 1);
 
