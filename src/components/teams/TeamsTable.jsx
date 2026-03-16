@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, NavLink, useSearchParams } from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
 import { GoDotFill } from "react-icons/go";
 import {
@@ -9,6 +9,9 @@ import {
 } from "../../utility/profileImages";
 import { useGlobalContext } from "../../Context";
 import PerformanceReviewModal from "../PerformanceReviewModal";
+import SearchingDoc from "../../components/SearchingDoc"; 
+import { useUser } from "../../context/UserContext";
+import authFetch from "../../api"; 
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -157,15 +160,22 @@ const TeamsTable = () => {
     setTerminating(true);
 
     try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(
-        `${baseUrl}/contracts/${selectedEmployee.contractId}`,
+            
+      const res = await authFetch.patch(
+        `/contracts/${selectedEmployee.contractId}`,
         {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+          performanceRating: rating,
+          terminationReason: note,
+          removeTalentIds: [selectedEmployee.talentAssignedId],
+
+          emailNotification: {
+            to: "victor@pedxo.com",
+            employeeName: selectedEmployee.fullName,
+            roleTitle: selectedEmployee.roleTitle,
+            paymentRate: selectedEmployee.paymentRate,
+            paymentFrequency: selectedEmployee.paymentFrequency,
+            performanceRating: rating,
+            terminationReason: note,
           },
           body: JSON.stringify({
             performanceRating: rating,
@@ -182,21 +192,41 @@ const TeamsTable = () => {
         },
       );
 
-      const data = await res.json();
+      const data = await res.data;
 
       console.log("PATCH status:", res.status);
       console.log("PATCH response:", data);
 
-      if (!res.ok) {
-        throw new Error(data?.message || "Termination failed");
+      // Correct success check
+      if (res.status < 200 || res.status >= 300) {
+        throw new Error(res?.data?.message || "Termination failed");
       }
 
       // ADDED: reset modal state after confirm
       setModalResetKey((prev) => prev + 1);
 
+       /* ---------------- OPTIMISTIC UI UPDATE ---------------- */
+
+      setEmployees((prev) =>
+        prev.filter(
+          (emp) => emp.talentAssignedId !== selectedEmployee.talentAssignedId
+        )
+      );
+
+
+
+      /* ---------------- CLOSE MODAL ---------------- */
       setShowModal(false);
       setSelectedEmployee(null);
-      fetchEmployees();
+
+      // ADDED: reset modal state after confirm
+      setModalResetKey(prev => prev + 1);
+
+      /* ---------------- OPTIONAL BACKGROUND REFRESH ---------------- */
+      setTimeout(() => {
+        fetchEmployees();
+      }, 1500);
+
     } catch (err) {
       console.error("Termination failed:", err);
     } finally {
@@ -211,7 +241,7 @@ const TeamsTable = () => {
       <div className="mt-[39px] max-w-[100px] mx-auto">
         {signature && <img src={signature} alt="user signature" />}
       </div>
-    </div>
+    </SearchingDoc>
   );
 
   // ----------------- FORCE 10s LOADER -----------------
