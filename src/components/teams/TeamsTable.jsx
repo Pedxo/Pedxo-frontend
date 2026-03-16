@@ -3,14 +3,11 @@ import { Link, NavLink, useSearchParams } from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
 import { GoDotFill } from "react-icons/go";
 import {getProfileImagesMapping, getEmployeeKey, profileImages} from "../../utility/profileImages";
-// import {useGlobalContext} from "../../Context";
 import PerformanceReviewModal from "../PerformanceReviewModal";
 import SearchingDoc from "../../components/SearchingDoc"; 
 import { useUser } from "../../context/UserContext";
 import authFetch from "../../api"; 
 
-
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
 
@@ -208,12 +205,7 @@ useEffect(() => {
     setTerminating(true);
 
     try {
-      //const token = localStorage.getItem("token");
-      const token =
-        localStorage.getItem("token") ||
-        JSON.parse(localStorage.getItem("user"))?.accessToken;
-
-      
+            
       const res = await authFetch.patch(
         `/contracts/${selectedEmployee.contractId}`,
         {
@@ -252,13 +244,11 @@ useEffect(() => {
         )
       );
 
-<<<<<<< HEAD
+
       /* ---------------- CLOSE MODAL ---------------- */
       setShowModal(false);
       setSelectedEmployee(null);
-=======
-    
->>>>>>> origin/Head
+
       // ADDED: reset modal state after confirm
       setModalResetKey(prev => prev + 1);
 
