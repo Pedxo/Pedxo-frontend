@@ -238,10 +238,11 @@ useEffect(() => {
       console.log("PATCH status:", res.status);
       console.log("PATCH response:", data);
 
-      if (!res.ok) {
-        throw new Error(data?.message || "Termination failed");
+      // Correct success check
+      if (res.status < 200 || res.status >= 300) {
+        throw new Error(res?.data?.message || "Termination failed");
       }
-
+      
       // ADDED: reset modal state after confirm
       setModalResetKey(prev => prev + 1);
 
