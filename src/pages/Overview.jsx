@@ -44,7 +44,7 @@ const Overview = () => {
 
 
  
-  // ----------------- REACT QUERY (API NOT REMOVED) -----------------
+  // ----------------- REACT QUERY -----------------
   const {
     data: contracts,
     isLoading,
@@ -68,51 +68,20 @@ const Overview = () => {
     }
   }, [username]);
 
-  // ----------------- MANUAL FETCH (API KEPT INTACT) -----------------
-  useEffect(() => {
-    const fetchOverviewData = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      const res = await fetch(
-        `${baseUrl}/contracts/get-user-contracts`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      const json = await res.json();
-      console.log("Feteched contracts", json);
-      const contractsData = json?.data?.contracts || [];
-
-      let assignedTalents = 0;
-      let expenses = 0;
-
-      contractsData.forEach((contract) => {
-        const assigned = contract.talentAssignedId || [];
-        if (assigned?.length > 0) {
-          assignedTalents += assigned?.length;
-          expenses += Number(contract.paymentRate || 0);
-        }
-      });
-      console.log("Total Assigned Contract: ", assignedTalents);
-
-      setActiveContractors(assignedTalents);
-      setTotalExpenses(expenses);
-    };
-
-    fetchOverviewData();
-  }, [username]);
 
   // ----------------- DERIVED CONTRACT DATA (YOUR REQUIRED BLOCK) -----------------
   useEffect(() => {
     if (!contracts?.data?.contracts) return;
 
     const contractsData = contracts.data.contracts;
+    console.log("Feteched contracts", contractsData);
 
     let expenses = 0;
     let activeTalents = 0;
 
     contractsData.forEach((contract) => {
-      const assigned = contract.talentAssignedId || [];
+      const assigned = (contract.talentAssignedId || []).filter(Boolean);
+      
 
       if (assigned.length > 0) {
         activeTalents += assigned.length;
@@ -120,11 +89,12 @@ const Overview = () => {
       }
     });
 
-    const onboardingContracts = contractsData.filter(
-      (contract) =>
-        !contract.talentAssignedId ||
-        contract.talentAssignedId.length === 0
-    ).length;
+    const onboardingContracts = contractsData.filter((contract) => {
+      const assigned = (contract.talentAssignedId || []).filter(Boolean);
+      //console.log("Total Assigned Contract: ", assigned);
+      return assigned.length === 0;
+    }).length;
+
 
     setActiveContractors(activeTalents);
     setOnboardingCount(onboardingContracts);

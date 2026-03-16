@@ -1,4 +1,5 @@
 import axios from "axios";
+import { refreshToken } from "./services/refreshToken";
 
 export const baseURL = "https://pedxo-back-project.onrender.com";
 // export const baseURL = 'http://localhost:5000'
@@ -92,6 +93,27 @@ authFetch.interceptors.response.use(
     }
 
     const originalRequest = error.config;
+
+    // ================= HANDLE 401 WITH REFRESH =================
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        const newAccessToken = await refreshToken();
+
+        originalRequest.headers.Authorization =
+          `Bearer ${newAccessToken}`;
+
+        return authFetch(originalRequest);
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
+      }
+    }
+
+     // ================= RETRY FOR NETWORK ERRORS =================
     if (error.code !== "ECONNABORTED" && !originalRequest._retry) {
       originalRequest._retry = true;
       await new Promise((resolve) => setTimeout(resolve, 1000));

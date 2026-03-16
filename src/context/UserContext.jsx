@@ -8,6 +8,7 @@ function UserProvider({ children }) {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
@@ -18,59 +19,48 @@ function UserProvider({ children }) {
     }
   }, []);
 
-  // const login = (userData) => {
-  //   setUser(userData);
-  //   localStorage.setItem("user", JSON.stringify(userData));
-
-  //   // Save token separately
-  //   if (userData?.token) {
-  //     localStorage.setItem("token", userData.token);
-  //   }
-  // };
+  /* ================= LOGIN ================= */
 
   const login = (userData) => {
-  if (!userData?.accessToken) {
-    throw new Error("Invalid login payload");
-  }
+    if (!userData?.accessToken) {
+      throw new Error("Invalid login payload");
+    }
 
-  setUser(userData);
+    setUser(userData);
 
-  localStorage.setItem("user", JSON.stringify(userData));
-  localStorage.setItem("token", userData.accessToken);
-};
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", userData.accessToken);
 
+    if (userData.refreshToken) {
+      localStorage.setItem("refreshToken", userData.refreshToken);
+    }
+  };
 
- // Update the logout function to be more thorough
-// const logout = async () => {
-//   try {
-//     await logoutUser(); // Use the API logout function
-//     setUser(null);
-//     // Storage is already cleared by logoutUser()
-//   } catch (error) {
-//     console.error("Logout error:", error);
-//     // Force cleanup anyway
-//     setUser(null);
-//     localStorage.removeItem("user");
-//   }
-// };
-const logout = async () => {
-  try {
-    await logoutUser();
-  } finally {
-    setUser(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-  }
-};
+  /* ================= LOGOUT ================= */
 
+  const logout = async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setUser(null);
 
-  // Use consistent naming (either username or userName)
-  const username = user?.userName || '';
-  const email = user?.email || '';
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+    }
+  };
 
+  /* ================= DERIVED VALUES ================= */
+
+  const username = user?.userName || "";
+  const email = user?.email || "";
 
   return (
-    <UserContext.Provider value={{ user, username, email, login, logout }}>
+    <UserContext.Provider
+      value={{ user, username, email, login, logout }}
+    >
       {children}
     </UserContext.Provider>
   );
@@ -78,7 +68,11 @@ const logout = async () => {
 
 function useUser() {
   const context = useContext(UserContext);
-  if (!context) throw new Error("Context used outside Provider");
+
+  if (!context) {
+    throw new Error("Context used outside Provider");
+  }
+
   return context;
 }
 

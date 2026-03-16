@@ -35,16 +35,17 @@ const TeamsTable = () => {
   const [hasMounted, setHasMounted] = useState(false);
 
   /* ---------------- FETCH EMPLOYEES ---------------- */
-  const fetchEmployees = async () => {
-    setLoading(true);
-    setError("");
+const fetchEmployees = async () => {
+  setLoading(true);
+  setError("");
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token || !token.includes(".")) {
-        setError("Authentication expired. Please log in again.");
-        return;
-      }
+  try {
+    const token = localStorage.getItem("token");
+    console.log("User loggedIn token: ", token);
+    if (!token || !token.includes(".")) {
+      setError("Authentication expired. Please log in again.");
+      return;
+    }
 
       /* FETCH USER CONTRACTS */
       const res = await fetch(`${baseUrl}/contracts/get-user-contracts`, {
@@ -72,21 +73,76 @@ const TeamsTable = () => {
         setEmployees([]);
         return;
       }
-      console.log("Contract fetched:", normalizedContracts);
+    );
 
-      /* FETCH ASSIGNED TALENTS */
-      const assigned = [];
+    const json = await res.json();
+    console.log("Total Contracts created:", json);
+    const rawContracts = Array.isArray(json?.data?.contracts)
+      ? json.data.contracts
+      : [];
 
-      for (const contract of normalizedContracts) {
-        const res = await fetch(
-          `${baseUrl}/hire/assigned-by-contract?contractId=${contract.contractId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
+    /*  NORMALIZE CONTRACT IDS  */
+
+    const normalizedContracts = rawContracts
+      .map((c) => ({
+        contractId: c._id || c.contractId || null,
+        talentAssignedIds: Array.isArray(c.talentAssignedId)
+          ? c.talentAssignedId.filter(
+              (id) => typeof id === "string" && id.trim() !== ""
+            )
+          : [],
+      }))
+      .filter((c) => c.contractId);
+
+  if (!normalizedContracts.length) {
+      setEmployees([]);
+      return;
+    }
+
+    console.log("Contract fetched:", normalizedContracts);
+
+    /* FETCH ASSIGNED TALENTS */
+    const assigned = [];
+
+    for (const contract of normalizedContracts) {
+      const res = await fetch(
+        `${baseUrl}/hire/assigned-by-contract?contractId=${contract.contractId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           },
-        );
+        }
+      );
+
+      if (!res.ok) continue;
+
+      const assignedJson = await res.json();
+     
+      if (Array.isArray(assignedJson?.data)) {
+          assignedJson.data.forEach((emp, index) => {
+            assigned.push({
+              ...emp,
+              contractId: contract.contractId,
+
+              // Correct mapping by index
+              talentAssignedId:
+                contract.talentAssignedIds[index] || null,
+            });
+          });
+        }
+
+      }
+
+
+    /* ---------------- SORT ---------------- */
+    const sorted = assigned.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    console.log("Fetch Assigned Sorted", sorted);
+
+    setEmployees(sorted);
+    setProfileMap(getProfileImagesMapping(sorted));
 
         if (!res.ok) continue;
 
@@ -149,10 +205,23 @@ const TeamsTable = () => {
   const confirmTermination = async ({ rating, note }) => {
     console.log("Confirm clicked", { selectedEmployee, rating, note });
 
-    if (!selectedEmployee?.contractId || !selectedEmployee?.talentAssignedId) {
-      console.error("Missing termination identifiers", selectedEmployee);
-      return;
-    }
+    if (
+        !selectedEmployee?.contractId ||
+        !selectedEmployee?.talentAssignedId ||
+        typeof selectedEmployee.talentAssignedId !== "string"
+      ) {
+        console.error("Missing termination identifiers", selectedEmployee);
+        return;
+        }
+
+
+  // if (
+  //     !selectedEmployee?.contractId ||
+  //     !selectedEmployee?.talentAssignedId
+  //   ) {
+  //     console.error("Missing termination identifiers", selectedEmployee);
+  //     return;
+  //   }
 
     setTerminating(true);
 
@@ -177,6 +246,9 @@ const TeamsTable = () => {
               roleTitle: selectedEmployee.roleTitle,
               paymentRate: selectedEmployee.paymentRate,
               paymentFrequency: selectedEmployee.paymentFrequency,
+
+              performanceRating: rating,        //ADDED
+              terminationReason: note,          //ADDED 
             },
           }),
         },
