@@ -246,7 +246,7 @@ useEffect(() => {
 
 
 
-      /* ---------------- CLOSE MODAL ---------------- */
+     /* ---------------- CLOSE MODAL ---------------- */
       setShowModal(false);
       setSelectedEmployee(null);
 
