@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { formatCurrency } from "../utility/helper";
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Define onboarding steps
 const onboardingSteps = [
@@ -55,7 +54,7 @@ const Overview = () => {
     queryKey: ["user-contracts", userId],
     queryFn: () => getUserContracts(userId),
     // enabled: !!user && !!userId,
-    enabled: !!userId,
+    enabled: !!user && !!userId,
     suspense: false,
   });
 
