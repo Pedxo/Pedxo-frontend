@@ -15,26 +15,36 @@ const authFetch = axios.create({
   timeout: 30000,
 });
 
+
 // Request interceptor: adds auth token and handles caching
 authFetch.interceptors.request.use(
   (config) => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const token = storedUser?.accessToken;
-    if (token && !config.headers.Authorization) {
+
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+    
+    const token =
+        localStorage.getItem("token") ||
+        storedUser?.accessToken;
+    
+   if (!token) {
+      console.warn("No auth token found");
+    }
+
+    if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // SPECIAL HANDLING FOR CONTRACTS - NEVER CACHE
-    if (config.url?.includes('/contracts/')) {
-      // Add a timestamp to bust cache for contracts
+    // ================= CONTRACT REQUESTS (NEVER CACHE) =================
+    if (config.url?.includes("/contracts/")) {
       config.params = {
         ...config.params,
-        _t: Date.now() // Add timestamp to make URL unique
+        _t: Date.now(), // bust cache
       };
-      return config; // Skip cache for contracts
+      return config;
     }
 
-    // For other GET requests, use caching
+    // ================= GET CACHE =================
     if (config.method?.toLowerCase() === "get") {
       const cacheKey = JSON.stringify({
         url: config.url,
@@ -43,6 +53,8 @@ authFetch.interceptors.request.use(
 
       if (cache.has(cacheKey)) {
         const { timestamp, data } = cache.get(cacheKey);
+
+        // cache valid for 5 minutes
         if (Date.now() - timestamp < 300000) {
           return Promise.reject({
             response: { data },
@@ -61,13 +73,16 @@ authFetch.interceptors.request.use(
 // Response interceptor: stores GET responses in cache (only for non-contract endpoints)
 authFetch.interceptors.response.use(
   (response) => {
-    // Don't cache contract endpoints
-    if (!response.config.url?.includes('/contracts/') && 
-        response.config.method?.toLowerCase() === "get") {
+
+    if (
+      !response.config.url?.includes("/contracts/") &&
+      response.config.method?.toLowerCase() === "get"
+    ) {
       const cacheKey = JSON.stringify({
         url: response.config.url,
         params: response.config.params,
       });
+
       cache.set(cacheKey, {
         timestamp: Date.now(),
         data: response.data,
@@ -77,6 +92,7 @@ authFetch.interceptors.response.use(
     return response;
   },
   async (error) => {
+
     if (error.isCached) {
       return Promise.resolve(error.response);
     }
@@ -85,7 +101,7 @@ authFetch.interceptors.response.use(
       console.error(
         "Error Response:",
         error.response.status,
-        error.response.config.url,
+        error.response.config?.url,
         error.response.data
       );
     } else {
@@ -94,7 +110,7 @@ authFetch.interceptors.response.use(
 
     const originalRequest = error.config;
 
-    // ================= HANDLE 401 WITH REFRESH =================
+    // ================= HANDLE 401 TOKEN REFRESH =================
     if (
       error.response?.status === 401 &&
       !originalRequest._retry
@@ -102,21 +118,30 @@ authFetch.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+
         const newAccessToken = await refreshToken();
 
         originalRequest.headers.Authorization =
           `Bearer ${newAccessToken}`;
 
         return authFetch(originalRequest);
+
       } catch (refreshError) {
         return Promise.reject(refreshError);
       }
     }
 
-     // ================= RETRY FOR NETWORK ERRORS =================
-    if (error.code !== "ECONNABORTED" && !originalRequest._retry) {
-      originalRequest._retry = true;
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    // ================= RETRY NETWORK ERRORS =================
+    if (
+      error.code !== "ECONNABORTED" &&
+      !originalRequest._retryNetwork
+    ) {
+      originalRequest._retryNetwork = true;
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1000)
+      );
+
       return authFetch(originalRequest);
     }
 
@@ -127,13 +152,27 @@ authFetch.interceptors.response.use(
 // Updated to use userId instead of username
 export async function getUserContracts(userId) {
   try {
-    // The interceptor will now add _t timestamp to bust cache
-    const response = await authFetch.get("/contracts/get-user-contracts", {
-      params: { userId },
-    });
+    if (!userId) {
+    throw new Error("userId missing when fetching contracts");
+    }
+
+
+    const response = await authFetch.get(
+      "/contracts/get-user-contracts",
+      {
+        params: { userId },
+      }
+    );
+
     return response.data;
+
   } catch (error) {
-    console.error("getUserContracts failed:", error.response?.data || error.message);
+
+    console.error(
+      "getUserContracts failed:",
+      error.response?.data || error.message
+    );
+
     throw error;
   }
 }

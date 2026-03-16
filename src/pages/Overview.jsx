@@ -25,7 +25,8 @@ const onboardingSteps = [
 ];
 
 const Overview = () => {
-  const { username } = useUser();
+  const { username, userId, user } = useUser();
+
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [currencyCode, setCurrencyCode] = useState("USD");
@@ -45,14 +46,16 @@ const Overview = () => {
 
  
   // ----------------- REACT QUERY -----------------
+  
   const {
     data: contracts,
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["user-contracts", username],
-    queryFn: () => getUserContracts(username),
-    enabled: !!username,
+    queryKey: ["user-contracts", userId],
+    queryFn: () => getUserContracts(userId),
+    // enabled: !!user && !!userId,
+    enabled: !!userId,
     suspense: false,
   });
 
