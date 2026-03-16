@@ -252,13 +252,21 @@ useEffect(() => {
         )
       );
 
+<<<<<<< HEAD
+      /* ---------------- CLOSE MODAL ---------------- */
+      setShowModal(false);
+      setSelectedEmployee(null);
+=======
     
+>>>>>>> origin/Head
       // ADDED: reset modal state after confirm
       setModalResetKey(prev => prev + 1);
 
-      setShowModal(false);
-      setSelectedEmployee(null);
-      fetchEmployees();
+      /* ---------------- OPTIONAL BACKGROUND REFRESH ---------------- */
+      setTimeout(() => {
+        fetchEmployees();
+      }, 1500);
+
     } catch (err) {
       console.error("Termination failed:", err);
     } finally {
