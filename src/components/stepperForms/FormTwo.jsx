@@ -173,7 +173,7 @@ const FormTwo = ({ nextStep, savedState, username, userId }) => {
           <div className='flex justify-between'>
             <label
               htmlFor='endDate'
-              className={`font-semibold leading-normal ${!showSwitch && 'opacity-40'}`}
+              className={`font-semibold leading-normal ${!showSwitch && 'opacity-100'}`}
             >
               End Date {contractType === 'gig-based' && <span className='text-red-500'>*</span>}
             </label>
