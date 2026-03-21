@@ -115,8 +115,9 @@ const fetchEmployees = async () => {
               assigned.push({
                 ...emp,
                 contractId: contract.contractId,
-                talentAssignedId:
-                  contract.talentAssignedIds[index] || null,
+                talentAssignedId: emp.talentAssignedId,
+                // talentAssignedId:
+                //   contract.talentAssignedIds[index] || null,
               });
             });
           }
@@ -238,11 +239,20 @@ useEffect(() => {
 
        /* ---------------- OPTIMISTIC UI UPDATE ---------------- */
 
-      setEmployees(prevEmployees =>
-      prevEmployees.filter(
-        emp => emp.talentAssignedId !== selectedEmployee.talentAssignedId
-       )
-     );
+    //   setEmployees(prevEmployees =>
+    //   prevEmployees.filter(
+    //     emp => emp.talentAssignedId !== selectedEmployee.talentAssignedId
+    //    )
+    //  );
+    setEmployees(prevEmployees =>
+    prevEmployees.filter(
+      emp =>
+        !(
+          emp.talentAssignedId === selectedEmployee.talentAssignedId &&
+          emp.contractId === selectedEmployee.contractId 
+        )
+    )
+  );
 
 
 
@@ -254,9 +264,7 @@ useEffect(() => {
       setModalResetKey(prev => prev + 1);
 
       /* ---------------- OPTIONAL BACKGROUND REFRESH ---------------- */
-      // setTimeout(() => {
-      //   fetchEmployees();
-      // }, 1500);
+      await fetchEmployees();
 
     } catch (err) {
       console.error("Termination failed:", err);
