@@ -92,7 +92,7 @@ const MobileSideBar = () => {
               <div className="flex flex-col h-full gap-6 capitalize">
                 <SideBarMenuItems
                   onClick={() => setMobileNavOpen(false)}
-                  to="/"
+                  to="/dashboard"
                   icon={OverviewIcon}
                   title="Overview"
                 />

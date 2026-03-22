@@ -267,13 +267,13 @@ const Overview = () => {
                     Current contractors on your team
                   </p>
                   <div className="flex justify-between bg-white border rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16">
-                    <div className="flex items-center gap-4">
+                    <Link to="/dashboard/teams" className="flex items-center gap-4">
                       <img src={people} alt="" />
                       <span className="text-2xl font-semibold xl:text-[40px] overview-text">
                         {/* {contracts?.activeContractors || 0} */}
                          {activeContractors}
                       </span>
-                    </div>
+                    </Link>
                     <Link
                       to="/dashboard/create-contract"
                       className="flex items-center text-[0.8rem] text-white px-3 py-[10px] sm:px-5 sm:py-[14px] pr-bg-clr shadow-xl rounded-lg font-semibold xl:text-[16px]"

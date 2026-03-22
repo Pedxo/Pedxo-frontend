@@ -13,7 +13,7 @@ import SearchingDoc from "../../components/SearchingDoc";
 import { useUser } from "../../context/UserContext";
 import authFetch from "../../api"; 
 
-
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const TeamsTable = () => {
   const { signature } = useGlobalContext();
