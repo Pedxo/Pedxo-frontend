@@ -116,7 +116,8 @@ const fetchEmployees = async () => {
               assigned.push({
                 ...emp,
                 contractId: contract.contractId,
-                talentAssignedId: emp?.talentAssignedId || emp?._id || null,
+                talentAssignedId: contract.talentAssignedId,
+
               });
             });
           }
