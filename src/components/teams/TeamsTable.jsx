@@ -7,16 +7,15 @@ import {
   getEmployeeKey,
   profileImages,
 } from "../../utility/profileImages";
-import { useGlobalContext } from "../../Context";
 import PerformanceReviewModal from "../PerformanceReviewModal";
 import SearchingDoc from "../../components/SearchingDoc"; 
 import { useUser } from "../../context/UserContext";
 import authFetch from "../../api"; 
+import toast from "react-hot-toast";
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const TeamsTable = () => {
-  const { signature } = useGlobalContext();
+  const { userId } = useUser();
 
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -229,6 +228,9 @@ const fetchEmployees = async () => {
       if (res.status < 200 || res.status >= 300) {
         throw new Error(res?.data?.message || "Termination failed");
       }
+
+     // SUCCESS TOAST
+     toast.success("Contract terminated successfully");
 
       // ADDED: reset modal state after confirm
       setModalResetKey((prev) => prev + 1);
