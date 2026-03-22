@@ -69,34 +69,24 @@ const fetchEmployees = async () => {
       : [];
 
     console.log("Total Contracts created:", rawContracts.length); 
+ 
     /*  NORMALIZE CONTRACT IDS  */
 
-//     const normalizedContracts = rawContracts
-//       .map((c) => ({
-//         contractId: c._id || c.contractId || null,
-//         talentAssignedIds: Array.isArray(c.talentAssignedId)
-//           ? c.talentAssignedId.filter(
-//               (id) => typeof id === "string" && id.trim() !== ""
-//             )
-//           : [],
-//       }))
-//       .filter((c) => c.contractId);
+      const normalizedContracts = rawContracts
+      .map((c) => ({
+        contractId: c._id || c.contractId || null,
+        talentAssignedIds: Array.isArray(c.talentAssignedId)
+          ? c.talentAssignedId.filter(
+              (id) => typeof id === "string" && id.trim() !== ""
+            )
+          : [],
+      }))
+      .filter((c) => c.contractId);
 
-//   if (!normalizedContracts.length) {
-//       setEmployees([]);
-//       return;
-//     }
- const normalizedContracts = rawContracts
-        .map((c) => ({
-          contractId: c._id || c.contractId || null,
-          talentAssignedId: c.talentAssignedId?.[0] || null,
-        }))
-        .filter((c) => c.contractId); // no undefined allowed
-
-      if (!normalizedContracts.length) {
-        setEmployees([]);
-        return;
-      }
+    if (!normalizedContracts.length) {
+      setEmployees([]);
+      return;
+    }
 
     console.log("normalized Contract fetched:", normalizedContracts); //This should display on console
 
@@ -126,7 +116,7 @@ const fetchEmployees = async () => {
               assigned.push({
                 ...emp,
                 contractId: contract.contractId,
-                talentAssignedId: emp.talentAssignedId,
+                talentAssignedId:emp.talentAssignedIds,
               });
             });
           }
