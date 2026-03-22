@@ -117,6 +117,7 @@ const fetchEmployees = async () => {
                 ...emp,
                 contractId: contract.contractId,
                 talentAssignedId: contract.talentAssignedId,
+
               });
             });
           }
