@@ -202,7 +202,7 @@ const FormTwo = ({ nextStep, savedState, username, userId }) => {
         {/* Scope Explanation */}
         <div className='flex flex-col gap-1 w-full md:gap-3 text-sm'>
           <label htmlFor='scope of work' className='font-semibold leading-normal'>
-            Scope of explanation and tech stack requirements
+            Scope of work explanation and tech stack requirements
           </label>
           <textarea
             name='explanationOfScopeOfWork'
