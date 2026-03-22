@@ -72,11 +72,11 @@ const fetchEmployees = async () => {
  
     /*  NORMALIZE CONTRACT IDS  */
 
-      const normalizedContracts = rawContracts
+    const normalizedContracts = rawContracts
       .map((c) => ({
         contractId: c._id || c.contractId || null,
         talentAssignedIds: Array.isArray(c.talentAssignedId)
-          ? c.talentAssignedId.filter(
+          ? [...new Set(c.talentAssignedId)].filter(
               (id) => typeof id === "string" && id.trim() !== ""
             )
           : [],
@@ -112,11 +112,11 @@ const fetchEmployees = async () => {
           const assignedJson = assignedRes.data;
 
           if (Array.isArray(assignedJson?.data)) {
-            assignedJson.data.forEach((emp, index) => {
+            assignedJson.data.forEach((emp) => {
               assigned.push({
                 ...emp,
                 contractId: contract.contractId,
-                talentAssignedId:emp.talentAssignedIds,
+                talentAssignedId: emp?.talentAssignedId || emp?._id || null,
               });
             });
           }
@@ -181,8 +181,13 @@ const fetchEmployees = async () => {
   const confirmTermination = async ({ rating, note }) => {
     console.log("Confirm clicked", { selectedEmployee, rating, note });
 
-    if (!selectedEmployee?.contractId || !selectedEmployee?.talentAssignedId) {
+    if (
+    !selectedEmployee?.contractId ||
+    !selectedEmployee?.talentAssignedId ||
+    String(selectedEmployee.talentAssignedId).trim() === ""
+    ) {
       console.error("Missing termination identifiers", selectedEmployee);
+      toast.error("Missing termination identifiers");
       return;
     }
 
