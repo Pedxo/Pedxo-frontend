@@ -36,7 +36,7 @@ authFetch.interceptors.request.use(
     }
 
     // ================= CONTRACT REQUESTS (NEVER CACHE) =================
-    if (config.url?.includes("/contracts/")) {
+    if (config.url?.includes("/contracts/") || config.url?.includes("/hire/assigned-by-contract")) {
       config.params = {
         ...config.params,
         _t: Date.now(), // bust cache

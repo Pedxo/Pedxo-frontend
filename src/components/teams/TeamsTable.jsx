@@ -38,33 +38,56 @@ const TeamsTable = () => {
   const [hasMounted, setHasMounted] = useState(false);
 
   /* ---------------- FETCH EMPLOYEES ---------------- */
-  const fetchEmployees = async () => {
-    setLoading(true);
-    setError("");
+const fetchEmployees = async () => {
+  setLoading(true);
+  setError("");
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token || !token.includes(".")) {
-        setError("Authentication expired. Please log in again.");
-        return;
-      }
+  try {
+    //const token = localStorage.getItem("token");
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const token =
+        localStorage.getItem("token") ||
+        storedUser?.accessToken;
 
-      /* FETCH USER CONTRACTS */
-      const res = await fetch(`${baseUrl}/contracts/get-user-contracts`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+    console.log("User loggedIn token:", storedUser?.accessToken);
+    console.log("User ID:", userId);
 
-      const json = await res.json();
-      console.log("Total Contracts created:", json);
-      const rawContracts = Array.isArray(json?.data?.contracts)
-        ? json.data.contracts
-        : [];
+  
 
-      /*  NORMALIZE CONTRACT IDS  */
-      const normalizedContracts = rawContracts
+    /* FETCH USER CONTRACTS */
+    
+    const response = await authFetch.get(
+        "/contracts/get-user-contracts",
+        { params: { userId } }
+      );
+
+    //const json = response.data;
+
+
+    console.log("Contracts fetched:", response.data);
+    const rawContracts = Array.isArray(response?.data?.data?.contracts)
+      ? response.data.data.contracts
+      : [];
+
+    console.log("Total Contracts created:", rawContracts.length); 
+    /*  NORMALIZE CONTRACT IDS  */
+
+//     const normalizedContracts = rawContracts
+//       .map((c) => ({
+//         contractId: c._id || c.contractId || null,
+//         talentAssignedIds: Array.isArray(c.talentAssignedId)
+//           ? c.talentAssignedId.filter(
+//               (id) => typeof id === "string" && id.trim() !== ""
+//             )
+//           : [],
+//       }))
+//       .filter((c) => c.contractId);
+
+//   if (!normalizedContracts.length) {
+//       setEmployees([]);
+//       return;
+//     }
+ const normalizedContracts = rawContracts
         .map((c) => ({
           contractId: c._id || c.contractId || null,
           talentAssignedId: c.talentAssignedId?.[0] || null,
@@ -75,35 +98,47 @@ const TeamsTable = () => {
         setEmployees([]);
         return;
       }
-      console.log("Contract fetched:", normalizedContracts);
 
-      /* FETCH ASSIGNED TALENTS */
-      const assigned = [];
+    console.log("normalized Contract fetched:", normalizedContracts); //This should display on console
 
-      for (const contract of normalizedContracts) {
-        const res = await fetch(
-          `${baseUrl}/hire/assigned-by-contract?contractId=${contract.contractId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          },
-        );
+    /* FETCH ASSIGNED TALENTS */
+    const assigned = [];
 
-        if (!res.ok) continue;
+    for (const contract of normalizedContracts) {
+      
+      try {
+          const assignedRes = await authFetch.get(
+            "/hire/assigned-by-contract",
+            {
+              params: { contractId: contract.contractId },
+            }
+          );
 
-        const data = await res.json();
+          console.log(
+            "Assigned developers for contract",
+            contract.contractId,
+            assignedRes.data
+          );
 
-        if (Array.isArray(data?.data)) {
-          assigned.push(
-            ...data.data.map((emp) => ({
-              ...emp,
-              contractId: contract.contractId,
-              talentAssignedId: contract.talentAssignedId,
-            })),
+          const assignedJson = assignedRes.data;
+
+          if (Array.isArray(assignedJson?.data)) {
+            assignedJson.data.forEach((emp, index) => {
+              assigned.push({
+                ...emp,
+                contractId: contract.contractId,
+                talentAssignedId: emp.talentAssignedId,
+              });
+            });
+          }
+        } catch (err) {
+          console.error(
+            "Failed fetching assigned devs for contract:",
+            contract.contractId,
+            err
           );
         }
+
       }
 
       const sorted = assigned.sort(
@@ -122,8 +157,13 @@ const TeamsTable = () => {
   };
 
   useEffect(() => {
-    fetchEmployees();
-  }, []);
+  if (!userId) {
+      console.warn("UserId not ready yet");
+      return;
+    }
+
+  fetchEmployees();
+}, [userId]);
 
   // Filter employees based on search term
   const filteredEmployees = useMemo(() => {
@@ -176,19 +216,7 @@ const TeamsTable = () => {
             paymentFrequency: selectedEmployee.paymentFrequency,
             performanceRating: rating,
             terminationReason: note,
-          },
-          body: JSON.stringify({
-            performanceRating: rating,
-            terminationReason: note,
-            removeTalentIds: [selectedEmployee.talentAssignedId],
-            emailNotification: {
-              to: "victor@pedxo.com",
-              employeeName: selectedEmployee.fullName,
-              roleTitle: selectedEmployee.roleTitle,
-              paymentRate: selectedEmployee.paymentRate,
-              paymentFrequency: selectedEmployee.paymentFrequency,
-            },
-          }),
+          }
         },
       );
 
@@ -205,15 +233,16 @@ const TeamsTable = () => {
       // ADDED: reset modal state after confirm
       setModalResetKey((prev) => prev + 1);
 
-       /* ---------------- OPTIMISTIC UI UPDATE ---------------- */
-
-      setEmployees(prevEmployees =>
-      prevEmployees.filter(
-        emp => emp.talentAssignedId !== selectedEmployee.talentAssignedId
-       )
-     );
-
-
+    /* ---------------- OPTIMISTIC UI UPDATE ---------------- */
+    setEmployees(prevEmployees =>
+    prevEmployees.filter(
+      emp =>
+        !(
+          emp.talentAssignedId === selectedEmployee.talentAssignedId &&
+          emp.contractId === selectedEmployee.contractId 
+        )
+      )
+    );
 
      /* ---------------- CLOSE MODAL ---------------- */
       setShowModal(false);
@@ -223,9 +252,7 @@ const TeamsTable = () => {
       setModalResetKey(prev => prev + 1);
 
       /* ---------------- OPTIONAL BACKGROUND REFRESH ---------------- */
-      // setTimeout(() => {
-      //   fetchEmployees();
-      // }, 1500);
+      await fetchEmployees();
 
     } catch (err) {
       console.error("Termination failed:", err);
@@ -234,15 +261,36 @@ const TeamsTable = () => {
     }
   };
 
-  // ---------------- SIGNATURE BLOCK ----------------
-  const SignatureBlock = () => (
-    <div className={`mb-[39px] ${signature ? "block" : "hidden"}`}>
-      <div className="w-full h-[0.5px] bg-[#0000004d]"></div>
-      <div className="mt-[39px] max-w-[100px] mx-auto">
-        {signature && <img src={signature} alt="user signature" />}
+  /* ---------------- EMPTY STATE COMPONENT ---------------- */
+  const EmptyTeamsState = () => (
+    <SearchingDoc
+      noticeText="Add devs and pay them to see their records here."
+      searchingdocTitle="No Active Developer yet"
+      searchingdocText="They would appear here once a developer has been assigned to a contract"
+      onBoarding={[
+        {
+          id: "1",
+          title: "Create a contract",
+          desp: "Start by creating a contract for your developer.",
+        },
+        {
+          id: "2",
+          title: "Assign a developer",
+          desp: "Once assigned, they will appear in this Active Developers tab.",
+        },
+      ]}
+    >
+      <div className="mt-[33px]">
+        <NavLink
+          to="/dashboard/create-contract"
+          className="flex items-center text-[0.8rem] text-white px-3 py-[10px] sm:px-5 sm:py-[14px] pr-bg-clr rounded-lg font-semibold xl:text-[16px]"
+        >
+          <img src={""} alt="" className="w-4 mr-1" /> Create new contract
+        </NavLink>
       </div>
-    </div>
+    </SearchingDoc>
   );
+
 
   // ----------------- FORCE 10s LOADER -----------------
   useEffect(() => {
@@ -384,7 +432,8 @@ const TeamsTable = () => {
                 </div>
               </div>
             ))}
-          {showEmptyState && <SignatureBlock />}
+          {/* EMPTY STATE (MOBILE) */}
+          {showEmptyState && <EmptyTeamsState />}
         </div>
 
         {/* -------- DESKTOP VIEW -------- */}
@@ -474,7 +523,8 @@ const TeamsTable = () => {
               </div>
             </>
           )}
-          {showEmptyState && <SignatureBlock />}
+        {/* EMPTY STATE (DESKTOP) */}
+        {showEmptyState && <EmptyTeamsState />}
         </div>
       </div>
       {/* MODAL */}

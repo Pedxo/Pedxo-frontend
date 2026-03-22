@@ -58,6 +58,12 @@ const Overview = () => {
     suspense: false,
   });
 
+  useEffect(() => {
+  if (userId) {
+    refetch();
+  }
+}, [userId, refetch]);
+
   // ----------------- USER CURRENCY -----------------
   useEffect(() => {
     const storedCode = localStorage.getItem(`${username}_userCurrencyCode`);
@@ -81,19 +87,41 @@ const Overview = () => {
     let expenses = 0;
     let activeTalents = 0;
 
-    contractsData.forEach((contract) => {
-      const assigned = (contract.talentAssignedId || []).filter(Boolean);
+    // contractsData.forEach((contract) => {
+    //   const assigned = (contract.talentAssignedId || []).filter(Boolean);
       
 
-      if (assigned.length > 0) {
-        activeTalents += assigned.length;
-        expenses += Number(contract.paymentRate || 0);
-      }
+    //   if (assigned.length > 0) {
+    //     activeTalents += assigned.length;
+    //     expenses += Number(contract.paymentRate || 0);
+    //   }
+    // });
+    contractsData.forEach((contract) => {
+    const assigned = Array.isArray(contract.talentAssignedId)
+      ? [...new Set(contract.talentAssignedId.filter(Boolean))] // remove duplicates
+      : [];
+
+    if (assigned.length > 0) {
+      activeTalents += assigned.length;
+      expenses += Number(contract.paymentRate || 0);
+
+    //FIXED
+    //expenses += assigned.length * Number(contract.paymentRate || 0);
+     }
     });
 
+    // const onboardingContracts = contractsData.filter((contract) => {
+    //   const assigned = (contract.talentAssignedId || []).filter(Boolean);
+    //   //console.log("Total Assigned Contract: ", assigned);
+    //   return assigned.length === 0;
+    // }).length;
+
+    // ONLY contracts with ZERO assigned talents
     const onboardingContracts = contractsData.filter((contract) => {
-      const assigned = (contract.talentAssignedId || []).filter(Boolean);
-      //console.log("Total Assigned Contract: ", assigned);
+      const assigned = Array.isArray(contract.talentAssignedId)
+        ? contract.talentAssignedId.filter(Boolean)
+        : [];
+      console.log("Total Assigned Contract: ", assigned);
       return assigned.length === 0;
     }).length;
 
