@@ -112,9 +112,7 @@ const fetchEmployees = async () => {
 
           if (Array.isArray(assignedJson?.data)) {
             assignedJson.data.forEach((emp) => {
-              const matchedId = contract.talentAssignedIds.find(
-                (id) => id === emp._id
-                );
+              const matchedId = contract.talentAssignedIds
               assigned.push({
                 ...emp,
                 contractId: contract.contractId,
