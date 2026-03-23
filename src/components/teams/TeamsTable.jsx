@@ -71,7 +71,6 @@ const fetchEmployees = async () => {
     console.log("Total Contracts created:", rawContracts.length); 
  
     /*  NORMALIZE CONTRACT IDS  */
-
     const normalizedContracts = rawContracts
       .map((c) => ({
         contractId: c._id || c.contractId || null,
@@ -113,11 +112,13 @@ const fetchEmployees = async () => {
 
           if (Array.isArray(assignedJson?.data)) {
             assignedJson.data.forEach((emp) => {
+              const matchedId = contract.talentAssignedIds.find(
+                (id) => id === emp._id
+                );
               assigned.push({
                 ...emp,
                 contractId: contract.contractId,
-                talentAssignedId: contract.talentAssignedId,
-
+                talentAssignedId: matchedId,
               });
             });
           }
