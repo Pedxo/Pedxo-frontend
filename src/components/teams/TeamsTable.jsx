@@ -392,7 +392,7 @@ const fetchEmployees = async () => {
                 <div className="text-[0.8rem] mt-3">{employee?.roleTitle}</div>
                 <div className="text-[0.8rem] mt-2">{employee?.country}</div>
                 <div className="text-[0.8rem] mt-2">
-                  {employee?.paymentRate}
+                  ₦{employee?.paymentRate}
                 </div>
                 <div className="text-[0.8rem] mt-2">
                   {employee?.paymentFrequency}
@@ -483,7 +483,7 @@ const fetchEmployees = async () => {
 
                       <div>{employee?.roleTitle}</div>
                       <div>{employee?.country}</div>
-                      <div>{employee?.paymentRate}</div>
+                      <div>₦{employee?.paymentRate}</div>
                       <div>{employee?.seniorityLevel}</div>
                       <div>{employee?.paymentFrequency}</div>
 
