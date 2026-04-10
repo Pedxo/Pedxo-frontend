@@ -256,9 +256,9 @@ const showEmptyState = !loading && employees.length === 0;
                 </div>
               </div>
             ))}
-           {/* EMPTY STATE (DESKTOP) */}
-           {showEmptyState && <EmptyPaidState />}
           </div>
+          {/* EMPTY STATE (DESKTOP) */}
+           {showEmptyState && <EmptyPaidState />}
         </div>
       </div>
     </section>

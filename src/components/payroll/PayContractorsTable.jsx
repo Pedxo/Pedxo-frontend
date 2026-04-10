@@ -540,9 +540,10 @@ const adjustedBalance = balance - totalAmount;
               </div>
               );
             })}
-            {/* EMPTY STATE (DESKTOP) */}
-          {showEmptyState && <EmptyTeamsState />}
+          
           </div>
+          {/* EMPTY STATE (DESKTOP) */}
+          {showEmptyState && <EmptyTeamsState />}
         </div>
       </div>
 
