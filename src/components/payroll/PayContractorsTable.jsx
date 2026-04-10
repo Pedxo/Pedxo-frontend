@@ -490,6 +490,11 @@ const adjustedBalance = balance - totalAmount;
         </div>
 
         <div className="mt-[21px] hidden xl:w-full lg:block ">
+          {/* EMPTY STATE (DESKTOP) */}
+          {showEmptyState ? (
+            <EmptyTeamsState />
+          ) : (
+            <>
           <div
             className="grid grid-cols-6 gap-5 font-medium mb-[15px] px-10 "
             style={{ color: "rgba(0, 0, 0, 0.60)" }}
@@ -542,8 +547,7 @@ const adjustedBalance = balance - totalAmount;
             })}
           
           </div>
-          {/* EMPTY STATE (DESKTOP) */}
-          {showEmptyState && <EmptyTeamsState />}
+            </>)}
         </div>
       </div>
 
