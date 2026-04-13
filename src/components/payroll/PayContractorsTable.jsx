@@ -2,6 +2,7 @@ import {useState, useEffect, useMemo} from "react";
 import {getProfileImagesMapping, getEmployeeKey, profileImages} from "../../utility/profileImages";
 import authFetch, {getUserBalance, payoutFunds, initializePaymentAccount} from "../../api";
 import { useUser } from "../../context/UserContext";
+import toast from "react-hot-toast";
 
 
 
@@ -10,6 +11,7 @@ import PrimaryBtn from "../PrimaryBtn";
 import DepositModal from "../DepositModal";
 import SearchingDoc from "../SearchingDoc";
 import { NavLink } from "react-router-dom";
+import { formatCurrency } from "../../utility/helper";
 
 const PayContractorsTable = () => {
   const {userId} = useUser();
@@ -29,6 +31,14 @@ const PayContractorsTable = () => {
 
   /* MODAL STATE */
   const [showDepositModal, setShowDepositModal] = useState(false);
+
+
+  /*Loader state*/
+  const [showLoader, setShowLoader] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  /*Make Payment State*/
+  const [paying, setPaying] = useState(false);
 
 
  /* ================= FETCH DATA ================= */
@@ -182,74 +192,81 @@ const fetchBalance = async () => {
   }
 };
 
+// ================= GENERATE UNIQUE PAYMENT REFERENCE =================
+const generateReference = () => {
+  return "REF-" + Date.now() + "-" + Math.floor(Math.random() * 1000000);
+};
 
 
 /* ================= AUTOMATIC DEDUCTION ================= */
 const handleAutoPayments = async () => {
-  const lastPayments =
-    JSON.parse(localStorage.getItem("lastPayments")) || {};
+  try {
+    if (!employees.length) return;
 
-  const now = new Date();
+    const accountNumber = localStorage.getItem("accountNumber");
+    if (!accountNumber) return;
 
-  for (const emp of employees) {
-    // const key = emp._id || emp.talentAssignedId;
-    const key = `${emp.contractId}_${emp.talentAssignedId}`;
+    const lastPayments =
+      JSON.parse(localStorage.getItem("lastPayments")) || {};
 
-    const lastPaid = lastPayments[key]
-      ? new Date(lastPayments[key])
-      : null;
+    const now = new Date();
+    let paymentMade = false;
 
-    let due = false;
+    for (const emp of employees) {
+      const key = `${emp.contractId}_${emp.talentAssignedId}`;
+      if (!emp.paymentRate) continue;
 
-    const frequency = emp.paymentFrequency?.toLowerCase();
+      const lastPaid = lastPayments[key]
+        ? new Date(lastPayments[key])
+        : null;
 
-    if (!lastPaid) {
-      due = true;
-    } else {
-      const diffDays =
-        (now - lastPaid) / (1000 * 60 * 60 * 24);
+      let due = false;
+      const frequency = (emp.paymentFrequency || "").toLowerCase();
 
-      if (frequency.includes("weekly") && diffDays >= 7) {
+      if (!lastPaid) {
         due = true;
+      } else {
+        const diffDays =
+          (now - lastPaid) / (1000 * 60 * 60 * 24);
+
+        if (frequency.includes("weekly") && diffDays >= 7) due = true;
+        if (frequency.includes("bi") && diffDays >= 14) due = true;
+        if (frequency.includes("month") && diffDays >= 30) due = true;
       }
 
-      if (frequency.includes("bi") && diffDays >= 14) {
-        due = true;
-      }
-
-      if (frequency.includes("month") && diffDays >= 30) {
-        due = true;
-      }
-    }
-
-    if (due) {
-      try {
-        const accountNumber =
-          localStorage.getItem("accountNumber");
-
+      if (due) {
         await payoutFunds({
           account_number: accountNumber,
-          amount: emp.paymentRate,
+          amount: Number(emp.paymentRate),
           narration: `Auto payment for ${emp.fullName}`,
+          type: "debit",
+          ini_reference: generateReference(),
         });
 
-        lastPayments[key] = now.toISOString();
+        // await authFetch.put("/hire/update-status", {
+        //   contractId: emp.contractId,
+        //   talentAssignedId: emp.talentAssignedId,
+        //   status: "Paid",
+        // });
 
-        console.log("Auto paid:", emp.fullName);
-      } catch (err) {
-        console.error("Auto payment failed:", emp.fullName);
+        lastPayments[key] = now.toISOString();
+        paymentMade = true;
       }
     }
-  }
 
-  localStorage.setItem(
-    "lastPayments",
-    JSON.stringify(lastPayments)
-  );
+    localStorage.setItem("lastPayments", JSON.stringify(lastPayments));
+
+    if (paymentMade) {
+      await fetchBalance(); // <-- Refresh balance after auto payments
+    }
+
+  } catch (err) {
+    console.error("Auto payment failed:", err);
+  }
 };
 
 
-  useEffect(() => {
+useEffect(() => {
   if (!userId) return;
 
   const init = async () => {
@@ -259,17 +276,29 @@ const handleAutoPayments = async () => {
 
     try {
       await initializePaymentAccount(storedUser);
+      await fetchEmployees();
+      await fetchBalance();
     } catch (e) {
       console.error("Init payment failed", e);
     }
-
-    await fetchEmployees();
-    await fetchBalance();
-    await handleAutoPayments();
   };
 
   init();
 }, [userId]);
+
+/* RUN AUTO PAYMENT ONLY AFTER EMPLOYEES LOAD */
+useEffect(() => {
+  if (!employees.length) return;
+
+  const alreadyRan = sessionStorage.getItem("auto_payment_ran");
+
+  if (alreadyRan) return;
+
+  handleAutoPayments();
+
+  sessionStorage.setItem("auto_payment_ran", "true");
+
+}, [employees]);
 
    
   /* ================= CHECKBOX LOGIC ================= */
@@ -358,7 +387,118 @@ useEffect(() => {
 
 
 /* ================= DEDUCT BALANCE ================= */
-const adjustedBalance = balance - totalAmount;
+//const adjustedBalance = balance - totalAmount;
+
+
+/* ================= HANDLE MAKE PAYMENT ================= */
+const handleMakePayment = async () => {
+  console.log("🔥 Make Payment clicked");
+
+  if (paying) {
+    console.warn("Payment already processing...");
+    return;
+  }
+
+  try {
+    const selected = Object.entries(employeeChecks).filter(
+      ([_, v]) => v.checked
+    );
+
+    console.log("Selected employees:", selected);
+
+    if (!selected.length) {
+      toast.error("No employee selected");
+      console.warn("No employees selected");
+      return;
+    }
+
+    const accountNumber = localStorage.getItem("accountNumber");
+
+    console.log("Account number:", accountNumber);
+
+    if (!accountNumber) {
+      toast.error("Account not initialized");
+      console.error("Missing account number");
+      return;
+    }
+
+    setPaying(true);
+    toast.loading("Processing payment...", { id: "pay" });
+
+    for (const [key, value] of selected) {
+      const [contractId, talentAssignedId] = key.split("_");
+
+      console.log("Paying:", {
+        contractId,
+        talentAssignedId,
+        amount: value.amount,
+      });
+
+      await payoutFunds({
+        account_number: accountNumber,
+        amount: Number(value.amount),
+        narration: `Payment for ${value.name}`,
+        type: "debit",
+        ini_reference: generateReference(),
+      });
+
+      // OPTIONAL BACKEND UPDATE
+      // await authFetch.put("/hire/update-status", {
+      //   contractId,
+      //   talentAssignedId,
+      //   status: "Paid",
+      // });
+
+      console.log("Payment success for:", value.name);
+
+      // remove from localStorage selection immediately
+      const saved =
+        JSON.parse(localStorage.getItem("selectedEmployees")) || {};
+
+      delete saved[key];
+
+      localStorage.setItem("selectedEmployees", JSON.stringify(saved));
+
+      console.log("Removed from localStorage:", key);
+    }
+
+    // RESET UI
+    setEmployeeChecks({});
+    setAllChecked(false);
+
+    await fetchEmployees();
+    await fetchBalance();
+
+    toast.success("Payment successful", { id: "pay" });
+    console.log("Payment completed");
+
+  } catch (err) {
+    console.error("Payment Error:", err?.response?.data || err.message);
+    toast.error("Payment failed");
+  } finally {
+    setPaying(false);
+  }
+};
+
+
+/*----------Loader effect------------*/
+useEffect(() => {
+  setHasMounted(true);
+
+  const shown = sessionStorage.getItem("table_loader");
+
+  if (shown) {
+    setShowLoader(false);
+    return;
+  }
+
+  const timer = setTimeout(() => {
+    setShowLoader(false);
+    sessionStorage.setItem("table_loader", "true");
+  }, 5000);
+
+  return () => clearTimeout(timer);
+}, []);
 
 
 /* ---------------- EMPTY STATE COMPONENT ---------------- */
@@ -391,16 +531,28 @@ const adjustedBalance = balance - totalAmount;
     </SearchingDoc>
   );
 
+  const shouldShowLoader = !hasMounted || showLoader || loading;
+
   const showEmptyState = !loading && employees.length === 0;
+  const showTable = !loading && employees.length > 0;
 
  /* ================= UI RENDERING ================= */
   
   return (
     <section>
+    
       {/* ================= HEADER ================= */}
+      {/* ADDED: inline loader (header stays visible) */}
+        {shouldShowLoader && (
+          <div className="flex flex-col items-center justify-center py-10 gap-4">
+            <div className="w-10 h-10 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
+            <p className="text-[12px] text-gray-600">Loading page...</p>
+          </div>
+        )}
+      {showTable && (
       <div className="flex justify-between items-center px-6 mt-6">
         <div className="text-lg font-semibold">
-          Available Balance: ₦{adjustedBalance}
+          Available Balance: {formatCurrency(balance)}
         </div>
 
         <button
@@ -412,10 +564,13 @@ const adjustedBalance = balance - totalAmount;
           Deposit
         </button>
         </div>
+        )}
 
-        {/* ================= TABLE ================= */}
+      {/* ================= TABLE ================= */}
       <div className="xl:mt-[46px] flex flex-col max-h-[1024px]">
         <div className="flex flex-col gap-4 mt-[21px] xl:flex-col-reverse xl:gap-[10px] xl:w-full lg:hidden">
+          {/*SELECT ALL*/}
+          {showTable && (
           <div
             className="flex justify-between items-center px-[13px] py-[11px] rounded-lg user-bg-clr xl:px-10 xl:py-5"
             style={{ border: "1px solid rgba(0, 0, 0, 0.05)" }}
@@ -433,9 +588,23 @@ const adjustedBalance = balance - totalAmount;
               onChange={handleAllCheckboxChange}
             />
           </div>
-
+          )}
+          {/*SKELETON LOADER*/}
+          {loading && Array.from({length: 3}).map((_, index) => (
+            <div
+                key={index}
+                className="flex flex-col font-medium px-[18px] py-[22px] rounded-lg"
+                style={{ border: "0.5px solid rgba(0, 0, 0, 0.20)" }}
+              >
+                <div className="h-4 w-1/2 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 w-1/3 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 w-1/4 bg-gray-200 rounded mb-2"></div>
+              </div>
+          ))}
           {/* ================= EMPLOYEE LIST (MOBILE VIEW) ================= */}
-          {employees.map((employee, index) => {
+          {/*DATA*/}
+          {showTable &&
+           employees.map((employee, index) => {
              const key = `${employee.contractId}_${employee.talentAssignedId}`;
             return (
             <div
@@ -471,7 +640,7 @@ const adjustedBalance = balance - totalAmount;
               </div>
                   {/*PAY*/}
               <div className="text-sm flex flex-col justify-between">
-                ₦{employee.paymentRate}
+                {formatCurrency(employee.paymentRate, employee.currency)}
 
                 <input
                   type="checkbox"
@@ -491,10 +660,9 @@ const adjustedBalance = balance - totalAmount;
 
         <div className="mt-[21px] hidden xl:w-full lg:block ">
           {/* EMPTY STATE (DESKTOP) */}
-          {showEmptyState ? (
-            <EmptyTeamsState />
-          ) : (
-            <>
+          {showTable && (
+          <>
+          {/*TABLE HEADER SHOWS ONLY DATA EXIST*/}
           <div
             className="grid grid-cols-6 gap-5 font-medium mb-[15px] px-10 "
             style={{ color: "rgba(0, 0, 0, 0.60)" }}
@@ -530,7 +698,7 @@ const adjustedBalance = balance - totalAmount;
                   </div>
                   <div>{employee.country}</div>
                   <div> {employee.roleTitle}</div>
-                  <div>₦{employee.paymentRate}</div>
+                  <div>{formatCurrency(employee.paymentRate, employee.currency)}</div>
                   <div style={{ color: "#F00" }}>{employee.status}</div>
 
                   <input
@@ -545,9 +713,11 @@ const adjustedBalance = balance - totalAmount;
               </div>
               );
             })}
-          
-          </div>
-            </>)}
+           </div>
+          </>
+          )}
+          {/* EMPTY STATE (DESKTOP) */}
+          {showEmptyState && <EmptyTeamsState />}
         </div>
       </div>
 
@@ -570,15 +740,50 @@ const adjustedBalance = balance - totalAmount;
             />
           </div>
         </div>
+        {/* ================= FLOATING PAYMENT BAR ================= */}
 
-        {/* <div className="flex items-center justify-between gap-6 mt-[19px]">
-          <div className="text-sm font-medium mt-[10px] xl:text-[22px]">
-            Total Amount: ${totalAmount}
+
+        {/* ===== MOBILE VIEW (FIXED, FULL WIDTH, TRANSPARENT) ===== */}
+        <div className="fixed bottom-0 left-0 right-0 px-4 py-3 bg-white flex items-center justify-between lg:hidden z-50 bg-transparent">
+          
+          <div className="text-sm font-semibold">
+            Total: {formatCurrency(totalAmount)}
           </div>
-          <div>
-            <PrimaryBtn text="Make Payment" onClick={handleMakePayment}/>
+
+          <PrimaryBtn
+            text={paying ? "Processing..." : "Make Payment"}
+            onClick={() => {
+              console.log("Button clicked (UI layer)");
+              handleMakePayment();
+            }}
+            disabled={totalAmount === 0 || paying}
+          />
+        </div>
+
+
+        {/* ===== DESKTOP VIEW (FLOATING, SMALL, DOES NOT BLOCK) ===== */}
+        <div className="hidden lg:flex fixed bottom-4 left-[260px] right-[100px] z-50 pointer-events-none">
+          
+          <div className="w-full max-w-[900px] mx-auto flex justify-end pr-6 pointer-events-auto">
+            
+            <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-lg shadow-sm">
+              
+              <div className="text-sm font-medium">
+                Total: {formatCurrency(totalAmount)}
+              </div>
+
+              <PrimaryBtn
+                text={paying ? "Processing..." : "Make Payment"}
+                onClick={() => {
+                  console.log("Button clicked (UI layer)");
+                  handleMakePayment();
+                }}
+                disabled={totalAmount === 0 || paying}
+              />
+            </div>
+
           </div>
-        </div> */}
+        </div>
       </div>
       {/* ================= MODAL ================= */}
       <DepositModal

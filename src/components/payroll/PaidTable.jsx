@@ -4,6 +4,7 @@ import authFetch from "../../api";
 import { useUser } from "../../context/UserContext";
 import { Link } from "react-router-dom";
 import SearchingDoc from "../SearchingDoc";
+import { formatCurrency } from "../../utility/helper";
 
 
 const PaidTable = () => {
@@ -12,6 +13,10 @@ const PaidTable = () => {
   const [employees, setEmployees] = useState([]); // holds fetched employees
   const [loading, setLoading] = useState(true);
   const [profileMap, setProfileMap] = useState({});
+
+  /*Loader state*/
+    const [showLoader, setShowLoader] = useState(true);
+    const [hasMounted, setHasMounted] = useState(false);
 
   
   /* ================= FETCH DATA ================= */
@@ -134,6 +139,28 @@ const PaidTable = () => {
     fetchEmployees();
   }, [userId]);
 
+
+
+/*----------Loader effect------------*/
+useEffect(() => {
+  setHasMounted(true);
+
+  const shown = sessionStorage.getItem("table_loader");
+
+  if (shown) {
+    setShowLoader(false);
+    return;
+  }
+
+  const timer = setTimeout(() => {
+    setShowLoader(false);
+    sessionStorage.setItem("table_loader", "true");
+  }, 5000);
+
+  return () => clearTimeout(timer);
+}, []);
+
+
 /* ---------------- EMPTY STATE COMPONENT ---------------- */
 const EmptyPaidState = () => (
   <SearchingDoc
@@ -154,16 +181,39 @@ const EmptyPaidState = () => (
     ]}
   />
 );
-
+const shouldShowLoader = !hasMounted || showLoader || loading;
 const showEmptyState = !loading && employees.length === 0;
+const showTable = !loading && employees.length > 0;
 
  /* ================= UI RENDERING ================= */
   
   return (
     <section>
       <div className="xl:mt-[46px] flex flex-col">
+
+        {/* ADDED: inline loader (header stays visible) */}
+        {shouldShowLoader && (
+          <div className="flex flex-col items-center justify-center py-10 gap-4">
+            <div className="w-10 h-10 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
+            <p className="text-[12px] text-gray-600">Loading page...</p>
+          </div>
+        )}
+
+        {/*SKELETON LOADER*/}
+          {loading && Array.from({length: 3}).map((_, index) => (
+            <div
+                key={index}
+                className="flex flex-col font-medium px-[18px] py-[22px] rounded-lg"
+                style={{ border: "0.5px solid rgba(0, 0, 0, 0.20)" }}
+              >
+                <div className="h-4 w-1/2 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 w-1/3 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 w-1/4 bg-gray-200 rounded mb-2"></div>
+              </div>
+          ))}
+
         <div className="flex flex-col gap-4 mt-[21px] xl:flex-col-reverse xl:gap-[10px] xl:w-full lg:hidden">
-          {employees.map((employee, index) => (
+          {showTable && employees.map((employee, index) => (
             <div
               key={index}
               className="font-medium px-[18px] py-[22px] rounded-lg xl:flex-row xl:items-center xl:px-10  xl:py-[20px] "
@@ -189,7 +239,7 @@ const showEmptyState = !loading && employees.length === 0;
                   {employee.status}
                 </div>
                 <div className="text-sm flex flex-col justify-between">
-                  ₦{employee.paymentRate}
+                  {formatCurrency(employee.paymentRate, employee.currency)}
                 </div>
               </div>
 
@@ -213,11 +263,8 @@ const showEmptyState = !loading && employees.length === 0;
 
         <div className="mt-[21px] hidden xl:w-full lg:block ">
           {/* EMPTY STATE (DESKTOP) */}
-           {showEmptyState ? (
-           
-            <EmptyPaidState />
-          ) : (
-          <>
+          {showTable && (
+           <>
           <div
             className="grid grid-cols-6 gap-5 font-medium mb-[15px] px-10 "
             style={{ color: "rgba(0, 0, 0, 0.60)" }}
@@ -250,7 +297,7 @@ const showEmptyState = !loading && employees.length === 0;
                   </div>
                   <div>{employee.country}</div>
                   <div> {employee.roleTitle}</div>
-                  <div>₦{employee.paymentRate}</div>
+                  <div>{formatCurrency(employee.paymentRate, employee.currency)}</div>
                   <div style={{ color: "#008000" }}>{employee.status}</div>
                   <div className="py-[1em] px-[2em]  font-semibold text-[0.625rem] text-center pr-bg-clr text-white rounded-lg max-w-max xl:text-[0.75rem] xl:p-[9px]">
                     <Link
@@ -265,6 +312,8 @@ const showEmptyState = !loading && employees.length === 0;
           </div>
           </>
          )}
+         {/* EMPTY STATE (DESKTOP) */}
+          {showEmptyState && <EmptyPaidState />}
         </div>
       </div>
     </section>

@@ -12,6 +12,7 @@ import SearchingDoc from "../../components/SearchingDoc";
 import { useUser } from "../../context/UserContext";
 import authFetch from "../../api"; 
 import toast from "react-hot-toast";
+import { formatCurrency } from "../../utility/helper";
 
 
 const TeamsTable = () => {
@@ -392,7 +393,7 @@ const fetchEmployees = async () => {
                 <div className="text-[0.8rem] mt-3">{employee?.roleTitle}</div>
                 <div className="text-[0.8rem] mt-2">{employee?.country}</div>
                 <div className="text-[0.8rem] mt-2">
-                  ₦{employee?.paymentRate}
+                  {formatCurrency(employee.paymentRate, employee.currency)}
                 </div>
                 <div className="text-[0.8rem] mt-2">
                   {employee?.paymentFrequency}
@@ -483,7 +484,7 @@ const fetchEmployees = async () => {
 
                       <div>{employee?.roleTitle}</div>
                       <div>{employee?.country}</div>
-                      <div>₦{employee?.paymentRate}</div>
+                      <div>{formatCurrency(employee.paymentRate, employee.currency)}</div>
                       <div>{employee?.seniorityLevel}</div>
                       <div>{employee?.paymentFrequency}</div>
 

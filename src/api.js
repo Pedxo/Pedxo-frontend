@@ -55,12 +55,14 @@ authFetch.interceptors.request.use((config) => {
 
   // NEVER CACHE CONTRACT REQUESTS
   if (
-    config.url?.includes("/contracts/") ||
-    config.url?.includes("/hire/assigned-by-contract")
+  config.url?.includes("/contracts/") ||
+  config.url?.includes("/hire/assigned-by-contract") ||
+  config.baseURL === paymentBaseURL
   ) {
     config.params = { ...config.params, _t: Date.now() };
     return config;
   }
+  
 
   // GET CACHE
   if (config.method?.toLowerCase() === "get") {
@@ -214,15 +216,20 @@ export const initializePaymentAccount = async (user) => {
 
     if (matchedUser && matchedUser.accounts?.length) {
 
-      const accountNumber =
-        matchedUser.accounts[0].account_number;
+    const bestAccount = matchedUser.accounts.reduce((prev, current) => {
+      return Number(current.balance) > Number(prev.balance)
+        ? current
+        : prev;
+    });
 
-      console.log("Matched Account Number:", accountNumber);
+    const accountNumber = bestAccount.account_number;
 
-      localStorage.setItem("accountNumber", accountNumber);
+    console.log("Selected Best Account:", accountNumber);
 
-      return accountNumber;
-    }
+    localStorage.setItem("accountNumber", accountNumber);
+
+    return accountNumber;
+  }
 
     console.log("No account found for email, creating user...");
 

@@ -3,6 +3,7 @@ import {useState, useEffect} from "react";
 import {getProfileImagesMapping, getEmployeeKey, profileImages} from "../../utility/profileImages";
 import authFetch from "../../api";
 import { useUser } from "../../context/UserContext";
+import { formatCurrency } from "../../utility/helper";
 
 
 const ExpensesTable = () => {
@@ -175,7 +176,7 @@ const ExpensesTable = () => {
       >
         <div className="text-base xl:text-xl">Total Spent</div>
         {/*TOTAL SPENT*/}
-        <div className="text-[1.875rem] xl:text-[2.5rem]">₦{totalSpent.toLocaleString()}</div>
+        <div className="text-[1.875rem] xl:text-[2.5rem]">{formatCurrency(totalSpent.toLocaleString())}</div>
         {/*PAYMENT DUE*/}
         <div
           className="text-[0.75rem] font-medium xl:text-base xl:mt-[23px] xl:mb-[7px]"
@@ -187,7 +188,7 @@ const ExpensesTable = () => {
           className="text-xl font-semibold text-[1.625rem] "
           style={{ color: "#F00" }}
         >
-          ₦{duePayment.toLocaleString()}
+          {formatCurrency(duePayment.toLocaleString())}
         </div>
       </div>
          {/* ================= MOBILE VIEW ================= */}
