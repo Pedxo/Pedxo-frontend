@@ -219,15 +219,12 @@ const Overview = () => {
                     Total amount you've spent on your contractors
                   </p>
                   <div className="flex justify-between bg-white border rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16">
-                    <div className="flex items-center gap-4">
+                    <Link to="/dashboard/expenses" className="flex items-center gap-4">
                       <img src={moneybag} alt="" />
-                      {/* <span className="text-2xl font-semibold xl:text-[40px] overview-text">
-                        {formatCurrency(displayTotalExpenses, currencyCode, locale)}
-                      </span> */}
                       <span className="text-2xl font-semibold xl:text-[40px] overview-text">
                         $0.00
                       </span>
-                    </div>
+                    </Link>
                   </div>
                 </div>
     
