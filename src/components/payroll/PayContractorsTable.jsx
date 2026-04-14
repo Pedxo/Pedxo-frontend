@@ -21,8 +21,9 @@ const PayContractorsTable = () => {
   const [loading, setLoading] = useState(true);
   const [profileMap, setProfileMap] = useState({});
 
-   /* BALANCE STATE */
-  const [balance, setBalance] = useState(0);
+  
+  /* ================= BALANCE STATE ================= */
+  const [balance, setBalance] = useState(0); // real backend balance
 
  
   /*  CHECKBOX STATES */
@@ -185,6 +186,7 @@ const fetchBalance = async () => {
 
     setBalance(Number(actualBalance));
 
+    
   } catch (err) {
 
     console.error("Balance fetch failed:", err);
@@ -300,9 +302,10 @@ useEffect(() => {
 
 }, [employees]);
 
-   
+  
   /* ================= CHECKBOX LOGIC ================= */
   /*SELECT ALL*/
+  
 const handleAllCheckboxChange = () => {
   const newCheckedStatus = !allChecked;
 
@@ -325,21 +328,29 @@ const handleAllCheckboxChange = () => {
 
   
 
-  /* SELECT SINGLE */
-  const handleEmployeeCheckboxChange = (index) => {
+/* SELECT SINGLE */
+const handleEmployeeCheckboxChange = (index) => {
   const emp = employees[index];
   const key = `${emp.contractId}_${emp.talentAssignedId}`;
 
-  setEmployeeChecks((prev) => ({
-    ...prev,
-    [key]: {
-      checked: !prev[key]?.checked,
-      amount: emp.paymentRate,
-      name: emp.fullName,
-    },
-  }));
-};
+  setEmployeeChecks((prev) => {
+    const updated = { ...prev };
 
+    if (updated[key]?.checked) {
+      // UNCHECK → REMOVE completely
+      delete updated[key];
+    } else {
+      // CHECK → ADD
+      updated[key] = {
+        checked: true,
+        amount: emp.paymentRate,
+        name: emp.fullName,
+      };
+    }
+
+    return updated;
+  });
+};
 
  useEffect(() => {
   if (!employees.length) return;
@@ -365,60 +376,60 @@ const handleAllCheckboxChange = () => {
   }, [employees, employeeChecks]);
 
 
+  /* UI ADJUSTED BALANCE (REAL-TIME DEDUCTION) */
+  const adjustedBalance = useMemo(() => {
+    return balance - totalAmount;
+  }, [balance, totalAmount]);
+
+
 /* ================= TOTAL PAYMENT DUE SELECTED ================= */
 useEffect(() => {
-
   if (!Object.keys(employeeChecks).length) return;
 
-  console.log("Saving checkbox state:", employeeChecks);
-
+  // Save selected employees
   localStorage.setItem(
     "selectedEmployees",
     JSON.stringify(employeeChecks)
   );
 
+  // Save total amount
   const total = Object.values(employeeChecks)
     .filter((item) => item?.checked)
     .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
   localStorage.setItem("selectedTotalAmount", total);
 
+  console.log("Saved selections + total:", total);
+
 }, [employeeChecks]);
-
-
-/* ================= DEDUCT BALANCE ================= */
-//const adjustedBalance = balance - totalAmount;
 
 
 /* ================= HANDLE MAKE PAYMENT ================= */
 const handleMakePayment = async () => {
-  console.log("🔥 Make Payment clicked");
+  console.log(" Make Payment clicked");
 
-  if (paying) {
-    console.warn("Payment already processing...");
-    return;
-  }
+  if (paying) return;
 
   try {
-    const selected = Object.entries(employeeChecks).filter(
-      ([_, v]) => v.checked
-    );
+    const savedSelections =
+      JSON.parse(localStorage.getItem("selectedEmployees")) || {};
 
-    console.log("Selected employees:", selected);
+    const selected = Object.entries(savedSelections);
 
     if (!selected.length) {
       toast.error("No employee selected");
-      console.warn("No employees selected");
       return;
     }
 
-    const accountNumber = localStorage.getItem("accountNumber");
-
-    console.log("Account number:", accountNumber);
+    let accountNumber = localStorage.getItem("accountNumber");
 
     if (!accountNumber) {
-      toast.error("Account not initialized");
-      console.error("Missing account number");
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      accountNumber = await initializePaymentAccount(storedUser);
+    }
+
+    if (!accountNumber) {
+      toast.error("Payment account not ready");
       return;
     }
 
@@ -442,27 +453,13 @@ const handleMakePayment = async () => {
         ini_reference: generateReference(),
       });
 
-      // OPTIONAL BACKEND UPDATE
-      // await authFetch.put("/hire/update-status", {
-      //   contractId,
-      //   talentAssignedId,
-      //   status: "Paid",
-      // });
-
       console.log("Payment success for:", value.name);
-
-      // remove from localStorage selection immediately
-      const saved =
-        JSON.parse(localStorage.getItem("selectedEmployees")) || {};
-
-      delete saved[key];
-
-      localStorage.setItem("selectedEmployees", JSON.stringify(saved));
-
-      console.log("Removed from localStorage:", key);
     }
 
-    // RESET UI
+    /* CLEAR STORAGE AFTER SUCCESS */
+    localStorage.removeItem("selectedEmployees");
+    localStorage.removeItem("selectedTotalAmount");
+
     setEmployeeChecks({});
     setAllChecked(false);
 
@@ -470,7 +467,6 @@ const handleMakePayment = async () => {
     await fetchBalance();
 
     toast.success("Payment successful", { id: "pay" });
-    console.log("Payment completed");
 
   } catch (err) {
     console.error("Payment Error:", err?.response?.data || err.message);
@@ -552,7 +548,7 @@ useEffect(() => {
       {showTable && (
       <div className="flex justify-between items-center px-6 mt-6">
         <div className="text-lg font-semibold">
-          Available Balance: {formatCurrency(balance)}
+          Available Balance: {formatCurrency(adjustedBalance)}
         </div>
 
         <button
