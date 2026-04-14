@@ -7,11 +7,12 @@ import PaidTable from "../components/payroll/PaidTable";
 import PayContractorsTable from "../components/payroll/PayContractorsTable";
 
 const Payroll = () => {
-  const [isActive, setIsActive] = useState(true);
+  const [isActive, setIsActive] = useState("pay");
 
-  const handleClick = () => {
-    setIsActive(!isActive);
-  };
+
+  // const handleClick = () => {
+  //   setIsActive(!isActive);
+  // };
 
   const onBoarding = [
     {
@@ -48,23 +49,29 @@ const Payroll = () => {
           <div className="flex flex-col mt-2">
             <div className="font-semibold xl:text-2xl">
               <span
-                className={`mr-6 cursor-pointer  ${
-                  isActive ? "text-[#00B9CB]" : "text-[#00000033]"
-                } `}
-                onClick={handleClick}
-              >
-                Pay contractors
-              </span>
-              <span
-                className={`cursor-pointer ${
-                  isActive ? "text-[#00000033]" : "text-[#00B9CB]"
-                } `}
-                onClick={handleClick}
-              >
-                Paid
-              </span>
+              className={`mr-6 cursor-pointer ${
+                isActive === "pay"
+                  ? "text-[#00B9CB]"
+                  : "text-[#00000033]"
+              }`}
+              onClick={() => setIsActive("pay")}
+            >
+              Pay Contractors
+            </span>
+
+            <span
+              className={`cursor-pointer ${
+                isActive === "paid"
+                  ? "text-[#00B9CB]"
+                  : "text-[#00000033]"
+              }`}
+              onClick={() => setIsActive("paid")}
+            >
+              Paid
+            </span>
             </div>
-            {isActive ? <PayContractorsTable /> : <PaidTable />}
+            {isActive === "pay" && <PayContractorsTable />}
+            {isActive === "paid" && <PaidTable />}
           </div>
           {/* <div>
           <SearchingDoc
