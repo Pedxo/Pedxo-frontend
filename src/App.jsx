@@ -17,7 +17,8 @@ import {
   SignUp,
   StaticPage,
   Teams,
-  AuthSuccess
+  AuthSuccess,
+  UserContracts,
 } from './pages'
 import ProtectedRoutes from './utility/ProtectedRoutes'
 import PageNotFound from './pages/PageNotFound'
@@ -156,6 +157,10 @@ const router = createBrowserRouter([
          path: 'agreements/:contractId',
         element: <AgreementContract />,
       },
+      {
+        path: 'contracts',
+        element: <UserContracts />,
+      }
     ],
   },
 
