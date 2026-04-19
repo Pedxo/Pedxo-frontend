@@ -291,7 +291,7 @@ useEffect(() => {
                       {/* <span className="text-2xl font-semibold xl:text-[40px] overview-text">
                         $0.00
                       </span> */}
-                    </div>
+                    </Link>
                   </div>
                 </div>
     
