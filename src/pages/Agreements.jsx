@@ -56,7 +56,6 @@ const Agreements = () => {
 useEffect(() => {
     const fetchAgreements = async () => {
       try {
-        //const token = localStorage.getItem("token");
         const storedUser = JSON.parse(localStorage.getItem("user"));
         const token = storedUser?.accessToken;
 

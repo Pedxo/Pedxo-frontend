@@ -10,10 +10,15 @@ export function formatDate(dateString) {
   if (!dateString) return
   return format(parseISO(dateString), 'MMM d, yyyy')
 }
-export function formatCurrency(amount, currency = 'NGN', locale = 'en-NG') {
+
+export function formatCurrency(
+  amount = 0,
+  currency = "USD",   // DEFAULT = USD 
+  locale = currency === "NGN" ? "en-NG" : "en-US"
+) {
   return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency,
+    style: "currency",
+    currency,
     minimumFractionDigits: 2,
-  }).format(amount)
+  }).format(Number(amount) || 0);
 }

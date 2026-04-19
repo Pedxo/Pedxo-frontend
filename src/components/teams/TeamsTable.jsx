@@ -7,13 +7,13 @@ import {
   getEmployeeKey,
   profileImages,
 } from "../../utility/profileImages";
-import { useGlobalContext } from "../../Context";
 import PerformanceReviewModal from "../PerformanceReviewModal";
 import SearchingDoc from "../../components/SearchingDoc"; 
 import { useUser } from "../../context/UserContext";
 import authFetch from "../../api"; 
+import toast from "react-hot-toast";
+import { formatCurrency } from "../../utility/helper";
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const TeamsTable = () => {
   const { signature } = useGlobalContext();
@@ -63,19 +63,26 @@ const TeamsTable = () => {
         ? json.data.contracts
         : [];
 
-      /*  NORMALIZE CONTRACT IDS  */
-      const normalizedContracts = rawContracts
-        .map((c) => ({
-          contractId: c._id || c.contractId || null,
-          talentAssignedId: c.talentAssignedId?.[0] || null,
-        }))
-        .filter((c) => c.contractId); // no undefined allowed
+    console.log("Total Contracts created:", rawContracts.length); 
+ 
+    /*  NORMALIZE CONTRACT IDS  */
+    const normalizedContracts = rawContracts
+      .map((c) => ({
+        contractId: c._id || c.contractId || null,
+        talentAssignedIds: Array.isArray(c.talentAssignedId)
+          ? [...new Set(c.talentAssignedId)].filter(
+              (id) => typeof id === "string" && id.trim() !== ""
+            )
+          : [],
+      }))
+      .filter((c) => c.contractId);
 
-      if (!normalizedContracts.length) {
-        setEmployees([]);
-        return;
-      }
-      console.log("Contract fetched:", normalizedContracts);
+    if (!normalizedContracts.length) {
+      setEmployees([]);
+      return;
+    }
+
+    console.log("normalized Contract fetched:", normalizedContracts); //This should display on console
 
       /* FETCH ASSIGNED TALENTS */
       const assigned = [];
@@ -95,15 +102,25 @@ const TeamsTable = () => {
 
         const data = await res.json();
 
-        if (Array.isArray(data?.data)) {
-          assigned.push(
-            ...data.data.map((emp) => ({
-              ...emp,
-              contractId: contract.contractId,
-              talentAssignedId: contract.talentAssignedId,
-            })),
+          if (Array.isArray(assignedJson?.data)) {
+            const ids = contract.talentAssignedIds || [];
+            assignedJson.data.forEach((emp, index) => {
+              const matchedId = ids[index] || null;
+              assigned.push({
+                ...emp,
+                contractId: contract.contractId,
+                talentAssignedId: matchedId,
+              });
+            });
+          }
+        } catch (err) {
+          console.error(
+            "Failed fetching assigned devs for contract:",
+            contract.contractId,
+            err
           );
         }
+
       }
 
       const sorted = assigned.sort(
@@ -122,8 +139,13 @@ const TeamsTable = () => {
   };
 
   useEffect(() => {
-    fetchEmployees();
-  }, []);
+  if (!userId) {
+      console.warn("UserId not ready yet");
+      return;
+    }
+
+  fetchEmployees();
+}, [userId]);
 
   // Filter employees based on search term
   const filteredEmployees = useMemo(() => {
@@ -152,8 +174,13 @@ const TeamsTable = () => {
   const confirmTermination = async ({ rating, note }) => {
     console.log("Confirm clicked", { selectedEmployee, rating, note });
 
-    if (!selectedEmployee?.contractId || !selectedEmployee?.talentAssignedId) {
+    if (
+    !selectedEmployee?.contractId ||
+    !selectedEmployee?.talentAssignedId ||
+    String(selectedEmployee.talentAssignedId).trim() === ""
+    ) {
       console.error("Missing termination identifiers", selectedEmployee);
+      toast.error("Missing termination identifiers");
       return;
     }
 
@@ -176,19 +203,7 @@ const TeamsTable = () => {
             paymentFrequency: selectedEmployee.paymentFrequency,
             performanceRating: rating,
             terminationReason: note,
-          },
-          body: JSON.stringify({
-            performanceRating: rating,
-            terminationReason: note,
-            removeTalentIds: [selectedEmployee.talentAssignedId],
-            emailNotification: {
-              to: "victor@pedxo.com",
-              employeeName: selectedEmployee.fullName,
-              roleTitle: selectedEmployee.roleTitle,
-              paymentRate: selectedEmployee.paymentRate,
-              paymentFrequency: selectedEmployee.paymentFrequency,
-            },
-          }),
+          }
         },
       );
 
@@ -202,20 +217,24 @@ const TeamsTable = () => {
         throw new Error(res?.data?.message || "Termination failed");
       }
 
+     // SUCCESS TOAST
+     toast.success("Contract terminated successfully");
+
       // ADDED: reset modal state after confirm
       setModalResetKey((prev) => prev + 1);
 
-       /* ---------------- OPTIMISTIC UI UPDATE ---------------- */
-
-      setEmployees((prev) =>
-        prev.filter(
-          (emp) => emp.talentAssignedId !== selectedEmployee.talentAssignedId
+    /* ---------------- OPTIMISTIC UI UPDATE ---------------- */
+    setEmployees(prevEmployees =>
+    prevEmployees.filter(
+      emp =>
+        !(
+          emp.talentAssignedId === selectedEmployee.talentAssignedId &&
+          emp.contractId === selectedEmployee.contractId 
         )
-      );
+      )
+    );
 
-
-
-      /* ---------------- CLOSE MODAL ---------------- */
+     /* ---------------- CLOSE MODAL ---------------- */
       setShowModal(false);
       setSelectedEmployee(null);
 
@@ -223,9 +242,7 @@ const TeamsTable = () => {
       setModalResetKey(prev => prev + 1);
 
       /* ---------------- OPTIONAL BACKGROUND REFRESH ---------------- */
-      setTimeout(() => {
-        fetchEmployees();
-      }, 1500);
+      await fetchEmployees();
 
     } catch (err) {
       console.error("Termination failed:", err);
@@ -234,15 +251,36 @@ const TeamsTable = () => {
     }
   };
 
-  // ---------------- SIGNATURE BLOCK ----------------
-  const SignatureBlock = () => (
-    <div className={`mb-[39px] ${signature ? "block" : "hidden"}`}>
-      <div className="w-full h-[0.5px] bg-[#0000004d]"></div>
-      <div className="mt-[39px] max-w-[100px] mx-auto">
-        {signature && <img src={signature} alt="user signature" />}
+  /* ---------------- EMPTY STATE COMPONENT ---------------- */
+  const EmptyTeamsState = () => (
+    <SearchingDoc
+      noticeText="Add devs and pay them to see their records here."
+      searchingdocTitle="No Active Developer yet"
+      searchingdocText="They would appear here once a developer has been assigned to a contract"
+      onBoarding={[
+        {
+          id: "1",
+          title: "Create a contract",
+          desp: "Start by creating a contract for your developer.",
+        },
+        {
+          id: "2",
+          title: "Assign a developer",
+          desp: "Once assigned, they will appear in this Active Developers tab.",
+        },
+      ]}
+    >
+      <div className="mt-[33px]">
+        <NavLink
+          to="/dashboard/create-contract"
+          className="flex items-center text-[0.8rem] text-white px-3 py-[10px] sm:px-5 sm:py-[14px] pr-bg-clr rounded-lg font-semibold xl:text-[16px]"
+        >
+          <img src={""} alt="" className="w-4 mr-1" /> Create new contract
+        </NavLink>
       </div>
     </div>
   );
+
 
   // ----------------- FORCE 10s LOADER -----------------
   useEffect(() => {
@@ -346,7 +384,7 @@ const TeamsTable = () => {
                 <div className="text-[0.8rem] mt-3">{employee?.roleTitle}</div>
                 <div className="text-[0.8rem] mt-2">{employee?.country}</div>
                 <div className="text-[0.8rem] mt-2">
-                  {employee?.paymentRate}
+                  {formatCurrency(employee.paymentRate, employee.currency)}
                 </div>
                 <div className="text-[0.8rem] mt-2">
                   {employee?.paymentFrequency}
@@ -384,7 +422,8 @@ const TeamsTable = () => {
                 </div>
               </div>
             ))}
-          {showEmptyState && <SignatureBlock />}
+          {/* EMPTY STATE (MOBILE) */}
+          {showEmptyState && <EmptyTeamsState />}
         </div>
 
         {/* -------- DESKTOP VIEW -------- */}
@@ -436,7 +475,7 @@ const TeamsTable = () => {
 
                       <div>{employee?.roleTitle}</div>
                       <div>{employee?.country}</div>
-                      <div>{employee?.paymentRate}</div>
+                      <div>{formatCurrency(employee.paymentRate, employee.currency)}</div>
                       <div>{employee?.seniorityLevel}</div>
                       <div>{employee?.paymentFrequency}</div>
 
@@ -474,7 +513,8 @@ const TeamsTable = () => {
               </div>
             </>
           )}
-          {showEmptyState && <SignatureBlock />}
+        {/* EMPTY STATE (DESKTOP) */}
+        {showEmptyState && <EmptyTeamsState />}
         </div>
       </div>
       {/* MODAL */}

@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { formatCurrency } from "../utility/helper";
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Define onboarding steps
 const onboardingSteps = [
@@ -55,9 +54,15 @@ const Overview = () => {
     queryKey: ["user-contracts", userId],
     queryFn: () => getUserContracts(userId),
     // enabled: !!user && !!userId,
-    enabled: !!userId,
+    enabled: !!user && !!userId,
     suspense: false,
   });
+
+  useEffect(() => {
+  if (userId) {
+    refetch();
+  }
+}, [userId, refetch]);
 
   // ----------------- USER CURRENCY -----------------
   useEffect(() => {
@@ -73,37 +78,94 @@ const Overview = () => {
 
 
   // ----------------- DERIVED CONTRACT DATA (YOUR REQUIRED BLOCK) -----------------
-  useEffect(() => {
-    if (!contracts?.data?.contracts) return;
+  // useEffect(() => {
+  //   if (!contracts?.data?.contracts) return;
 
-    const contractsData = contracts.data.contracts;
-    console.log("Feteched contracts", contractsData);
+  //   const contractsData = contracts.data.contracts;
+  //   console.log("Feteched contracts", contractsData);
 
-    let expenses = 0;
-    let activeTalents = 0;
+  //   let expenses = 0;
+  //   let activeTalents = 0;
 
-    contractsData.forEach((contract) => {
-      const assigned = (contract.talentAssignedId || []).filter(Boolean);
+  //   // contractsData.forEach((contract) => {
+  //   //   const assigned = (contract.talentAssignedId || []).filter(Boolean);
       
 
-      if (assigned.length > 0) {
-        activeTalents += assigned.length;
+  //   //   if (assigned.length > 0) {
+  //   //     activeTalents += assigned.length;
+  //   //     expenses += Number(contract.paymentRate || 0);
+  //   //   }
+  //   // });
+  //   contractsData.forEach((contract) => {
+  //   const assigned = Array.isArray(contract.talentAssignedId)
+  //     ? [...new Set(contract.talentAssignedId.filter(Boolean))] // remove duplicates
+  //     : [];
+
+  //   if (assigned.length > 0) {
+  //     activeTalents += assigned.length;
+  //     expenses += Number(contract.paymentRate || 0);
+
+  //   //FIXED
+  //   //expenses += assigned.length * Number(contract.paymentRate || 0);
+  //    }
+  //   });
+
+  //   // ONLY contracts with ZERO assigned talents
+  //   const onboardingContracts = contractsData.filter((contract) => {
+  //     const assigned = Array.isArray(contract.talentAssignedId)
+  //       ? contract.talentAssignedId.filter(Boolean)
+  //       : [];
+  //     console.log("Total Assigned Contract: ", assigned);
+  //     return assigned.length === 0;
+  //   }).length;
+
+
+  //   setActiveContractors(activeTalents);
+  //   setOnboardingCount(onboardingContracts);
+  //   setTotalExpenses(expenses);
+  //   setIsOnboardingComplete(onboardingContracts === 0);
+  // }, [contracts]);
+
+  /* ================= REAL EXPENSE CALCULATION ================= */
+useEffect(() => {
+  if (!contracts?.data?.contracts) return;
+
+  const contractsData = contracts.data.contracts;
+
+  const lastPayments =
+    JSON.parse(localStorage.getItem("lastPayments")) || {};
+
+  let expenses = 0;
+  let activeTalents = 0;
+
+  contractsData.forEach((contract) => {
+    const assigned = Array.isArray(contract.talentAssignedId)
+      ? [...new Set(contract.talentAssignedId.filter(Boolean))]
+      : [];
+
+    activeTalents += assigned.length;
+
+    assigned.forEach((talentId) => {
+      const key = `${contract._id}_${talentId}`;
+
+      if (lastPayments[key]) {
         expenses += Number(contract.paymentRate || 0);
       }
     });
+  });
 
-    const onboardingContracts = contractsData.filter((contract) => {
-      const assigned = (contract.talentAssignedId || []).filter(Boolean);
-      //console.log("Total Assigned Contract: ", assigned);
-      return assigned.length === 0;
-    }).length;
+  const onboardingContracts = contractsData.filter((contract) => {
+    const assigned = Array.isArray(contract.talentAssignedId)
+      ? contract.talentAssignedId.filter(Boolean)
+      : [];
+    return assigned.length === 0;
+  }).length;
 
-
-    setActiveContractors(activeTalents);
-    setOnboardingCount(onboardingContracts);
-    setTotalExpenses(expenses);
-    setIsOnboardingComplete(onboardingContracts === 0);
-  }, [contracts]);
+  setActiveContractors(activeTalents);
+  setOnboardingCount(onboardingContracts);
+  setTotalExpenses(expenses);
+  setIsOnboardingComplete(onboardingContracts === 0);
+}, [contracts]);
 
   // ----------------- ONBOARDING COUNT ANIMATION -----------------
   useEffect(() => {
@@ -222,9 +284,14 @@ const Overview = () => {
                     <Link to="/dashboard/expenses" className="flex items-center gap-4">
                       <img src={moneybag} alt="" />
                       <span className="text-2xl font-semibold xl:text-[40px] overview-text">
-                        $0.00
+                        {/* ₦{displayTotalExpenses.toLocaleString()} */}
+                        {/* {formatCurrency(displayTotalExpenses, "NGN", "en-NG")} */}
+                        {formatCurrency(displayTotalExpenses)}
                       </span>
-                    </Link>
+                      {/* <span className="text-2xl font-semibold xl:text-[40px] overview-text">
+                        $0.00
+                      </span> */}
+                    </div>
                   </div>
                 </div>
     

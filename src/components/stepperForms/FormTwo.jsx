@@ -193,8 +193,8 @@ const FormTwo = ({ nextStep, savedState, username, userId }) => {
         <div className="relative flex flex-col gap-1 md:gap-3 w-full text-sm">
           <div className="flex justify-between">
             <label
-              htmlFor="endDate"
-              className={`font-semibold leading-normal ${!showSwitch && "opacity-100"}`}
+              htmlFor='endDate'
+              className={`font-semibold leading-normal ${!showSwitch && 'opacity-100'}`}
             >
               End Date{" "}
               {contractType === "gig-based" && (
