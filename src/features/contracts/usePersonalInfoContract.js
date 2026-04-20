@@ -7,15 +7,36 @@ export default function usePersonalInfoContract() {
     mutationFn: (details) => createContractOne(details),
     mutationKey: ["personal-info-form"],
     onSuccess: (data) => {
-      toast.success("Action Saved")
+      toast.success("Action Saved");
       const contractData = data?.data;
-      sessionStorage.setItem("personal-info", JSON.stringify(contractData))
+      sessionStorage.setItem("personal-info", JSON.stringify(contractData));
+      
+      // Store contractId for subsequent API calls
+      if (contractData?._id) {
+        sessionStorage.setItem("currentContractId", contractData._id);
+      }
     },
     onError: (err) => {
-      toast.error("Saving Failed, Please try again");
+      let errorMessage = "Saving Failed, Please try again";
+      
+      if (err?.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err?.response?.data?.errors) {
+        const errors = err.response.data.errors;
+        if (Array.isArray(errors)) {
+          errorMessage = errors.map(e => e.message || e).join(", ");
+        } else if (typeof errors === "object") {
+          errorMessage = Object.values(errors).flat().join(", ");
+        }
+      } else if (err?.message) {
+        errorMessage = err.message;
+      }
+      
+      toast.error(errorMessage);
       console.log(err);
     },
   });
+  
   return {
     postForm,
     isLoading,
