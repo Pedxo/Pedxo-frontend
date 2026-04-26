@@ -274,7 +274,7 @@ useEffect(() => {
                   </p>
                   <div className="flex justify-between bg-white border rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16">
                     <div className="flex items-center gap-4">
-                      <Link to="/dashboard/expenses" className="flex items-center gap-4">                     
+                      <Link to="/dashboard/expenses" className="flex items-center gap-4 cursor-pointer">                     
                       <img src={moneybag} alt="" />
                       <span className="text-2xl font-semibold xl:text-[40px] overview-text">
                         {formatCurrency(displayTotalExpenses)}
