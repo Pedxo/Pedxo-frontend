@@ -221,9 +221,6 @@ const fetchBalance = async () => {
 };
 
 // ================= GENERATE UNIQUE PAYMENT REFERENCE =================
-// const generateReference = () => {
-//   return "REF-" + Date.now() + "-" + Math.floor(Math.random() * 1000000);
-// };
 const generateReference = (contractId, talentAssignedId) => {
   return `PAY-${contractId}_${talentAssignedId}-${Date.now()}`;
 };

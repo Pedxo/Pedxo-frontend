@@ -9,35 +9,39 @@ export async function createContractOne(details) {
   return response?.data;
 }
 
-export async function updateFormTwo(details) {
-  const contractDetails = Cookies.get(CONTRACT_DETAILS);
-  const parsedDetails = contractDetails ? JSON.parse(contractDetails) : {};
-  const response = await authFetch.patch(`/contracts/job-details?contractId=${parsedDetails._id}`, details);
+export async function updateFormTwo({ contractId, ...details }) {
+  const response = await authFetch.patch(`/contracts/job-details?contractId=${contractId}`, details);
   return response?.data;
 }
 
-export async function updateCompensation(details) {
-  const contractDetails = Cookies.get(CONTRACT_DETAILS);
-  const parsedDetails = contractDetails ? JSON.parse(contractDetails) : {};
-  const response = await authFetch.patch(`/contracts/compensation?contractId=${parsedDetails._id}`, details);
+export async function updateCompensation({ contractId, ...details }) {
+  const response = await authFetch.patch(`/contracts/compensation?contractId=${contractId}`, details);
   return response.data;
 }
 
-export async function postSignature(signature) {
-  const contractDetails = Cookies.get(CONTRACT_DETAILS);
-  const parsedDetails = contractDetails ? JSON.parse(contractDetails) : {};
-  const response = await authFetch.post(`/contracts/signature?contractId=${parsedDetails._id}`, signature, {
+export async function postSignature({ contractId, signature }) {
+  const response = await authFetch.post(`/contracts/signature?contractId=${contractId}`, signature, {
     headers: {
-      "Content-Type": "multi/form-data",
+      "Content-Type": "multipart/form-data",
     },
   });
   return response.data;
 }
 
-export async function finalizeContract(details){
-  const contractDetails = Cookies.get(CONTRACT_DETAILS);
-  const parsedDetails = contractDetails ? JSON.parse(contractDetails) : {};
-  const response = await authFetch.patch(`/contracts/finalize?contractId=${parsedDetails._id}`, details);
+export async function finalizeContract({ contractId, ...details }) {
+  const response = await authFetch.patch(`/contracts/finalize?contractId=${contractId}`, details);
   Cookies.remove(CONTRACT_DETAILS);
   return response.data;
+}
+
+// Get all contracts for a user
+export async function getUserContracts() {
+  const response = await authFetch.get(`/contracts/get-user-contracts`);
+  return response?.data;
+}
+
+// Get a specific contract by ID
+export async function getContractById(contractId) {
+  const response = await authFetch.get(`/contracts/get-contract?contractId=${contractId}`);
+  return response?.data;
 }

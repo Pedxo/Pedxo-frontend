@@ -6,11 +6,14 @@ import { useState, useEffect } from "react";
 import useCompensation from "../../features/contracts/useCompensation";
 import CustomForm from "../../ui/CustomForm";
 import Button from "../Button";
+import { useSearchParams } from "react-router-dom";
 
 const FormThree = ({ nextStep, savedState, username, userId }) => {
   const { updatePayment, isUpdating } = useCompensation();
   const [hasChanges, setHasChanges] = useState(false);
   const [currencySymbol, setCurrencySymbol] = useState("$");
+  const [searchParams] = useSearchParams();
+const contractId = searchParams.get("contractId");
 
   // Load currency symbol for this user
   useEffect(() => {
@@ -53,6 +56,7 @@ const FormThree = ({ nextStep, savedState, username, userId }) => {
       const payload = {
         ...values,
         userId, //  Include userId for backend filtering
+        contractId, // Include contractId to identify which contract to update
       };
 
       updatePayment(payload, {

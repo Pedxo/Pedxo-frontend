@@ -274,10 +274,12 @@ useEffect(() => {
                   </p>
                   <div className="flex justify-between bg-white border rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16">
                     <div className="flex items-center gap-4">
+                      <Link to="/dashboard/expenses" className="flex items-center gap-4">                     
                       <img src={moneybag} alt="" />
                       <span className="text-2xl font-semibold xl:text-[40px] overview-text">
                         {formatCurrency(displayTotalExpenses)}
                       </span>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -317,6 +319,7 @@ useEffect(() => {
                     Pending contracts on their way
                   </p>
                   <div className="flex justify-between items-center bg-white border rounded-2xl py-3 px-[21px] xl:py-10 xl:px-16 overview-text">
+                    <Link to="/dashboard/contracts" className="flex items-center gap-4">
                     <div className="flex items-center gap-4">
                       {onboardingCount === 0 && <img src={telegram} alt="" />}
                       <span className="text-2xl font-semibold xl:text-[40px]">
@@ -352,6 +355,7 @@ useEffect(() => {
                         </span>
                       )}
                     </div>
+                    </Link>
                     {onboardingCount > 0 && (
                       <p className="text-[12px] pl-5 py-[14px] rounded-lg font-medium xl:text-[20px] text-gray-700 transition-all duration-500 animate-pulse continuous-pulse hover:scale-105">
                         Working to onboard human

@@ -21,6 +21,7 @@ const FormFour = ({
   const { finalize, sendingForm } = useFinalizeContract();
   const [signatureFile, setSignatureFile] = useState(null);
   const [showSignatureForm, setShowSignatureForm] = useState(false);
+  const contractId = searchParams.get("contractId");
 
   const getCompletionCount = () => {
     const count = sessionStorage.getItem("contractCompletionCount");
@@ -87,6 +88,7 @@ const FormFour = ({
 
     // Pass username along with formData
     finalize({
+      contractId: contractId,
       data: formData,
       username: username,
     });

@@ -103,11 +103,6 @@ const ExpensesTable = () => {
                     talentAssignedId: ids[index] || null,
                   };
                   //Real Payment Check
-                  // const isPaid = transactions.some(
-                  //   (trx) => 
-                  //     trx.direction === "debit" && 
-                  //     Math.abs(trx.amount) === Number(emp.paymentRate)
-                  // );
                   const key = `${contract.contractId}_${ids[index]}`;
 
                   const isPaid = transactions.some((trx) =>
