@@ -1,10 +1,11 @@
 import {useState, useEffect} from "react";
 import {getProfileImagesMapping, getEmployeeKey, profileImages} from "../../utility/profileImages";
-import authFetch from "../../api";
+import authFetch, { getUserTransactions } from "../../api";
 import { useUser } from "../../context/UserContext";
 import { Link } from "react-router-dom";
 import SearchingDoc from "../SearchingDoc";
 import { formatCurrency } from "../../utility/helper";
+import { getPaymentStatus } from "../../utility/paymentStatus";
 
 
 const PaidTable = () => {
@@ -51,13 +52,19 @@ const PaidTable = () => {
             }))
             .filter((c) => c.contractId);
 
-            if(!normalizedContracts.length) {
-              setEmployees([]);
-              return;
-            }
+            // if(!normalizedContracts.length) {
+            //   setEmployees([]);
+            //   return;
+            // }
+            if (!normalizedContracts.length) {
+                setEmployees([]);
+                setProfileMap({});
+                setLoading(false);
+                return;
+              }
              console.log("normalized Contract fetched:", normalizedContracts);
 
-          /* ================= FETCH ASSIGNED TALENTS ================= */
+          /* ================= FETCH ASSIGNED TALENTS ================ */
           const assigned = [];
 
           for (const contract of normalizedContracts) {
@@ -97,29 +104,20 @@ const PaidTable = () => {
            console.log("Fetch Assigned Sorted", sorted);
 
            /* ================= FILTER PAID ================= */
-            const lastPayments =
-              JSON.parse(localStorage.getItem("lastPayments")) || {};
+            
+            const accountNumber = localStorage.getItem("accountNumber");
 
-            const paidEmployees = sorted.filter((emp) => {
+            let transactions = [];
 
-            const key = `${emp.contractId}_${emp.talentAssignedId}`;
+            if (accountNumber) {
+              const trxRes = await getUserTransactions(accountNumber);
+              transactions = trxRes?.items || [];
+            }
+          
+           const now = new Date();
 
-            if (!lastPayments[key]) return false;
-
-            const lastPaid = new Date(lastPayments[key]);
-            const now = new Date();
-
-            const diffDays =
-              (now - lastPaid) / (1000 * 60 * 60 * 24);
-
-            const freq = emp.paymentFrequency?.toLowerCase();
-
-            if (freq.includes("weekly")) return diffDays < 7;
-            if (freq.includes("bi")) return diffDays < 14;
-            if (freq.includes("month")) return diffDays < 30;
-
-            return false;
-
+            const paidEmployees = sorted.filter(emp => {
+            return getPaymentStatus(emp, transactions) === "paid";
             });
 
 
@@ -181,9 +179,11 @@ const EmptyPaidState = () => (
     ]}
   />
 );
+
+
 const shouldShowLoader = !hasMounted || showLoader || loading;
-const showEmptyState = !loading && employees.length === 0;
-const showTable = !loading && employees.length > 0;
+const showEmptyState = !shouldShowLoader && !loading && employees.length === 0;
+const showTable = !shouldShowLoader && !loading && employees.length > 0;
 
  /* ================= UI RENDERING ================= */
   
@@ -200,7 +200,7 @@ const showTable = !loading && employees.length > 0;
         )}
 
         {/*SKELETON LOADER*/}
-          {loading && Array.from({length: 3}).map((_, index) => (
+          {loading && !shouldShowLoader && Array.from({length: 3}).map((_, index) => (
             <div
                 key={index}
                 className="flex flex-col font-medium px-[18px] py-[22px] rounded-lg"

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getUserContracts } from "../api";
+import { getUserContracts, getUserTransactions } from "../api";
 import moneybag from "../assets/svg/moneybag.svg";
 import people from "../assets/svg/people.svg";
 import telegram from "../assets/svg/telegram.svg";
@@ -77,95 +77,87 @@ const Overview = () => {
   }, [username]);
 
 
-  // ----------------- DERIVED CONTRACT DATA (YOUR REQUIRED BLOCK) -----------------
-  // useEffect(() => {
-  //   if (!contracts?.data?.contracts) return;
-
-  //   const contractsData = contracts.data.contracts;
-  //   console.log("Feteched contracts", contractsData);
-
-  //   let expenses = 0;
-  //   let activeTalents = 0;
-
-  //   // contractsData.forEach((contract) => {
-  //   //   const assigned = (contract.talentAssignedId || []).filter(Boolean);
-      
-
-  //   //   if (assigned.length > 0) {
-  //   //     activeTalents += assigned.length;
-  //   //     expenses += Number(contract.paymentRate || 0);
-  //   //   }
-  //   // });
-  //   contractsData.forEach((contract) => {
-  //   const assigned = Array.isArray(contract.talentAssignedId)
-  //     ? [...new Set(contract.talentAssignedId.filter(Boolean))] // remove duplicates
-  //     : [];
-
-  //   if (assigned.length > 0) {
-  //     activeTalents += assigned.length;
-  //     expenses += Number(contract.paymentRate || 0);
-
-  //   //FIXED
-  //   //expenses += assigned.length * Number(contract.paymentRate || 0);
-  //    }
-  //   });
-
-  //   // ONLY contracts with ZERO assigned talents
-  //   const onboardingContracts = contractsData.filter((contract) => {
-  //     const assigned = Array.isArray(contract.talentAssignedId)
-  //       ? contract.talentAssignedId.filter(Boolean)
-  //       : [];
-  //     console.log("Total Assigned Contract: ", assigned);
-  //     return assigned.length === 0;
-  //   }).length;
-
-
-  //   setActiveContractors(activeTalents);
-  //   setOnboardingCount(onboardingContracts);
-  //   setTotalExpenses(expenses);
-  //   setIsOnboardingComplete(onboardingContracts === 0);
-  // }, [contracts]);
 
   /* ================= REAL EXPENSE CALCULATION ================= */
+
 useEffect(() => {
-  if (!contracts?.data?.contracts) return;
+  const fetchSummary = async () => {
+    if (!contracts?.data?.contracts) return;
 
-  const contractsData = contracts.data.contracts;
+    const contractsData = contracts.data.contracts;
 
-  const lastPayments =
-    JSON.parse(localStorage.getItem("lastPayments")) || {};
+    let expenses = 0;
+    let activeTalents = 0;
 
-  let expenses = 0;
-  let activeTalents = 0;
+    // COUNT ACTIVE TALENTS
+    contractsData.forEach((contract) => {
+      const assigned = Array.isArray(contract.talentAssignedId)
+        ? [...new Set(contract.talentAssignedId.filter(Boolean))]
+        : [];
 
-  contractsData.forEach((contract) => {
-    const assigned = Array.isArray(contract.talentAssignedId)
-      ? [...new Set(contract.talentAssignedId.filter(Boolean))]
-      : [];
-
-    activeTalents += assigned.length;
-
-    assigned.forEach((talentId) => {
-      const key = `${contract._id}_${talentId}`;
-
-      if (lastPayments[key]) {
-        expenses += Number(contract.paymentRate || 0);
-      }
+      activeTalents += assigned.length;
     });
-  });
 
-  const onboardingContracts = contractsData.filter((contract) => {
-    const assigned = Array.isArray(contract.talentAssignedId)
-      ? contract.talentAssignedId.filter(Boolean)
-      : [];
-    return assigned.length === 0;
-  }).length;
+    try {
+      let accountNumber = localStorage.getItem("accountNumber");
 
-  setActiveContractors(activeTalents);
-  setOnboardingCount(onboardingContracts);
-  setTotalExpenses(expenses);
-  setIsOnboardingComplete(onboardingContracts === 0);
-}, [contracts]);
+      if (!accountNumber && user) {
+        const { initializePaymentAccount } = await import("../api");
+        accountNumber = await initializePaymentAccount(user);
+      }
+
+      if (accountNumber) {
+        let transactions = [];
+
+        try {
+          const trxRes = await getUserTransactions(accountNumber);
+
+          transactions =
+            trxRes?.items ||
+            trxRes?.data?.items ||
+            [];
+
+          console.log("User transactions:", transactions);
+
+        } catch (err) {
+          console.error("Transaction fetch failed:", err.message);
+          transactions = [];
+        }
+
+        // FIXED TOTAL EXPENSE CALCULATION
+        transactions.forEach((trx) => {
+        if (trx.type === "payout" && Number(trx.amount) < 0) {
+          expenses += Math.abs(Number(trx.amount));
+        }
+       });
+
+        console.log("TOTAL SPENT CALCULATED:", expenses);
+        console.log("TRANSACTION COUNT:", transactions.length);
+        console.log("VALID PAYOUTS:",
+          transactions.filter(trx => trx.type === "payout")
+        );
+
+      }
+    } catch (err) {
+      console.error("Summary fetch error:", err);
+    }
+
+    // ONBOARDING COUNT
+    const onboardingContracts = contractsData.filter((c) => {
+      const assigned = Array.isArray(c.talentAssignedId)
+        ? c.talentAssignedId.filter(Boolean)
+        : [];
+      return assigned.length === 0;
+    }).length;
+
+    setActiveContractors(activeTalents);
+    setOnboardingCount(onboardingContracts);
+    setTotalExpenses(expenses);
+    setIsOnboardingComplete(onboardingContracts === 0);
+  };
+
+  fetchSummary();
+}, [contracts, user]);
 
   // ----------------- ONBOARDING COUNT ANIMATION -----------------
   useEffect(() => {
@@ -284,13 +276,8 @@ useEffect(() => {
                     <div className="flex items-center gap-4">
                       <img src={moneybag} alt="" />
                       <span className="text-2xl font-semibold xl:text-[40px] overview-text">
-                        {/* ₦{displayTotalExpenses.toLocaleString()} */}
-                        {/* {formatCurrency(displayTotalExpenses, "NGN", "en-NG")} */}
                         {formatCurrency(displayTotalExpenses)}
                       </span>
-                      {/* <span className="text-2xl font-semibold xl:text-[40px] overview-text">
-                        $0.00
-                      </span> */}
                     </div>
                   </div>
                 </div>
