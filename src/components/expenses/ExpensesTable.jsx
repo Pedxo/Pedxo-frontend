@@ -4,6 +4,8 @@ import {getProfileImagesMapping, getEmployeeKey, profileImages} from "../../util
 import authFetch from "../../api";
 import { useUser } from "../../context/UserContext";
 import { formatCurrency } from "../../utility/helper";
+import { getUserTransactions } from "../../api";
+import { getPaymentStatus } from "../../utility/paymentStatus";
 
 
 const ExpensesTable = () => {
@@ -17,43 +19,34 @@ const ExpensesTable = () => {
   const [totalSpent, setTotalSpent] = useState(0);
   const [duePayment, setDuePayment] = useState(0);
 
-
-  /* ================= PAYMENT STATUS HELPER ================= */
-
-  const getPaymentStatus = (emp) => {
-
-    const lastPayments =
-      JSON.parse(localStorage.getItem("lastPayments")) || {};
-
-    const key = `${emp.contractId}_${emp.talentAssignedId}`;
-
-    const lastPaid = lastPayments[key]
-      ? new Date(lastPayments[key])
-      : null;
-
-    if (!lastPaid) return "Payment Due";
-
-    const now = new Date();
-
-    const diffDays =
-      (now - lastPaid) / (1000 * 60 * 60 * 24);
-
-    const freq = emp.paymentFrequency?.toLowerCase() || "";
-
-    if (freq.includes("weekly") && diffDays >= 7) return "Payment Due";
-    if (freq.includes("bi") && diffDays >= 14) return "Payment Due";
-    if (freq.includes("month") && diffDays >= 30) return "Payment Due";
-
-    return "Paid";
-  };
+  //Loader state
+  const [showLoader, setShowLoader] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false);
 
 
-  /* ================= FETCH DATA ================= */
+ /* ================= FETCH DATA ================= */
   const fetchEmployees = async() => {
       setLoading(true);
 
 
       try {
+        const accountNumber = localStorage.getItem("accountNumber");
+        let transactions = [];
+
+        if(accountNumber) {
+          try {
+            const trxRes = await getUserTransactions(accountNumber);
+
+            transactions =
+              trxRes?.items ||
+              trxRes?.data?.items ||
+              [];
+          } catch (err) {
+            console.error("Transaction fetch failed:", err.message);
+            transactions = [];
+          }
+        }
+
         /* ================= FETCH CONTRACTS ================= */
         const response = await authFetch.get(
           "/contracts/get-user-contracts",
@@ -101,14 +94,7 @@ const ExpensesTable = () => {
                 const ids = contract.talentAssignedIds;
 
                 assignData.data.forEach((emp, index) => {
-                  // assigned.push({
-                  //   ...emp,
-                  //   //attched contract info
-                  //   contractId: contract.contractId,
-
-                  //   //match correct assigned ID
-                  //   talentAssignedId: ids[index] || null,
-                  // })
+      
                   const employee = {
                     ...emp,
                     //attached contract info
@@ -116,7 +102,15 @@ const ExpensesTable = () => {
                     //match correct assigned ID
                     talentAssignedId: ids[index] || null,
                   };
-                  employee.status = getPaymentStatus(employee);
+                  //Real Payment Check
+                  const key = `${contract.contractId}_${ids[index]}`;
+
+                  const isPaid = transactions.some((trx) =>
+                    trx.type === "payout" &&
+                    trx.status === "successful" &&
+                    trx.ini_reference?.includes(`PAY-${key}`)
+                  );
+                  employee.status = isPaid ? "Paid" : "Payment Due";
                   assigned.push(employee);
                 })
 
@@ -137,35 +131,76 @@ const ExpensesTable = () => {
            setEmployees(sorted);
            setProfileMap(getProfileImagesMapping(sorted));
 
-           /* ================= CALCULATE TOTAL ================= */
-           let spent = 0;
-           let due = 0;
+      /* ================= FETCH TRANSACTIONS ================= */
+      let spent = 0;
+      let due = 0;
+    
 
-           sorted.forEach((emp) => {
-            const rate = Number(emp.paymentRate) || 0;
+      transactions.forEach((trx) => {
+        if (
+          trx.type === "payout" &&
+          trx.status === "successful"
+        ) {
+          const amount = Math.abs(Number(trx.amount || 0));
+          spent += amount;
+        }
+      });
+      
+      console.log("TOTAL SPENT CALCULATED:", spent);
+      console.log("TRANSACTION COUNT:", transactions.length);
+      console.log("VALID PAYOUTS:",
+        transactions.filter(trx => trx.type === "payout")
+      );
+      
+      sorted.forEach((emp) => {
+        const status = getPaymentStatus(emp, transactions);
 
-            if(emp.status === "Paid") spent +=rate;
+        if (status === "due") {
+          due += Number(emp.paymentRate) || 0;
+        }
+      });
 
-            if(emp.status === "Payment Due") due +=rate;
-           });
-           setTotalSpent(spent);
-           setDuePayment(due);
-
-        /* SHARE TOTAL FOR OVERVIEW */
-          localStorage.setItem("totalSpent", spent)
+      setTotalSpent(spent);
+      setDuePayment(due);
 
       } catch (error) {
         console.error("Fetch expense error", error)
       } finally {
         setLoading(false);
+        setShowLoader(false);
       }
   };
+  
   useEffect(() => {
     if(!userId) return;
     fetchEmployees();
+    
   }, [userId]);
 
+//Loader effect
+  useEffect(() => {
+  setHasMounted(true);
+
+  const shown = sessionStorage.getItem("table_loader");
+
+  if (shown) {
+    setShowLoader(false);
+    return;
+  }
+
+  const timer = setTimeout(() => {
+    setShowLoader(false);
+    sessionStorage.setItem("table_loader", "true");
+  }, 5000);
+
+  return () => clearTimeout(timer);
+}, []);
+
+// const shouldShowLoader = !hasMounted || showLoader || loading;
+const shouldShowLoader = loading;
+
   return (
+    
     <div className="xl:flex xl:flex-row-reverse xl:gap-5 xl:mt-[46px]">
       <div
         className="rounded-lg mt-[21px] p-5 font-semibold xl:py-[32px] xl:pl-[31px] xl:pr-[115px]"
@@ -176,7 +211,7 @@ const ExpensesTable = () => {
       >
         <div className="text-base xl:text-xl">Total Spent</div>
         {/*TOTAL SPENT*/}
-        <div className="text-[1.875rem] xl:text-[2.5rem]">{formatCurrency(totalSpent.toLocaleString())}</div>
+        <div className="text-[1.875rem] xl:text-[2.5rem]">{formatCurrency(totalSpent)}</div>
         {/*PAYMENT DUE*/}
         <div
           className="text-[0.75rem] font-medium xl:text-base xl:mt-[23px] xl:mb-[7px]"
@@ -188,9 +223,15 @@ const ExpensesTable = () => {
           className="text-xl font-semibold text-[1.625rem] "
           style={{ color: "#F00" }}
         >
-          {formatCurrency(duePayment.toLocaleString())}
+          {formatCurrency(duePayment)}
         </div>
       </div>
+      {shouldShowLoader && (
+      <div className="flex flex-col items-center justify-center py-10 gap-4">
+        <div className="w-10 h-10 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
+        <p className="text-[12px] text-gray-600">Loading page...</p>
+      </div>
+      )}
          {/* ================= MOBILE VIEW ================= */}
       <div className="flex flex-col gap-4 mt-[21px] xl:w-full xl:gap-[10px] lg:hidden">
         {employees.map((employee, index) => (
@@ -217,7 +258,7 @@ const ExpensesTable = () => {
               </div>
             </div>
             {/*AMOUNT*/}
-            <div className="text-sm ">₦{employee.paymentRate}</div>
+            <div className="text-sm ">{formatCurrency(employee.paymentRate)}</div>
           </div>
         ))}
       </div>
@@ -253,7 +294,7 @@ const ExpensesTable = () => {
                 <div>{employee.country}</div>
                 <div> {employee.roleTitle}</div>
                 {/*<div>$5000</div>*/}
-                <div>₦{Number(employee.paymentRate || 0).toLocaleString()}</div>
+                <div>{formatCurrency(employee.paymentRate)}</div>
                 <div style={{ color: "#008000" }}>{employee.status}</div>
               </div>
             </div>

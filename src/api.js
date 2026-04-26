@@ -5,23 +5,34 @@ import { refreshToken } from "./services/refreshToken";
 export const baseURL = "https://pedxo-back-project.onrender.com";
 export const paymentBaseURL = "https://pedxo-pay-702a.onrender.com";
 
+
+/*=========PAY API KEY==========*/
+const PEDXO_API_KEY = import.meta.env.VITE_PEDXO_PAY_SECRET_KEY;
+
 /* ================= CACHE ================= */
 const cache = new Map();
 
-/* =========================================================
+/* ===============================================
    AXIOS INSTANCES
-========================================================= */
+================================================== */
 const authFetch = axios.create({
   baseURL,
   headers: { "Content-Type": "application/json" },
   timeout: 30000,
 });
 
+if(!PEDXO_API_KEY ) {
+    console.error("PEDXO PAY API Key is missing");
+  }
 export const paymentFetch = axios.create({
   baseURL: paymentBaseURL,
-  headers: { "Content-Type": "application/json" },
-  timeout: 60000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  timeout: 120000,
 });
+
+
 
 /* DEBUG */
 console.log("Payment Base URL:", paymentFetch.defaults.baseURL);
@@ -47,9 +58,9 @@ const attachToken = (config) => {
   return config;
 };
 
-/* =========================================================
+/* ===========================================
    REQUEST INTERCEPTORS
-========================================================= */
+============================================== */
 authFetch.interceptors.request.use((config) => {
   config = attachToken(config);
 
@@ -87,11 +98,35 @@ authFetch.interceptors.request.use((config) => {
   return config;
 });
 
-paymentFetch.interceptors.request.use((config) => attachToken(config));
 
-/* =========================================================
+paymentFetch.interceptors.request.use((config) => {
+  const cleanKey = PEDXO_API_KEY?.trim();
+
+  if (!cleanKey) {
+    console.error("❌ Missing API Key");
+    throw new Error("Missing API Key");
+  }
+
+  /* IMPORTANT: USE AUTHORIZATION HEADER (BACKEND EXPECTS THIS) */
+  config.headers.Authorization = `Bearer ${cleanKey}`;
+
+  /*  DO NOT SEND USER TOKEN TO PAYMENT SERVICE */
+  delete config.headers["x-api-key"];
+
+  /* debug */
+  console.log("➡️ Payment Request:", {
+    url: config.url,
+    hasKey: !!cleanKey,
+  });
+
+
+  return config;
+});
+
+
+/* =================================================
    RESPONSE INTERCEPTORS (MAIN BACKEND)
-========================================================= */
+==================================================== */
 authFetch.interceptors.response.use(
   (response) => {
     // CACHE GET RESPONSES
@@ -330,7 +365,10 @@ export const getUserBalance = async (accountNumber) => {
   }
 };
 
+
 export const getUserTransactions = async (accountNumber) => {
+  if (!accountNumber) throw new Error("Missing account number");
+
   const res = await paymentFetch.get(`/transaction/${accountNumber}`);
   return res?.data;
 };
