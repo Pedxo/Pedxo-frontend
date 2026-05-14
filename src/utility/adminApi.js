@@ -87,21 +87,29 @@ export const listDevelopers = async () => {
 // src/utility/adminApi.js
 export const assignDeveloper = async (talentIds, contractId) => {
   try {
-    // Basic validation / normalization
     if (!talentIds || (Array.isArray(talentIds) && talentIds.length === 0)) {
       return { ok: false, error: "No talentIds provided" };
     }
+
     const tIds = Array.isArray(talentIds) ? talentIds.map(String) : [String(talentIds)];
     const payload = { talentIds: tIds, contractId: String(contractId) };
 
     const res = await http.patch("/admin/assign-talent", payload);
 
-    // treat 2xx as success
+    // KEY FIX: Check the response BODY for error:true first,
+    // because the backend returns HTTP 200 even on failures.
+    if (res?.data?.error === true) {
+      return {
+        ok: false,
+        error: res.data.message || "Assignment failed on the server.",
+      };
+    }
+
+    // Only then treat 2xx as success
     if (res && res.status >= 200 && res.status < 300) {
       return { ok: true, data: res.data };
     }
 
-    // fallback normalization
     return { ok: false, error: res?.data?.message || "Assignment failed" };
   } catch (err) {
     console.error("Error assigning developer:", err);

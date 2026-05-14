@@ -21,9 +21,7 @@ export const getAssignedTalentIds = (contract = {}) => {
 };
 
 
-export const isContractCompleted = (c) => {
-  return c?.isCompleted === true;
-};
+export const isContractCompleted = (c) => c.status === "completed";
 
 export const getContractTime = (c = {}) => {
   const candidates = [c.updatedAt, c.createdAt, c.startDate, c.created_at, c.updated_at];
