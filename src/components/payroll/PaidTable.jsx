@@ -1,23 +1,219 @@
+import {useState, useEffect} from "react";
+import {getProfileImagesMapping, getEmployeeKey, profileImages} from "../../utility/profileImages";
+import authFetch, { getUserTransactions } from "../../api";
+import { useUser } from "../../context/UserContext";
 import { Link } from "react-router-dom";
-import expenseavatar from "../../assets/svg/expenseavatar.svg";
+import SearchingDoc from "../SearchingDoc";
+import { formatCurrency } from "../../utility/helper";
+import { getPaymentStatus } from "../../utility/paymentStatus";
+
 
 const PaidTable = () => {
-  const employees = [
-    {
-      name: "Mike Santos",
-      country: "United kingdom",
-      position: "Backend Developer",
-      amount: "$5000",
-      status: "Paid",
-    },
+  const {userId} = useUser();
+
+  const [employees, setEmployees] = useState([]); // holds fetched employees
+  const [loading, setLoading] = useState(true);
+  const [profileMap, setProfileMap] = useState({});
+
+  /*Loader state*/
+    const [showLoader, setShowLoader] = useState(true);
+    const [hasMounted, setHasMounted] = useState(false);
+
+  
+  /* ================= FETCH DATA ================= */
+  const fetchEmployees = async() => {
+      setLoading(true);
 
 
-  ];
+      try {
+        /* ================= FETCH CONTRACTS ================= */
+        const response = await authFetch.get(
+          "/contracts/get-user-contracts",
+          {params: {userId}}
+        );
+
+        console.log("Contracts fetched:", response.data);
+
+        const rawContracts  = Array.isArray(response?.data?.data.contracts)
+          ? response.data.data.contracts : []
+
+           console.log("Total Contracts created:", rawContracts.length); 
+        
+          /* ================= NORMALIZE CONTRACTS ================= */
+          const normalizedContracts = rawContracts
+            .map((c) => ({
+              contractId: c._id || c.contractId || null,
+
+              //Remove duplicate + invalid values
+              talentAssignedIds: Array.isArray(c.talentAssignedId)
+                ? [...new Set(c.talentAssignedId)].filter(
+                  (id) => typeof id === "string" && id.trim() !== ""
+                ) : [],
+            }))
+            .filter((c) => c.contractId);
+
+            // if(!normalizedContracts.length) {
+            //   setEmployees([]);
+            //   return;
+            // }
+            if (!normalizedContracts.length) {
+                setEmployees([]);
+                setProfileMap({});
+                setLoading(false);
+                return;
+              }
+             console.log("normalized Contract fetched:", normalizedContracts);
+
+          /* ================= FETCH ASSIGNED TALENTS ================ */
+          const assigned = [];
+
+          for (const contract of normalizedContracts) {
+            try {
+              const res = await authFetch.get(
+                "/hire/assigned-by-contract",
+                {params: {contractId: contract.contractId}}
+              );
+              const assignData = res?.data;
+
+              if(Array.isArray(assignData?.data)) {
+                const ids = contract.talentAssignedIds;
+
+                assignData.data.forEach((emp, index) => {
+                  assigned.push({
+                    ...emp,
+                    //attched contract info
+                    contractId: contract.contractId,
+
+                    //match correct assigned ID
+                    talentAssignedId: ids[index] || null,
+                    status: "Paid"
+                  })
+                })
+
+              }
+            } catch (error) {
+              console.error("Error fetching assigned talent", error)
+            }
+          }
+
+           /* ================= SORT FETCH ASSIGNED TALENTS ================= */
+           const sorted = assigned.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+           );
+
+           console.log("Fetch Assigned Sorted", sorted);
+
+           /* ================= FILTER PAID ================= */
+            
+            const accountNumber = localStorage.getItem("accountNumber");
+
+            let transactions = [];
+
+            if (accountNumber) {
+              const trxRes = await getUserTransactions(accountNumber);
+              transactions = trxRes?.items || [];
+            }
+          
+           const now = new Date();
+
+            const paidEmployees = sorted.filter(emp => {
+            return getPaymentStatus(emp, transactions) === "paid";
+            });
+
+
+           /* ================= SET STATE ================= */
+           setEmployees(paidEmployees);
+           setProfileMap(getProfileImagesMapping(paidEmployees));
+
+
+      } catch (error) {
+        console.error("Fetch expense error", error)
+      } finally {
+        setLoading(false);
+      }
+  };
+  useEffect(() => {
+    if(!userId) return;
+    fetchEmployees();
+  }, [userId]);
+
+
+
+/*----------Loader effect------------*/
+useEffect(() => {
+  setHasMounted(true);
+
+  const shown = sessionStorage.getItem("table_loader");
+
+  if (shown) {
+    setShowLoader(false);
+    return;
+  }
+
+  const timer = setTimeout(() => {
+    setShowLoader(false);
+    sessionStorage.setItem("table_loader", "true");
+  }, 5000);
+
+  return () => clearTimeout(timer);
+}, []);
+
+
+/* ---------------- EMPTY STATE COMPONENT ---------------- */
+const EmptyPaidState = () => (
+  <SearchingDoc
+    noticeText="Completed payments will appear here."
+    searchingdocTitle="No Payments Yet"
+    searchingdocText="Once a developer is paid, their record will appear here."
+    onBoarding={[
+      {
+        id: "1",
+        title: "Fund your wallet",
+        desp: "Deposit money into your wallet.",
+      },
+      {
+        id: "2",
+        title: "Pay a developer",
+        desp: "Payments will appear in this tab.",
+      },
+    ]}
+  />
+);
+
+
+const shouldShowLoader = !hasMounted || showLoader || loading;
+const showEmptyState = !shouldShowLoader && !loading && employees.length === 0;
+const showTable = !shouldShowLoader && !loading && employees.length > 0;
+
+ /* ================= UI RENDERING ================= */
+  
   return (
     <section>
       <div className="xl:mt-[46px] flex flex-col">
+
+        {/* ADDED: inline loader (header stays visible) */}
+        {shouldShowLoader && (
+          <div className="flex flex-col items-center justify-center py-10 gap-4">
+            <div className="w-10 h-10 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
+            <p className="text-[12px] text-gray-600">Loading page...</p>
+          </div>
+        )}
+
+        {/*SKELETON LOADER*/}
+          {loading && !shouldShowLoader && Array.from({length: 3}).map((_, index) => (
+            <div
+                key={index}
+                className="flex flex-col font-medium px-[18px] py-[22px] rounded-lg"
+                style={{ border: "0.5px solid rgba(0, 0, 0, 0.20)" }}
+              >
+                <div className="h-4 w-1/2 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 w-1/3 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 w-1/4 bg-gray-200 rounded mb-2"></div>
+              </div>
+          ))}
+
         <div className="flex flex-col gap-4 mt-[21px] xl:flex-col-reverse xl:gap-[10px] xl:w-full lg:hidden">
-          {employees.map((employee, index) => (
+          {showTable && employees.map((employee, index) => (
             <div
               key={index}
               className="font-medium px-[18px] py-[22px] rounded-lg xl:flex-row xl:items-center xl:px-10  xl:py-[20px] "
@@ -25,9 +221,12 @@ const PaidTable = () => {
             >
               <div className="flex justify-between">
                 <div className="flex gap-[10px] xl:items-center">
-                  <img src={expenseavatar} alt="profile photo" />
+                  <img src={
+                    profileMap[getEmployeeKey(employee)] || profileImages[0]
+                    } alt="profile photo" 
+                    className="w-9 h-9 rounded-full object-cover"/>
                   <div className="xl:flex">
-                    <div className="text-sm xl:text-sm">{employee.name}</div>
+                    <div className="text-sm xl:text-sm">{employee.fullName}</div>
                     <div className="text-[0.75rem] xl:text-sm xl:ml-[110px]">
                       {employee.country}
                     </div>
@@ -40,13 +239,13 @@ const PaidTable = () => {
                   {employee.status}
                 </div>
                 <div className="text-sm flex flex-col justify-between">
-                  {employee.amount}
+                  {formatCurrency(employee.paymentRate, employee.currency)}
                 </div>
               </div>
 
               <div className="flex items-center justify-between mt-[13px] xl:mt-0">
                 <div className="text-[0.75rem] xl:text-sm ">
-                  {employee.position}
+                  {employee.roleTitle}
                 </div>
                 <div className="py-[7px] px-[9px] font-semibold text-[0.625rem] text-center pr-bg-clr text-white rounded-lg max-w-max ">
                   <Link
@@ -58,9 +257,14 @@ const PaidTable = () => {
               </div>
             </div>
           ))}
+          {/* EMPTY STATE (MOBILE) */}
+          {showEmptyState && <EmptyPaidState />}
         </div>
 
         <div className="mt-[21px] hidden xl:w-full lg:block ">
+          {/* EMPTY STATE (DESKTOP) */}
+          {showTable && (
+           <>
           <div
             className="grid grid-cols-6 gap-5 font-medium mb-[15px] px-10 "
             style={{ color: "rgba(0, 0, 0, 0.60)" }}
@@ -84,13 +288,16 @@ const PaidTable = () => {
                       className="w-9 h-9 rounded-full"
                       //   style={{ backgroundColor: "#D9D9D9" }}
                     >
-                      <img src={expenseavatar} alt="profile photo" />
+                      <img src={
+                        profileMap[getEmployeeKey(employee)] || profileImages[0]
+                        } alt="profile photo" 
+                        className="w-9 h-9 rounded-full object-cover"/>
                     </div>
-                    <div>{employee.name}</div>
+                    <div>{employee.fullName}</div>
                   </div>
                   <div>{employee.country}</div>
-                  <div> {employee.position}</div>
-                  <div>$5000</div>
+                  <div> {employee.roleTitle}</div>
+                  <div>{formatCurrency(employee.paymentRate, employee.currency)}</div>
                   <div style={{ color: "#008000" }}>{employee.status}</div>
                   <div className="py-[1em] px-[2em]  font-semibold text-[0.625rem] text-center pr-bg-clr text-white rounded-lg max-w-max xl:text-[0.75rem] xl:p-[9px]">
                     <Link
@@ -103,6 +310,10 @@ const PaidTable = () => {
               </div>
             ))}
           </div>
+          </>
+         )}
+         {/* EMPTY STATE (DESKTOP) */}
+          {showEmptyState && <EmptyPaidState />}
         </div>
       </div>
     </section>
