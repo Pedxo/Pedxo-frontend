@@ -5,33 +5,49 @@ import moneybag from "../assets/svg/moneybag.svg";
 import people from "../assets/svg/people.svg";
 import telegram from "../assets/svg/telegram.svg";
 import onboardIcon1 from "../assets/svg/onboardIcon1.svg";
-import onboradIcon2 from "../assets/svg/onboardIcon2.svg";
+import onboardIcon2 from "../assets/svg/onboardIcon2.svg";
 import add from "../assets/svg/add.svg";
 import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { formatCurrency } from "../utility/helper";
 
+
+
 const Overview = () => {
-  const { username } = useUser();
+  const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
+  const [contracts, setContracts] = useState(null);
+  const [activeContractors, setActiveContractors] = useState(0);
+  const [totalExpenses, setTotalExpenses] = useState(0);
+  const { username, user } = useUser();
   const [onboardingCount, setOnboardingCount] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  const { data: contractsData } = useQuery({
+    queryKey: ["userContracts"],
+    queryFn: getUserContracts,
+  }); 
 
 
   /* ================= REAL EXPENSE CALCULATION ================= */
 
 useEffect(() => {
-  const fetchSummary = async () => {
-    if (!contracts?.data?.contracts) return;
 
-    const contractsData = contracts.data.contracts;
+  let activeTalents = 0;
+  let expenses = 0;
+  
+  const fetchSummary = async () => {
+    if (!contractsData?.data?.contracts) return;
+
+    const contractsList = contractsData.data.contracts;
 
     // Listen for storage changes to update the count in real-time
     const handleStorageChange = () => {
       setOnboardingCount(getCompletionCount());
     };
+    
 
     // COUNT ACTIVE TALENTS
-    contractsData.forEach((contract) => {
+    contractsList.forEach((contract) => {
       const assigned = Array.isArray(contract.talentAssignedId)
         ? [...new Set(contract.talentAssignedId.filter(Boolean))]
         : [];
@@ -84,7 +100,7 @@ useEffect(() => {
     }
 
     // ONBOARDING COUNT
-    const onboardingContracts = contractsData.filter((c) => {
+    const onboardingContracts = contractsList.filter((c) => {
       const assigned = Array.isArray(c.talentAssignedId)
         ? c.talentAssignedId.filter(Boolean)
         : [];
@@ -96,9 +112,10 @@ useEffect(() => {
     setTotalExpenses(expenses);
     setIsOnboardingComplete(onboardingContracts === 0);
   };
+  
 
   fetchSummary();
-}, [contracts, user]);
+}, [contractsData]);
 
   // ----------------- ONBOARDING COUNT ANIMATION -----------------
   useEffect(() => {
@@ -192,7 +209,7 @@ useEffect(() => {
                       <Link to="/dashboard/expenses" className="flex items-center gap-4 cursor-pointer">                     
                       <img src={moneybag} alt="" />
                       <span className="text-2xl font-semibold xl:text-[40px] overview-text">
-                        {formatCurrency(displayTotalExpenses)}
+                        {formatCurrency(totalExpenses)}
                       </span>
                       </Link>
                     </div>
@@ -289,6 +306,7 @@ useEffect(() => {
                 <div className="text-[10px] pl-5 py-[14px] rounded-lg font-medium xl:text-[16px] text-gray-500">
                   Pending
                 </div>
+              
               </div>
             </div>
           </div>
