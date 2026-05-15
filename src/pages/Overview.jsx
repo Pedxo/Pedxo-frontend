@@ -5,7 +5,7 @@ import moneybag from "../assets/svg/moneybag.svg";
 import people from "../assets/svg/people.svg";
 import telegram from "../assets/svg/telegram.svg";
 import onboardIcon1 from "../assets/svg/onboardIcon1.svg";
-import onboardIcon2 from "../assets/svg/onboardIcon2.svg";
+import onboradIcon2 from "../assets/svg/onboardIcon2.svg";
 import add from "../assets/svg/add.svg";
 import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
