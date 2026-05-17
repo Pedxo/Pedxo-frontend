@@ -193,9 +193,7 @@ useEffect(() => {
               </h2>
               <p className="mb-2 text-sm font-Inter font-medium leading-normal grey-text pr-[51px] xl:text-[16px]">
                 Pending contracts on their way
-              </p>
-    
-              
+              </p>              
             </div>
           </div>
         </div>
