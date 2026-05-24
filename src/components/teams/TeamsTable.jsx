@@ -91,11 +91,9 @@ const fetchEmployees = async () => {
     console.log("normalized Contract fetched:", normalizedContracts); //This should display on console
 
     /* FETCH ASSIGNED TALENTS */
-    const assigned = [];
-
-    for (const contract of normalizedContracts) {
-      
-      try {
+    const assignedResults = await Promise.all(
+      normalizedContracts.map(async (contract) => {
+        try {
           const assignedRes = await authFetch.get(
             "/hire/assigned-by-contract",
             {
@@ -108,29 +106,31 @@ const fetchEmployees = async () => {
             contract.contractId,
             assignedRes.data
           );
-
+    
           const assignedJson = assignedRes.data;
-
-          if (Array.isArray(assignedJson?.data)) {
-            const ids = contract.talentAssignedIds || [];
-            assignedJson.data.forEach((emp, index) => {
-              const matchedId = ids[index] || null;
-              assigned.push({
-                ...emp,
-                contractId: contract.contractId,
-                talentAssignedId: matchedId,
-              });
-            });
-          }
+    
+          if (!Array.isArray(assignedJson?.data)) return [];
+    
+          const ids = contract.talentAssignedIds || [];
+    
+          return assignedJson.data.map((emp, index) => ({
+            ...emp,
+            contractId: contract.contractId,
+            talentAssignedId: ids[index] || null,
+          }));
         } catch (err) {
           console.error(
             "Failed fetching assigned devs for contract:",
             contract.contractId,
             err
           );
+    
+          return [];
         }
-
-      }
+      })
+    );
+    
+    const assigned = assignedResults.flat();
 
       const sorted = assigned.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt),

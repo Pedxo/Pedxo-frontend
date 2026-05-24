@@ -14,12 +14,12 @@ import { formatCurrency } from "../utility/helper";
 
 // Define onboarding steps
 const onboardingSteps = [
-  { id: 1, name: "understanding", duration: 5000 },
-  { id: 2, name: "analysing", duration: 5000 },
-  { id: 3, name: "processing", duration: 5000 },
-  { id: 4, name: "deciding", duration: 5000 },
-  { id: 5, name: "indexing", duration: 5000 },
-  { id: 6, name: "searching engineer", duration: 30000 },
+  { id: 1, name: "understanding", duration: 2000 },
+  { id: 2, name: "analysing", duration: 2000 },
+  { id: 3, name: "processing", duration: 2000 },
+  { id: 4, name: "deciding", duration: 2000 },
+  { id: 5, name: "indexing", duration: 2000 },
+  { id: 6, name: "searching engineer", duration: 10000 },
   { id: 7, name: "onboarding engineer", duration: null },
 ];
 
@@ -53,16 +53,22 @@ const Overview = () => {
   } = useQuery({
     queryKey: ["user-contracts", userId],
     queryFn: () => getUserContracts(userId),
-    // enabled: !!user && !!userId,
     enabled: !!user && !!userId,
     suspense: false,
+  
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 
-  useEffect(() => {
-  if (userId) {
-    refetch();
-  }
-}, [userId, refetch]);
+  
+
+//   useEffect(() => {
+//   if (userId) {
+//     refetch();
+//   }
+// }, [userId, refetch]);
 
   // ----------------- USER CURRENCY -----------------
   useEffect(() => {

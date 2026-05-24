@@ -18,7 +18,7 @@ const cache = new Map();
 const authFetch = axios.create({
   baseURL,
   headers: { "Content-Type": "application/json" },
-  timeout: 30000,
+  timeout: 20000,
 });
 
 if(!PEDXO_API_KEY ) {
@@ -29,7 +29,7 @@ export const paymentFetch = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 120000,
+  timeout: 5000,
 });
 
 

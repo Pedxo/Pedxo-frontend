@@ -83,38 +83,37 @@ const PayContractorsTable = () => {
              console.log("normalized Contract fetched:", normalizedContracts);
 
           /* ================= FETCH ASSIGNED TALENTS ================= */
-          const assigned = [];
-
-          for (const contract of normalizedContracts) {
-            try {
-              const res = await authFetch.get(
-                "/hire/assigned-by-contract",
-                {params: {contractId: contract.contractId}}
-              );
-              const assignData = res?.data;
-
-              if(Array.isArray(assignData?.data)) {
+         
+          const assignedResults = await Promise.all(
+            normalizedContracts.map(async (contract) => {
+              try {
+                const res = await authFetch.get(
+                  "/hire/assigned-by-contract",
+                  {
+                    params: { contractId: contract.contractId },
+                  }
+                );
+          
+                const assignData = res?.data;
+          
+                if (!Array.isArray(assignData?.data)) return [];
+          
                 const ids = contract.talentAssignedIds;
-
-                assignData.data.forEach((emp, index) => {
-                  assigned.push({
-                    ...emp,
-                    //attched contract info
-                    contractId: contract.contractId,
-
-                    //match correct assigned ID
-                    talentAssignedId: ids[index] || null,
-
-                    //Default Status
-                    status: "Payment Due"
-                  })
-                })
-
+          
+                return assignData.data.map((emp, index) => ({
+                  ...emp,
+                  contractId: contract.contractId,
+                  talentAssignedId: ids[index] || null,
+                  status: "Payment Due",
+                }));
+              } catch (error) {
+                console.error("Error fetching assigned talent", error);
+                return [];
               }
-            } catch (error) {
-              console.error("Error fetching assigned talent", error)
-            }
-          }
+            })
+          );
+          
+          const assigned = assignedResults.flat();
 
            /* ================= SORT FETCH ASSIGNED TALENTS ================= */
            const sorted = assigned.sort(
@@ -280,8 +279,9 @@ const handleAutoPayments = async () => {
       });
     }
 
-    await fetchBalance();
+    
     await fetchEmployees();
+    await fetchBalance();
 
   } catch (err) {
     console.error("Auto payment failed:", err);
@@ -309,6 +309,7 @@ useEffect(() => {
 }, [userId]);
 
 /* RUN AUTO PAYMENT ONLY AFTER EMPLOYEES LOAD */
+
 useEffect(() => {
   if (!employees.length) return;
 
@@ -316,9 +317,12 @@ useEffect(() => {
 
   if (alreadyRan) return;
 
-  handleAutoPayments();
+  const timer = setTimeout(() => {
+    handleAutoPayments();
+    sessionStorage.setItem("auto_payment_ran", "true");
+  }, 2000);
 
-  sessionStorage.setItem("auto_payment_ran", "true");
+  return () => clearTimeout(timer);
 
 }, [employees]);
 

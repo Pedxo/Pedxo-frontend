@@ -52,10 +52,6 @@ const PaidTable = () => {
             }))
             .filter((c) => c.contractId);
 
-            // if(!normalizedContracts.length) {
-            //   setEmployees([]);
-            //   return;
-            // }
             if (!normalizedContracts.length) {
                 setEmployees([]);
                 setProfileMap({});
@@ -65,36 +61,37 @@ const PaidTable = () => {
              console.log("normalized Contract fetched:", normalizedContracts);
 
           /* ================= FETCH ASSIGNED TALENTS ================ */
-          const assigned = [];
-
-          for (const contract of normalizedContracts) {
-            try {
-              const res = await authFetch.get(
-                "/hire/assigned-by-contract",
-                {params: {contractId: contract.contractId}}
-              );
-              const assignData = res?.data;
-
-              if(Array.isArray(assignData?.data)) {
+          
+          const assignedResults = await Promise.all(
+            normalizedContracts.map(async (contract) => {
+              try {
+                const res = await authFetch.get(
+                  "/hire/assigned-by-contract",
+                  {
+                    params: { contractId: contract.contractId },
+                  }
+                );
+          
+                const assignData = res?.data;
+          
+                if (!Array.isArray(assignData?.data)) return [];
+          
                 const ids = contract.talentAssignedIds;
-
-                assignData.data.forEach((emp, index) => {
-                  assigned.push({
-                    ...emp,
-                    //attched contract info
-                    contractId: contract.contractId,
-
-                    //match correct assigned ID
-                    talentAssignedId: ids[index] || null,
-                    status: "Paid"
-                  })
-                })
-
+          
+                return assignData.data.map((emp, index) => ({
+                  ...emp,
+                  contractId: contract.contractId,
+                  talentAssignedId: ids[index] || null,
+                  status: "Paid",
+                }));
+              } catch (error) {
+                console.error("Error fetching assigned talent", error);
+                return [];
               }
-            } catch (error) {
-              console.error("Error fetching assigned talent", error)
-            }
-          }
+            })
+          );
+          
+          const assigned = assignedResults.flat();
 
            /* ================= SORT FETCH ASSIGNED TALENTS ================= */
            const sorted = assigned.sort(
