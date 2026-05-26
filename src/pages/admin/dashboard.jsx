@@ -4,8 +4,8 @@ import AdminLayout from "../../components/admin/common/AdminLayout";
 import { FileText, Clock, UserCheck, CheckCircle } from "lucide-react";
 import { listContracts, listDevelopers } from "../../utility/adminApi.js";
 // replace local helpers with import
-import { getAssignedTalentIds, isContractCompleted, getContractTime, getContractAmount } from "../../utility/contractUtils.js";
-
+import { getAssignedTalentIds, getContractTime, getContractAmount } from "../../utility/contractUtils.js";
+import { classifyContract } from "../../utility/contractStatus.js";
 
 /**
  * DashboardPage (improved)
@@ -73,6 +73,13 @@ export default function DashboardPage() {
           if (id) devIdToDev.set(String(id), d);
         });
 
+        const knownTalentIds = new Set();
+        devs.forEach((d) => {
+          if (d.talentId) knownTalentIds.add(String(d.talentId));
+          if (d._id) knownTalentIds.add(String(d._id));
+          if (d.id) knownTalentIds.add(String(d.id));
+        });
+
         // Build set of assigned developer IDs across all contracts (unique)
         const assignedIdSet = new Set();
         cons.forEach((c) => {
@@ -107,8 +114,17 @@ export default function DashboardPage() {
         }
 
         const totalContracts = cons.length;
-        const pendingAssignments = cons.filter((c) => !isContractCompleted(c) && getAssignedTalentIds(c).length === 0).length;
-        const completedProjects = cons.filter((c) => isContractCompleted(c)).length;
+        let pendingAssignments = 0;
+        let readyContracts = 0;
+        let assignedContracts = 0;
+
+        cons.forEach((c) => {
+          const status = classifyContract(c, knownTalentIds);
+
+          if (status === "pending") pendingAssignments++;
+          else if (status === "assigned") assignedContracts++;
+          else if (status === "ready") readyContracts++;
+        });
 
         // ---------- FIX: sort by newest first using getContractTime ----------
         const sorted = cons.slice().sort((a, b) => getContractTime(b) - getContractTime(a));
@@ -137,7 +153,8 @@ export default function DashboardPage() {
           pendingAssignments,
           availableDevelopers: availableCount,
           busyDevelopers: busyCount,
-          completedProjects,
+          readyContracts, // NEW
+          assignedContracts, // optional if you want it later
         });
         setRecent(recentContracts);
 
@@ -181,7 +198,8 @@ export default function DashboardPage() {
           value={developers.length}
           subtitle="Current Value"
         />
-        <StatCard icon={CheckCircle} title="Completed Projects" value={stats.completedProjects} subtitle="This month" />
+        <StatCard icon={CheckCircle} title="Ready Contracts" value={stats.readyContracts} subtitle="Awaiting assignment" />
+        
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 mt-6">

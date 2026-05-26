@@ -9,63 +9,19 @@
  */
 
 export const getAssignedTalentIds = (contract = {}) => {
-  if (!contract) return [];
+  const v = contract?.talentAssignedId;
 
-  const candidateKeys = [
-    "talentAssignedId",
-    "talentAssigned",
-    "talentIds",
-    "talentAssignedIds",
-    "assignedTalent",
-    "assignedDev",
-    "developerId",
-    "assignedDeveloper",
-    "talentId",
-    "talent_assigned",
-  ];
+  if (!v) return [];
 
-  for (const key of candidateKeys) {
-    const v = contract[key];
-    if (v === undefined || v === null) continue;
-
-    // array
-    if (Array.isArray(v)) {
-      const out = v.flatMap((item) => {
-        if (!item) return [];
-        if (typeof item === "string") return [item];
-        if (typeof item === "number") return [String(item)];
-        if (typeof item === "object") {
-          return [item._id ?? item.id ?? item.talentId ?? item.talent_id ?? item.value].filter(Boolean);
-        }
-        return [];
-      });
-      if (out.length) return Array.from(new Set(out.map(String)));
-    }
-
-    // string or number
-    if (typeof v === "string" || typeof v === "number") {
-      return [String(v)];
-    }
-
-    // single object
-    if (typeof v === "object") {
-      const id = v._id ?? v.id ?? v.talentId ?? v.talent_id ?? v.value;
-      if (id) return [String(id)];
-    }
+  if (Array.isArray(v)) {
+    return v.map(String);
   }
 
-  // nested fallback
-  if (contract.hire?.talentAssignedId) return getAssignedTalentIds({ talentAssignedId: contract.hire.talentAssignedId });
-
-  return [];
+  return [String(v)];
 };
 
-export const isContractCompleted = (c) => {
-  if (!c) return false;
-  if (c.isCompleted === true) return true;
-  const p = (c.progress ?? "").toString().toLowerCase();
-  return p.includes("signed") || p.includes("completed") || p.includes("done") || p.includes("closed");
-};
+
+export const isContractCompleted = (c) => c.status === "completed";
 
 export const getContractTime = (c = {}) => {
   const candidates = [c.updatedAt, c.createdAt, c.startDate, c.created_at, c.updated_at];

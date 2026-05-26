@@ -82,38 +82,6 @@ useEffect(() => {
           console.log("Total Contracts:", contracts.length);
 
         /** FETCH ASSIGNMENTS USING REAL CONTRACT IDs */
-        // const assigned = [];
-
-        // for (const contract of contracts) {
-        //   if(!contract?._id) continue;
-
-        //   const res = await authFetch.get(
-        //     "/hire/assigned-by-contract",
-        //     { params: { contractId: contract._id } }
-        //   );
-
-        //   const json = res.data;
-
-        //   console.log(
-        //     "Assigned developers for contract:",
-        //     contract._id,
-        //     json
-        //   );
-
-        //   if (Array.isArray(json?.data)) {
-        //     json.data.forEach((dev) => {
-        //       assigned.push({
-        //         ...dev, 
-        //         contractId: contract._id,   // ONLY REAL CONTRACT ID
-        //         contract,                  // PASS FULL CONTRACT
-        //       });
-              
-        //     });
-            
-        //   }
-          
-        // }
-        /** FETCH ASSIGNMENTS USING REAL CONTRACT IDs */
 
         const assignedResults = await Promise.all(
           contracts.map(async (contract) => {
