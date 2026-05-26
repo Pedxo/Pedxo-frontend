@@ -82,42 +82,57 @@ useEffect(() => {
           console.log("Total Contracts:", contracts.length);
 
         /** FETCH ASSIGNMENTS USING REAL CONTRACT IDs */
-        const assigned = [];
 
-        for (const contract of contracts) {
-          if(!contract?._id) continue;
+        const assignedResults = await Promise.all(
+          contracts.map(async (contract) => {
+            try {
 
-          // const res = await fetch(
-          //   `${baseUrl}/hire/assigned-by-contract?contractId=${contract._id}`,
-          //   { headers: { Authorization: `Bearer ${token}` } }
-          // );
+              if (!contract?._id) {
+                return [];
+              }
 
-          const res = await authFetch.get(
-            "/hire/assigned-by-contract",
-            { params: { contractId: contract._id } }
-          );
+              const res = await authFetch.get(
+                "/hire/assigned-by-contract",
+                {
+                  params: { contractId: contract._id }
+                }
+              );
 
-          const json = res.data;
+              const json = res.data;
 
-          console.log(
-            "Assigned developers for contract:",
-            contract._id,
-            json
-          );
+              console.log(
+                "Assigned developers for contract:",
+                contract._id,
+                json
+              );
 
-          if (Array.isArray(json?.data)) {
-            json.data.forEach((dev) => {
-              assigned.push({
-                ...dev, 
-                contractId: contract._id,   // ONLY REAL CONTRACT ID
-                contract,                  // PASS FULL CONTRACT
-              });
-              
-            });
-            
-          }
-          
-        }
+              if (!Array.isArray(json?.data)) {
+                return [];
+              }
+
+              return json.data.map((dev) => ({
+                ...dev,
+
+                // ONLY REAL CONTRACT ID
+                contractId: contract._id,
+
+                // PASS FULL CONTRACT
+                contract,
+              }));
+
+            } catch (error) {
+
+              console.error(
+                "Error fetching assigned talent",
+                error
+              );
+
+              return [];
+            }
+          })
+        );
+
+        const assigned = assignedResults.flat();
 
         /** SORT + PROFILE MAP */
         assigned.sort(

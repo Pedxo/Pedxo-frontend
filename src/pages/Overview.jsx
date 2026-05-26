@@ -53,16 +53,22 @@ const Overview = () => {
   } = useQuery({
     queryKey: ["user-contracts", userId],
     queryFn: () => getUserContracts(userId),
-    // enabled: !!user && !!userId,
     enabled: !!user && !!userId,
     suspense: false,
+  
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 
-  useEffect(() => {
-  if (userId) {
-    refetch();
-  }
-}, [userId, refetch]);
+  
+
+//   useEffect(() => {
+//   if (userId) {
+//     refetch();
+//   }
+// }, [userId, refetch]);
 
   // ----------------- USER CURRENCY -----------------
   useEffect(() => {
