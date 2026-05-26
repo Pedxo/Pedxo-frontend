@@ -29,7 +29,7 @@ export const paymentFetch = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 5000,
+  timeout: 4000,
 });
 
 
