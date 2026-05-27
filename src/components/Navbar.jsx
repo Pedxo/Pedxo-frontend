@@ -7,7 +7,8 @@ import OverviewIcon from "../assets/icons/OverviewIcon";
 import CreateContractIcon from "../assets/icons/CreateContractIcon";
 import TeamsIcon from "../assets/icons/TeamsIcon";
 import PayRollIcon from "../assets/icons/PayRollIcon";
-import ExpensesIcon from "../assets/icons/ExpensesIcon";
+import SpendIcon from "../assets/icons/SpendIcon";
+import ExpenseIcon from "../assets/icons/ExpensesIcon";
 import AgreementsIcon from "../assets/icons/AgreementsIcon";
 import { useUser } from "../context/UserContext";
 import { useLogout } from "../features/auth/useLogout";
@@ -92,12 +93,12 @@ const Navbar = () => {
                 </div>
                 <SideBarMenuItems
                   to="payroll"
-                  icon={PayRollIcon}
+                  icon={SpendIcon}
                   title="spending"
                 />
                 <SideBarMenuItems
                   to="expenses"
-                  icon={ExpensesIcon}
+                  icon={ExpenseIcon}
                   title="expenses "
                 />
               </div>

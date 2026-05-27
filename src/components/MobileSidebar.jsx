@@ -8,6 +8,7 @@ import OverviewIcon from "../assets/icons/OverviewIcon";
 import CreateContractIcon from "../assets/icons/CreateContractIcon";
 import TeamsIcon from "../assets/icons/TeamsIcon";
 import PayRollIcon from "../assets/icons/PayRollIcon";
+import SpendIcon  from "../assets/icons/SpendIcon";
 import ExpensesIcon from "../assets/icons/ExpensesIcon";
 import AgreementsIcon from "../assets/icons/AgreementsIcon";
 import { useNavBar } from "../context/SideBarContext";
@@ -129,7 +130,7 @@ const MobileSideBar = () => {
                   <SideBarMenuItems
                     onClick={() => setMobileNavOpen(false)}
                     to="payroll"
-                    icon={PayRollIcon}
+                    icon={SpendIcon}
                     title="spending"
                   />
                   <SideBarMenuItems
