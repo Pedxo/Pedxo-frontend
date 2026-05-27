@@ -146,6 +146,10 @@ const router = createBrowserRouter([
         element: <Agreements />,
       },
       {
+        path: 'agreements/:contractId',
+        element: <AgreementContract />,
+      },
+      {
         path: 'full-time-form',
         element: <FullTimeContract />,
       },

@@ -6,6 +6,9 @@ const AgreementsCard = ({ card, assignedName }) => {
   // Normalize contract id once
   const { contractId, avatar, name, link } = card
 
+  // DEBUG LOG
+  console.log("Agreement Card Data:", card);
+
   if (!contractId) {
     console.error("Agreement card missing contractId:", card);
     return null;
