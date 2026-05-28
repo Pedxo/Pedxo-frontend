@@ -130,13 +130,13 @@ const MobileSideBar = () => {
                   <SideBarMenuItems
                     onClick={() => setMobileNavOpen(false)}
                     to="payroll"
-                    icon={SpendIcon}
+                    icon={PayRollIcon}
                     title="spending"
                   />
                   <SideBarMenuItems
                     onClick={() => setMobileNavOpen(false)}
                     to="expenses"
-                    icon={ExpensesIcon}
+                    icon={ExpensesIcon} 
                     title="expenses "
                   />
                 </div>
