@@ -93,12 +93,12 @@ const Navbar = () => {
                 </div>
                 <SideBarMenuItems
                   to="payroll"
-                  icon={PayRollIcon}
+                  icon={ExpensesIcon} 
                   title="spending"
                 />
                 <SideBarMenuItems
                   to="expenses"
-                  icon={ExpensesIcon}  
+                  icon={PayRollIcon}
                   title="expenses "
                 />
               </div>
