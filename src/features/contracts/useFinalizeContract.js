@@ -9,7 +9,15 @@ export default function useFinalizeContract() {
 
   const { mutate: finalize, isPending: sendingForm } = useMutation({
     mutationKey: ["finalize-contract"],
-    mutationFn: ({ contractId, data, username }) => finalizeContract({ contractId, ...data }),
+    mutationFn: ({ contractId, data }) => {
+      const resolvedContractId =
+      contractId || sessionStorage.getItem("currentContractId");
+
+    if (!resolvedContractId) {
+      throw new Error("Contract ID missing. Contract was not created properly.");
+    }
+      return finalizeContract({ contractId: resolvedContractId, ...data})
+    },
     onSuccess: (data, variables) => {
       toast.success("Contract sent successfully");
       console.log(data);

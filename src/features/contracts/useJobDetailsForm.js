@@ -4,7 +4,14 @@ import toast from "react-hot-toast";
 
 export default function useJobDetailsForm() {
   const { mutate: updateForm, isPending: sendingForm } = useMutation({
-    mutationFn: ({ contractId, ...details }) => updateFormTwo({ contractId, ...details }),
+    mutationFn: ({ contractId, ...details }) => {
+      if(!contractId) {
+        throw new Error(
+          "Contract ID missing. Complete Form One first."
+        );
+      }
+      return updateFormTwo({ contractId, ...details })
+    },
     mutationKey: ["job-details"],
     onSuccess: (data) => {
       toast.success("Action Saved");
