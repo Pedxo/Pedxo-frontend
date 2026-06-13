@@ -6,14 +6,43 @@ export default function usePersonalInfoContract() {
   const { mutate: postForm, isPending: isLoading } = useMutation({
     mutationFn: (details) => createContractOne(details),
     mutationKey: ["personal-info-form"],
-    onSuccess: (data) => {
+    onSuccess: (response) => {
       toast.success("Action Saved");
-      const contractData = data?.data;
+
+      console.log("CREATE CONTRACT FULL RESPONSE", response);
+      const contractData =
+        response?.data?.data ||   // FIXED (your real structure)
+        response?.data;
+
+      console.log("CONTRACT DATA", contractData);
       sessionStorage.setItem("personal-info", JSON.stringify(contractData));
+
+      // Resolve contractId regardless of response structure
+      const contractId =
+        contractData?._id ||
+        contractData?.contractId ||
+        contractData?.id;
+
+
+      console.log("RESOLVED CONTRACT ID", contractId);
       
       // Store contractId for subsequent API calls
-      if (contractData?._id) {
-        sessionStorage.setItem("currentContractId", contractData._id);
+      // if (contractData?._id) {
+      //   sessionStorage.setItem("currentContractId", contractData._id);
+      // }
+
+      if (contractId) {
+        sessionStorage.setItem("currentContractId", contractId);
+
+        console.log(
+          "CONTRACT ID SAVED TO SESSION STORAGE:",
+          contractId
+        );
+      } else {
+        console.error(
+          "NO CONTRACT ID FOUND IN RESPONSE",
+          contractData
+        );
       }
     },
     onError: (err) => {

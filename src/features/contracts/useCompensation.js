@@ -5,11 +5,24 @@ import toast from "react-hot-toast";
 export default function useCompensation() {
   const { mutate: updatePayment, isPending: isUpdating } = useMutation({
     mutationKey: ["compensation"],
-    mutationFn: ({ contractId, ...details }) => updateCompensation({ contractId, ...details }),
+    mutationFn: ({ contractId, ...details }) => {
+      const resolvedContractId =
+        contractId ||
+        sessionStorage.getItem("currentContractId");
+
+      console.log("COMPENSATION CONTRACT ID:", resolvedContractId );
+
+      if (!resolvedContractId) {
+        throw new Error(
+          "Contract ID missing. Complete Form One first."
+        );
+      }
+      return updateCompensation({ contractId:resolvedContractId, ...details })
+    },
     onSuccess: (data) => {
       toast.success("Form Saved");
       const contractData = data?.data;
-      console.log(data);
+      console.log("COMPENSATION RESPONSE:", data );
       sessionStorage.setItem("personal-info", JSON.stringify(contractData));
     },
     onError: (err) => {

@@ -9,19 +9,62 @@ export default function useFinalizeContract() {
 
   const { mutate: finalize, isPending: sendingForm } = useMutation({
     mutationKey: ["finalize-contract"],
-    mutationFn: ({ contractId, data, username }) => finalizeContract({ contractId, ...data }),
+    mutationFn: ({ contractId, data }) => {
+      const resolvedContractId =
+      contractId || sessionStorage.getItem("currentContractId");
+
+    if (!resolvedContractId) {
+      throw new Error("Contract ID missing. Contract was not created properly.");
+    }
+      return finalizeContract({ contractId: resolvedContractId, ...data})
+    },
     onSuccess: (data, variables) => {
       toast.success("Contract sent successfully");
       console.log(data);
-      
-      // Clear session storage
-      sessionStorage.removeItem("personal-info");
-      sessionStorage.removeItem("currentStep");
       
       // Get username from variables
       const username = variables?.username;
       
       console.log("Invalidating queries for username:", username);
+      /* -------------------------------
+        CLEAR ALL CONTRACT WIZARD DATA
+      -------------------------------- */
+
+      sessionStorage.removeItem("personal-info");
+      sessionStorage.removeItem("currentStep");
+      sessionStorage.removeItem("currentContractId");
+      sessionStorage.removeItem("contractCompletionCount");
+
+      if (username) {
+        sessionStorage.removeItem(`${username}_currentStep`);
+        sessionStorage.removeItem(`${username}_contractCompletionCount`);
+      }
+
+      /* Remove any contract-related session data */
+      Object.keys(sessionStorage).forEach((key) => {
+        if (
+          key.includes("contract") ||
+          key.includes("step") ||
+          key.includes("personal")
+        ) {
+          sessionStorage.removeItem(key);
+        }
+      });
+
+      if (username) {
+        localStorage.removeItem(`${username}_personalInfo`);
+        localStorage.removeItem(`${username}_countryLocked`);
+        localStorage.removeItem(`${username}_stateLocked`);
+        localStorage.removeItem(`${username}_userCurrencyCode`);
+
+        Object.keys(localStorage).forEach((key) => {
+          if (key.startsWith(`${username}_`)) {
+            localStorage.removeItem(key);
+          }
+        });
+      }
+      console.log("Contract wizard state cleared");
+
       
       // Invalidate queries
       setTimeout(() => {
