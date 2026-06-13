@@ -40,9 +40,14 @@ const ContractForm = ({ subHead, endDate }) => {
   }
 
   // Step management
-  const savedStep = JSON.parse(
-    sessionStorage.getItem(`${username}_currentStep`),
-  );
+  // const savedStep = JSON.parse(
+  //   sessionStorage.getItem(`${username}_currentStep`),
+  // );
+  const savedStep = contractId
+  ? JSON.parse(
+      sessionStorage.getItem(`${username}_currentStep`)
+    )
+  : 1;
   const [currentStep, setCurrentStep] = useState(savedStep || 1);
   const [savedState, setSavedState] = useState(null);
 
