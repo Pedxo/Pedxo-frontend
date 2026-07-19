@@ -1,5 +1,5 @@
 import logoutsvg from "../assets/svg/logout.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SideBarMenuItems from "../components/SideBarMenuItems";
 import { useNavigate } from "react-router-dom";
 import AddDeveloperIcon from "../assets/icons/AddDeveloperIcon";
@@ -15,14 +15,23 @@ import { useLogout } from "../features/auth/useLogout";
 import { useNavBar } from "../context/SideBarContext";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import logosvg from "/logo.svg";
+import authFetch from "../api";
 
 const Navbar = () => {
-  const { username, email } = useUser();
+  const { username, email, userId } = useUser();
   const navigate = useNavigate();
   const [toggleLogout, setToggleLogout] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { logout } = useLogout();
   const { desktopNavOpen } = useNavBar();
+  /* ===========================================
+   Assigned Talents Count
+   This is used to display the badge beside
+   Teams Store in the sidebar.
+  =========================================== */
+  const [teamsCount, setTeamsCount] = useState(0);
+
+
 
   const navRef = useOutsideClick(() => {
     // Don't close if logout is in progress
@@ -44,6 +53,52 @@ const Navbar = () => {
       setIsLoggingOut(false); // Stop loading regardless of success/failure
     }
   };
+
+
+  /* ==========================================
+   Fetch total assigned talents
+
+   This uses the same logic as Overview.jsx.
+
+   We only count unique assigned talent IDs.
+========================================== */
+useEffect(() => {
+  const fetchTeamsCount = async () => {
+    if (!userId) return;
+
+    try {
+      const response = await authFetch.get(
+        "/contracts/get-user-contracts",
+        {
+          params: { userId },
+        }
+      );
+
+      const contracts = Array.isArray(
+        response?.data?.data?.contracts
+      )
+        ? response.data.data.contracts
+        : [];
+
+      let totalAssigned = 0;
+
+      contracts.forEach((contract) => {
+        const assigned = Array.isArray(contract.talentAssignedId)
+          ? [...new Set(contract.talentAssignedId.filter(Boolean))]
+          : [];
+
+        totalAssigned += assigned.length;
+      });
+
+      setTeamsCount(totalAssigned);
+    } catch (err) {
+      console.error("Failed to load team count", err);
+    }
+  };
+
+  fetchTeamsCount();
+}, [userId]);
+
 
   return (
     <>
@@ -84,7 +139,7 @@ const Navbar = () => {
                   title="create contract"
                 /> */}
 
-                <SideBarMenuItems to="teams" icon={TeamsIcon} title="teams" />
+                <SideBarMenuItems to="teams" icon={TeamsIcon} title="teams store" badge={teamsCount}/>
               </div>
 
               <div className="flex flex-col gap-5">

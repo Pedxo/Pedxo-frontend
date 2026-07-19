@@ -13,6 +13,7 @@ import { useUser } from "../../context/UserContext";
 import authFetch from "../../api"; 
 import toast from "react-hot-toast";
 import { formatCurrency } from "../../utility/helper";
+import SocialProfileModal from "../SocialProfileModal";
 
 
 const TeamsTable = () => {
@@ -36,6 +37,10 @@ const TeamsTable = () => {
 
   // prevents blank screen before effects run
   const [hasMounted, setHasMounted] = useState(false);
+
+  /* ---------------- SOCIAL PROFILE MODAL ---------------- */
+const [showSocialModal, setShowSocialModal] = useState(false);
+const [selectedSocialEmployee, setSelectedSocialEmployee] = useState(null);
 
   /* ---------------- FETCH EMPLOYEES ---------------- */
 const fetchEmployees = async () => {
@@ -172,6 +177,13 @@ const fetchEmployees = async () => {
   /* ---------------- STATE FLAGS ---------------- */
   const showEmptyState = !loading && filteredEmployees.length === 0;
   const showTable = !loading && filteredEmployees.length > 0;
+
+
+  /* ---------------- OPEN SOCIAL PROFILE MODAL ---------------- */
+const handleOpenSocialProfiles = (employee) => {
+  setSelectedSocialEmployee(employee);
+  setShowSocialModal(true);
+};
 
   /* ---------------- TERMINATION ---------------- */
   const handleTerminate = (employee) => {
@@ -399,26 +411,35 @@ const fetchEmployees = async () => {
                   {employee?.paymentFrequency}
                 </div>
 
-                {employee?.githubAccount && employee.portfolio && (
-                  <div className="flex flex-col">
+                <div className="flex flex-col">
+                  {employee?.githubAccount && (
                     <a
-                      href={employee?.githubAccount}
+                    href={employee.githubAccount}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-600 underline text-[0.8rem] mt-2"
+                  >
+                    Github
+                  </a>
+                  )}
+                  {employee?.portfolio && (
+                    <a
+                      href={employee.portfolio}
                       target="_blank"
                       rel="noreferrer"
                       className="text-blue-600 underline text-[0.8rem] mt-2"
                     >
-                      Github
+                      Portfolio
                     </a>
-                    <a
-                      href={employee?.portfolio}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-600 underline text-[0.8rem] mt-2"
-                    >
-                      portfolio
-                    </a>
-                  </div>
-                )}
+                  )}
+                  <button
+                   type="button"
+                   onClick={()=> handleOpenSocialProfiles(employee)}
+                   className="text-blue-600 underline text-left text-[0.8rem] mt-2"
+                   >
+                    Social Profiles
+                  </button>
+                </div>
 
                 <div className="mt-4">
                   <button
@@ -488,9 +509,8 @@ const fetchEmployees = async () => {
                       <div>{employee?.seniorityLevel}</div>
                       <div>{employee?.paymentFrequency}</div>
 
-                      <div className="text-blue-600 underline">
-                        {employee?.githubAccount && employee.portfolio && (
-                          <div className="flex flex-col">
+                      <div className="flex flex-col text-blue-600 underline">
+                        {employee?.githubAccount &&  (
                             <a
                               href={employee?.githubAccount}
                               target="_blank"
@@ -498,15 +518,24 @@ const fetchEmployees = async () => {
                             >
                               Github
                             </a>
+                          )}
+                          {employee?.portfolio && (
                             <a
-                              href={employee?.portfolio}
+                              href={employee.portfolio}
                               target="_blank"
                               rel="noreferrer"
                             >
-                              portfolio
+                              Portfolio
                             </a>
-                          </div>
-                        )}
+                          )}
+                          {/*New button for social modal display*/}
+                          <button
+                            type="button"
+                            onClick={() => handleOpenSocialProfiles(employee)}
+                            className="text-left underline"
+                              >
+                            Social Profiles
+                        </button>
                       </div>
 
                       <div
@@ -536,6 +565,15 @@ const fetchEmployees = async () => {
           setShowModal(false);
         }}
         onConfirm={confirmTermination}
+      />
+
+      <SocialProfileModal
+        isOpen={showSocialModal}
+        employee={selectedSocialEmployee}
+        onClose={() => {
+          setShowSocialModal(false);
+          setSelectedSocialEmployee(null);
+        }}
       />
     </section>
   );
