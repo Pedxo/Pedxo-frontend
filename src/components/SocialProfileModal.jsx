@@ -1,8 +1,6 @@
 import {
   FaLinkedin,
-  FaWhatsapp,
   FaGitlab,
-  FaTwitter,
   FaFacebook,
   FaInstagram,
   FaTiktok,
@@ -11,6 +9,7 @@ import {
   FaDribbble,
   FaGlobe,
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const SocialProfileModal = ({
   isOpen,
@@ -33,10 +32,11 @@ const socialProfiles = employee?.socialProfiles || {};
       url: socialProfiles?.gitlab,
       icon: <FaGitlab className="text-[#FC6D26]" />,
     },
+    // X (formerly Twitter)
     {
-      label: "Twitter",
+      label: "X",
       url: socialProfiles?.twitter,
-      icon: <FaTwitter className="text-[#1DA1F2]" />,
+      icon: <FaXTwitter className="text-black" />,
     },
     {
       label: "Facebook",
@@ -67,14 +67,6 @@ const socialProfiles = employee?.socialProfiles || {};
       label: "Dribbble",
       url: socialProfiles?.dribbble,
       icon: <FaDribbble className="text-pink-600" />,
-    },
-    // WhatsApp newly added
-    {
-      label: "WhatsApp",
-      url: socialProfiles?.whatsapp
-        ? `https://wa.me/${socialProfiles.whatsapp.replace(/\D/g, "")}`
-        : "",
-      icon: <FaWhatsapp className="text-[#25D366]" />,
     },
     {
       label: "Other",
@@ -143,7 +135,7 @@ const socialProfiles = employee?.socialProfiles || {};
                 "
               >
 
-                <div className="text-xl flex-shrink-0">
+                <div className="text-[16px] flex-shrink-0">
                   {profile.icon}
                 </div>
 
@@ -154,6 +146,7 @@ const socialProfiles = employee?.socialProfiles || {};
                       font-semibold
                       text-gray-900
                       truncate
+                      text-[17px]
                     "
                   >
                     {profile.label}

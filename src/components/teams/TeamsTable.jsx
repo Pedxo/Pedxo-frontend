@@ -14,7 +14,8 @@ import authFetch from "../../api";
 import toast from "react-hot-toast";
 import { formatCurrency } from "../../utility/helper";
 import SocialProfileModal from "../SocialProfileModal";
-import {FaUser, FaEnvelope, FaGithub, FaGlobe} from "react-icons/fa";
+import {FaUser, FaEnvelope, FaGithub, FaGlobe, FaPhoneAlt} from "react-icons/fa";
+import PhoneContactModal from "../PhoneContactModal";
 
 
 const TeamsTable = () => {
@@ -42,6 +43,15 @@ const TeamsTable = () => {
   /* ---------------- SOCIAL PROFILE MODAL ---------------- */
 const [showSocialModal, setShowSocialModal] = useState(false);
 const [selectedSocialEmployee, setSelectedSocialEmployee] = useState(null);
+
+
+/* ----------------------------------------------------
+   PHONE CONTACT MODAL
+----------------------------------------------------- */
+
+const [showPhoneModal, setShowPhoneModal] = useState(false);
+
+const [selectedPhoneEmployee, setSelectedPhoneEmployee] = useState(null);
 
   /* ---------------- FETCH EMPLOYEES ---------------- */
 const fetchEmployees = async () => {
@@ -184,6 +194,17 @@ const fetchEmployees = async () => {
 const handleOpenSocialProfiles = (employee) => {
   setSelectedSocialEmployee(employee);
   setShowSocialModal(true);
+};
+
+/* -----------------------------------------
+   OPEN PHONE CONTACT MODAL
+   Opens the mini popup that allows user
+   to Call or WhatsApp the talent.
+------------------------------------------- */
+
+const handleOpenPhoneModal = (employee) => {
+  setSelectedPhoneEmployee(employee);
+  setShowPhoneModal(true);
 };
 
   /* ---------------- TERMINATION ---------------- */
@@ -448,6 +469,24 @@ const handleOpenSocialProfiles = (employee) => {
                     <FaUser className="text-black text-[13px]" />
                     Social Profiles 
                   </button>
+
+                  {employee?.phoneNumber && (
+
+                    <button
+                        type="button"
+                        onClick={() => handleOpenPhoneModal(employee)}
+                        className="flex items-center gap-1 text-blue-600 underline text-left text-[0.8rem] mt-2"
+                    >
+                       <span className="flex items-center justify-center mt-1 w-4 h-4 bg-blue-800 rounded-full flex-shrink-0">
+                         <FaPhoneAlt className="text-white text-[8px] " />
+                        </span>
+
+                        {/* {employee.phoneNumber} */}
+                        Phone Number
+
+                    </button>
+
+                    )}
                 </div>
 
                 <div className="mt-4">
@@ -532,7 +571,7 @@ const handleOpenSocialProfiles = (employee) => {
                               rel="noreferrer"
                               className="flex items-center gap-1 text-[12px]"
                             >
-                              <FaGithub className="text-black" />
+                              <FaGithub className="text-black text-[14px]" />
                               Github
                             </a>
                           )}
@@ -543,7 +582,7 @@ const handleOpenSocialProfiles = (employee) => {
                               rel="noreferrer"
                               className="flex items-center gap-1 text-[12px]"
                             >
-                              <FaGlobe className="text-black" />
+                              <FaGlobe className="text-black text-[14px]" />
                               Portfolio
                             </a>
                           )}
@@ -553,9 +592,27 @@ const handleOpenSocialProfiles = (employee) => {
                             onClick={() => handleOpenSocialProfiles(employee)}
                             className="flex items-start gap-1 text-left underline mt-1 text-[12px]"
                               >
-                            <FaUser className="text-black text-[12px] mt-[4px]" />
+                            <FaUser className="text-black text-[14px] mt-[4px]" />
                             Social Profiles
                         </button>
+
+                        {employee?.phoneNumber && (
+
+                          <button
+                              type="button"
+                              onClick={() => handleOpenPhoneModal(employee)}
+                              className="flex items-start gap-1 text-left underline mt-1 text-[12px]"
+                          >
+
+                              <span className="flex items-center justify-center mt-1 w-4 h-4 bg-blue-800 rounded-full flex-shrink-0">
+                              <FaPhoneAlt className="text-white text-[8px] " />
+                              </span>
+
+                              Phone Number
+
+                          </button>
+
+                          )}
                       </div>
 
                       <div
@@ -594,6 +651,18 @@ const handleOpenSocialProfiles = (employee) => {
           setShowSocialModal(false);
           setSelectedSocialEmployee(null);
         }}
+      />
+      {/* ----------------------------------------------------
+          PHONE CONTACT MODAL
+      ----------------------------------------------------- */}
+
+      <PhoneContactModal
+          isOpen={showPhoneModal}
+          employee={selectedPhoneEmployee}
+          onClose={() => {
+              setShowPhoneModal(false);
+              setSelectedPhoneEmployee(null);
+          }}
       />
     </section>
   );
