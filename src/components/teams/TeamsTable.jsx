@@ -14,6 +14,7 @@ import authFetch from "../../api";
 import toast from "react-hot-toast";
 import { formatCurrency } from "../../utility/helper";
 import SocialProfileModal from "../SocialProfileModal";
+import {FaUser, FaEnvelope, FaGithub, FaGlobe} from "react-icons/fa";
 
 
 const TeamsTable = () => {
@@ -386,8 +387,10 @@ const handleOpenSocialProfiles = (employee) => {
                     <div className="text-sm">{employee?.fullName}</div>
                     <a
                       href={`mailto:${employee?.email}`}
-                      className="text-sm text-black hover:underline"
+                      className="flex items-center gap-1 mt-1 text-sm text-black hover:underline"
                     >
+                      {/* Email Icon */}
+                      <FaEnvelope className="text-black text-[12px]" />
                       {employee?.email}
                     </a>
                   </div>
@@ -417,9 +420,11 @@ const handleOpenSocialProfiles = (employee) => {
                     href={employee.githubAccount}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-blue-600 underline text-[0.8rem] mt-2"
+                    className="flex items-center gap-1 text-blue-600 underline text-[0.8rem] mt-2"
                   >
-                    Github
+                    {/* Github Icon */}
+                    <FaGithub className="text-black text-[13px]" />
+                    Github 
                   </a>
                   )}
                   {employee?.portfolio && (
@@ -427,17 +432,21 @@ const handleOpenSocialProfiles = (employee) => {
                       href={employee.portfolio}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-blue-600 underline text-[0.8rem] mt-2"
+                      className="flex items-center gap-1 text-blue-600 underline text-[0.8rem] mt-2"
                     >
-                      Portfolio
+                      {/* Website Icon */}
+                    <FaGlobe className="text-black text-[13px]" />
+                      Portfolio 
                     </a>
                   )}
                   <button
                    type="button"
                    onClick={()=> handleOpenSocialProfiles(employee)}
-                   className="text-blue-600 underline text-left text-[0.8rem] mt-2"
+                   className="flex items-center gap-1 text-blue-600 underline text-left text-[0.8rem] mt-2"
                    >
-                    Social Profiles
+                    {/* User Icon */}
+                    <FaUser className="text-black text-[13px]" />
+                    Social Profiles 
                   </button>
                 </div>
 
@@ -493,21 +502,27 @@ const handleOpenSocialProfiles = (employee) => {
                             className="w-9 h-9 rounded-full object-cover"
                           />
                         </div>
-                        <div>{employee?.fullName}</div>
+                        <div className="text-[12px]">{employee?.fullName}</div>
                       </div>
 
                       <a
                         href={`mailto:${employee?.email}`}
-                        className="break-words text-black hover:underline"
+                        className="flex items-start gap-1 text-black hover:underline mt-1 min-w-0"
                       >
-                        {employee?.email}
+                        {/* Prevent icon from shrinking */}
+                        <FaEnvelope className="text-black text-[12px] flex-shrink-0 mt-[4px]" />
+
+                        {/* Allow email text to shrink and wrap */}
+                        <span className="min-w-0 break-all text-[12px]">
+                          {employee?.email}
+                        </span>
                       </a>
 
-                      <div>{employee?.roleTitle}</div>
-                      <div>{employee?.country}</div>
-                      <div>{formatCurrency(employee.paymentRate, employee.currency)}</div>
-                      <div>{employee?.seniorityLevel}</div>
-                      <div>{employee?.paymentFrequency}</div>
+                      <div className="text-[12px]">{employee?.roleTitle}</div>
+                      <div className="text-[12px]">{employee?.country}</div>
+                      <div className="text-[12px]">{formatCurrency(employee.paymentRate, employee.currency)}</div>
+                      <div className="text-[12px]">{employee?.seniorityLevel}</div>
+                      <div className="text-[12px]">{employee?.paymentFrequency}</div>
 
                       <div className="flex flex-col text-blue-600 underline">
                         {employee?.githubAccount &&  (
@@ -515,7 +530,9 @@ const handleOpenSocialProfiles = (employee) => {
                               href={employee?.githubAccount}
                               target="_blank"
                               rel="noreferrer"
+                              className="flex items-center gap-1 text-[12px]"
                             >
+                              <FaGithub className="text-black" />
                               Github
                             </a>
                           )}
@@ -524,7 +541,9 @@ const handleOpenSocialProfiles = (employee) => {
                               href={employee.portfolio}
                               target="_blank"
                               rel="noreferrer"
+                              className="flex items-center gap-1 text-[12px]"
                             >
+                              <FaGlobe className="text-black" />
                               Portfolio
                             </a>
                           )}
@@ -532,8 +551,9 @@ const handleOpenSocialProfiles = (employee) => {
                           <button
                             type="button"
                             onClick={() => handleOpenSocialProfiles(employee)}
-                            className="text-left underline"
+                            className="flex items-start gap-1 text-left underline mt-1 text-[12px]"
                               >
+                            <FaUser className="text-black text-[12px] mt-[4px]" />
                             Social Profiles
                         </button>
                       </div>
