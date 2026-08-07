@@ -295,4 +295,34 @@ const getActionText = (type) => {
   return actionTexts[type] || "View Details";
 };
 
+// ---------- UNASSIGNMENT ----------
+export const unassignDeveloper = async (talentIds, contractId) => {
+  try {
+    if (!talentIds || (Array.isArray(talentIds) && talentIds.length === 0)) {
+      return { ok: false, error: "No talentIds provided" };
+    }
+    const tIds = Array.isArray(talentIds) ? talentIds.map(String) : [String(talentIds)];
+    const payload = { talentIds: tIds, contractId: String(contractId) };
 
+    const res = await http.patch("/admin/unassign-talent", payload);
+
+    if (res && res.status >= 200 && res.status < 300) {
+      return { ok: true, data: res.data };
+    }
+    return { ok: false, error: res?.data?.message || "Unassignment failed" };
+  } catch (err) {
+    console.error("Error unassigning developer:", err);
+    return { ok: false, error: normalizeError(err) };
+  }
+};
+
+// ---------- DELETE ----------
+export const deleteDeveloper = async (talentDetailsId) => {
+  try {
+    const res = await http.delete(`/talent/details/${talentDetailsId}`);
+    return { ok: true, data: res.data };
+  } catch (err) {
+    console.error("Error deleting developer:", err);
+    return { ok: false, error: normalizeError(err) };
+  }
+};

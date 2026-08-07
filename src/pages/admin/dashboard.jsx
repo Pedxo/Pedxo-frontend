@@ -4,8 +4,8 @@ import AdminLayout from "../../components/admin/common/AdminLayout";
 import { FileText, Clock, UserCheck, CheckCircle } from "lucide-react";
 import { listContracts, listDevelopers } from "../../utility/adminApi.js";
 // replace local helpers with import
-import { getAssignedTalentIds, getContractTime, getContractAmount } from "../../utility/contractUtils.js";
-import { classifyContract } from "../../utility/contractStatus.js";
+import { getAssignedTalentIds, getContractStatus, getContractTime, getContractAmount } from "../../utility/contractUtils.js";
+
 
 /**
  * DashboardPage (improved)
@@ -114,17 +114,8 @@ export default function DashboardPage() {
         }
 
         const totalContracts = cons.length;
-        let pendingAssignments = 0;
-        let readyContracts = 0;
-        let assignedContracts = 0;
-
-        cons.forEach((c) => {
-          const status = classifyContract(c, knownTalentIds);
-
-          if (status === "pending") pendingAssignments++;
-          else if (status === "assigned") assignedContracts++;
-          else if (status === "ready") readyContracts++;
-        });
+        const pendingAssignments = cons.filter((c) => getContractStatus(c) === "pending").length;
+        const completedProjects = cons.filter((c) => getContractStatus(c) === "completed").length; // "Ready to Assign"
 
         // ---------- FIX: sort by newest first using getContractTime ----------
         const sorted = cons.slice().sort((a, b) => getContractTime(b) - getContractTime(a));
@@ -138,9 +129,8 @@ export default function DashboardPage() {
             client: c.clientName ?? c.companyName ?? c.name ?? "Unknown Client",
             contact: c.email ?? "No email",
             location: c.whereYouLive ?? c.city ?? c.region ?? c.state ?? c.country ?? "Location not specified",
-            statusAssigned: getAssignedTalentIds(c).length > 0,
+            status: getContractStatus(c), // "pending" | "completed" | "assigned"
             amount: getContractAmount(c),
-            // createdAt is shown in UI — use the same recency basis (prefer updatedAt then createdAt)
             createdAt: ts ? new Date(ts).toISOString() : null,
           };
         });
@@ -198,8 +188,7 @@ export default function DashboardPage() {
           value={developers.length}
           subtitle="Current Value"
         />
-        <StatCard icon={CheckCircle} title="Ready Contracts" value={stats.readyContracts} subtitle="Awaiting assignment" />
-        
+        <StatCard icon={CheckCircle} title="Ready to Assign" value={stats.completedProjects} subtitle="This month" />
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 mt-6">
@@ -222,8 +211,8 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className={badge(contract.statusAssigned ? "assigned" : "pending")}>
-                      {contract.statusAssigned ? "assigned" : "pending"}
+                    <span className={badge(contract.status)}>
+                      {contract.status === "completed" ? "ready to assign" : contract.status}
                     </span>
                     <span className="font-semibold text-black">
                       ${(Number(contract.amount) || 0).toLocaleString()}
