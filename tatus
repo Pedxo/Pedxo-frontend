@@ -1,0 +1,311 @@
+[1mdiff --git a/src/pages/admin/assignments.jsx b/src/pages/admin/assignments.jsx[m
+[1mindex 82c409f..5ce4dee 100644[m
+[1m--- a/src/pages/admin/assignments.jsx[m
+[1m+++ b/src/pages/admin/assignments.jsx[m
+[36m@@ -3,7 +3,13 @@[m [mimport { useEffect, useMemo, useState } from "react";[m
+ import AdminLayout from "../../components/admin/common/AdminLayout";[m
+ import { listContracts, listDevelopers, assignDeveloper } from "../../utility/adminApi.js";[m
+ import { Eye, X } from "lucide-react";[m
+[31m-import { getAssignedTalentIds, isContractCompleted } from "../../utility/contractUtils.js";[m
+[32m+[m[32mimport {[m
+[32m+[m[32m  getAssignedTalentIds,[m
+[32m+[m[32m  isContractCompleted,[m
+[32m+[m[32m  getContractStatus,[m
+[32m+[m[32m  getMissingContractFields,[m
+[32m+[m[32m  isContractDataComplete,[m
+[32m+[m[32m} from "../../utility/contractUtils.js";[m
+ [m
+ /**[m
+  * AssignmentPage (contracts-based)[m
+[36m@@ -27,9 +33,11 @@[m [mexport default function AssignmentPage() {[m
+   const [notice, setNotice] = useState(null); // { type, text }[m
+   const [searchDev, setSearchDev] = useState("");[m
+ [m
+[32m+[m
+[32m+[m
+   // Load contracts + devs[m
+   useEffect(() => {[m
+[31m-    loadAll();[m
+[32m+[m[32m    loadAll()[m
+   }, []);[m
+ [m
+   // close modals on Escape[m
+[36m@@ -61,6 +69,9 @@[m [mexport default function AssignmentPage() {[m
+     const dateB = new Date(b.createdAt || 0).getTime();[m
+     return dateB - dateA; // newest first[m
+     });[m
+[32m+[m[41m    [m
+[32m+[m[32m    console.log("LOADED CONTRACTS:", sortedContracts);[m
+[32m+[m[32m    console.log("SAMPLE CONTRACT:", JSON.stringify(sortedContracts[0], null, 2));[m
+ [m
+       setContracts(sortedContracts);[m
+       setDevelopers(norm(devsRes));[m
+[36m@@ -71,31 +82,25 @@[m [mexport default function AssignmentPage() {[m
+     } finally {[m
+       setLoading(false);[m
+     }[m
+[32m+[m
+   }[m
+[31m-  const isContractIncomplete = (c) => {[m
+[31m-  return !([m
+[31m-    c.YourTitle &&[m
+[31m-    (c.scopeOfWork || c.explanationOfScopeOfWork) &&[m
+[31m-    (c.minimumToPayToTalent || c.paymentRate)[m
+[31m-    );[m
+[31m-  };[m
+[32m+[m[41m [m
+[32m+[m[41m  [m
+ [m
+   // Partition contracts using shared helper for completed detection[m
+[31m-  const pendingContracts = contracts.filter((c) => {[m
+[31m-  const isAssigned = getAssignedTalentIds(c).length > 0;[m
+[31m-  const isCompleted = isContractCompleted(c);[m
+[31m-  const isIncomplete = isContractIncomplete(c);[m
+ [m
+[31m-  return !isAssigned && !isCompleted && isIncomplete;[m
+[31m-});[m
+[32m+[m[32mconst pendingContracts = contracts.filter([m
+[32m+[m[32m  (c) => getContractStatus(c) === "pending"[m
+[32m+[m[32m);[m
+ [m
+[31m-const assignedContracts = contracts.filter((c) => {[m
+[31m-  return getAssignedTalentIds(c).length > 0 && !isContractCompleted(c);[m
+[31m-});[m
+[32m+[m[32mconst assignedContracts = contracts.filter([m
+[32m+[m[32m  (c) => getContractStatus(c) === "assigned"[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32mconst completedContracts = contracts.filter([m
+[32m+[m[32m  (c) => getContractStatus(c) === "completed"[m
+[32m+[m[32m);[m
+ [m
+[31m-const completedContracts = contracts.filter((c) => {[m
+[31m-  return isContractCompleted(c);[m
+[31m-});[m
+ [m
+   // talent lookup (map by all id variants)[m
+   const talentMap = useMemo(() => {[m
+[36m@@ -231,6 +236,14 @@[m [mconst completedContracts = contracts.filter((c) => {[m
+ [m
+   // assignment flow[m
+   const openAssignModal = (contract) => {[m
+[32m+[m[32m    const missing = getMissingContractFields(contract);[m
+[32m+[m[32m    if (missing.length > 0) {[m
+[32m+[m[32m      setNotice({[m
+[32m+[m[32m        type: "error",[m
+[32m+[m[32m        text: `Contract is missing required info: ${missing.join(", ")}`,[m
+[32m+[m[32m      });[m
+[32m+[m[32m      return;[m
+[32m+[m[32m    }[m
+     setAssigningContract(contract);[m
+     setSelectedTalentId(null);[m
+     setSearchDev("");[m
+[36m@@ -253,10 +266,8 @@[m [mconst completedContracts = contracts.filter((c) => {[m
+       const talentIds = Array.isArray(selectedTalentId) ? selectedTalentId : [selectedTalentId];[m
+       const contractId = assigningContract._id || assigningContract.contractId || assigningContract.id;[m
+ [m
+[31m-      // send to backend[m
+       const res = await assignDeveloper(talentIds, contractId);[m
+ [m
+[31m-      // consider several "success" shapes[m
+       const success = res?.ok || res?.status === "success" || (res?.data && !res.data.error) || res?.status === 200;[m
+ [m
+       if (!success) {[m
+[36m@@ -264,7 +275,6 @@[m [mconst completedContracts = contracts.filter((c) => {[m
+         return;[m
+       }[m
+ [m
+[31m-      // Optimistically update local contracts so UI updates immediately:[m
+       setContracts((prev) =>[m
+         prev.map((c) => {[m
+           const id = c._id || c.contractId || c.id;[m
+[36m@@ -272,8 +282,12 @@[m [mconst completedContracts = contracts.filter((c) => {[m
+           if (String(id) === String(contractId)) {[m
+             const existing = getAssignedTalentIds(c);[m
+             const combined = Array.from(new Set([...existing.map(String), ...talentIds.map(String)]));[m
+[31m-            // prefer to set talentAssignedId if that key exists, otherwise set talentIds[m
+[31m-            return { ...c, talentAssignedId: combined, talentIds: combined };[m
+[32m+[m[32m            return {[m
+[32m+[m[32m              ...c,[m
+[32m+[m[32m              talentAssignedId: combined,[m
+[32m+[m[32m              talentIds: combined,[m
+[32m+[m[32m              status: "assigned"[m
+[32m+[m[32m            };[m
+           }[m
+           return c;[m
+         })[m
+[36m@@ -282,7 +296,6 @@[m [mconst completedContracts = contracts.filter((c) => {[m
+       setNotice({ type: "success", text: "Developer assigned successfully! Owner will now see the contract." });[m
+       closeAssignModal();[m
+ [m
+[31m-      // refresh from server for final sync (but UI already updated optimistically)[m
+       await loadAll();[m
+     } catch (err) {[m
+       console.error("Assign error:", err);[m
+[36m@@ -291,7 +304,7 @@[m [mconst completedContracts = contracts.filter((c) => {[m
+       setAssigning(false);[m
+       setTimeout(() => setNotice(null), 4000);[m
+     }[m
+[31m-  };[m
+[32m+[m[32m  }; // ← function ends right here now, nothing after the finally block[m
+ [m
+   // Derived visible contracts[m
+   const visibleContracts = activeTab === "pending" ? pendingContracts : activeTab === "assigned" ? assignedContracts : completedContracts;[m
+[36m@@ -317,8 +330,8 @@[m [mconst completedContracts = contracts.filter((c) => {[m
+         <div className="flex gap-2 flex-wrap">[m
+           {[[m
+             { key: "pending", label: "Pending", count: pendingContracts.length },[m
+[32m+[m[32m            { key: "completed", label: "Ready to Assign", count: completedContracts.length },[m
+             { key: "assigned", label: "Assigned", count: assignedContracts.length },[m
+[31m-            { key: "completed", label: "Completed", count: completedContracts.length },[m
+           ].map((t) => ([m
+             <button[m
+               key={t.key}[m
+[36m@@ -354,8 +367,13 @@[m [mconst completedContracts = contracts.filter((c) => {[m
+                         Client: {contract.name || contract.clientName || "Unknown"} · {contract.whereYouLive || contract.state || contract.country || ""}[m
+                       </div>[m
+                       <div className="mt-2 text-xs text-gray-500">[m
+[31m-                        {contract.paymentPattern ? `${contract.paymentPattern} · ${formatCurrency(contract.minimumToPayToTalent || contract.minimum_to_pay_to_talent || contract.paymentRate)}` : `Budget: ${formatCurrency(contract.minimumToPayToTalent || contract.paymentRate)}`}[m
+[32m+[m[32m                        {contract.paymentFrequency ? `${contract.paymentFrequency} · ${formatCurrency(contract.minimumToPayToTalent || contract.paymentRate)}` : `Budget: ${formatCurrency(contract.minimumToPayToTalent || contract.paymentRate)}`}[m
+                       </div>[m
+[32m+[m[32m                      {!isContractDataComplete(contract) && ([m
+[32m+[m[32m                        <div className="mt-2 inline-block text-xs px-2 py-0.5 rounded bg-yellow-100 text-yellow-800">[m
+[32m+[m[32m                          Missing: {getMissingContractFields(contract).join(", ")}[m
+[32m+[m[32m                        </div>[m
+[32m+[m[32m                      )}[m
+                     </div>[m
+ [m
+                     <div className="flex-shrink-0 flex flex-col items-end gap-2">[m
+[36m@@ -365,10 +383,13 @@[m [mconst completedContracts = contracts.filter((c) => {[m
+                           <Eye className="h-4 w-4" />[m
+                         </button>[m
+ [m
+[32m+[m
+[32m+[m[32m                        {getContractStatus(contract) !== "pending" && ([m
+                         <button onClick={() => openAssignModal(contract)} [m
+                           className="px-3 py-1 rounded bg-black text-white hover:bg-gray-900">[m
+                           Assign[m
+                         </button>[m
+[32m+[m[32m                        )}[m
+                       </div>[m
+                     </div>[m
+                   </div>[m
+[36m@@ -507,7 +528,7 @@[m [mconst completedContracts = contracts.filter((c) => {[m
+ [m
+             <div className="mt-6 flex justify-end gap-2">[m
+               <button onClick={() => setSelectedContract(null)} className="px-4 py-2 rounded border">Close</button>[m
+[31m-              {!isContractCompleted(selectedContract) && ([m
+[32m+[m[32m              {getContractStatus(selectedContract) !== "pending" && ([m
+                 <button onClick={() => { setSelectedContract(null); openAssignModal(selectedContract); }} className="px-4 py-2 rounded bg-black text-white">Assign</button>[m
+               )}[m
+             </div>[m
+[1mdiff --git a/src/pages/admin/dashboard.jsx b/src/pages/admin/dashboard.jsx[m
+[1mindex 719af9c..dcc8426 100644[m
+[1m--- a/src/pages/admin/dashboard.jsx[m
+[1m+++ b/src/pages/admin/dashboard.jsx[m
+[36m@@ -4,7 +4,7 @@[m [mimport AdminLayout from "../../components/admin/common/AdminLayout";[m
+ import { FileText, Clock, UserCheck, CheckCircle } from "lucide-react";[m
+ import { listContracts, listDevelopers } from "../../utility/adminApi.js";[m
+ // replace local helpers with import[m
+[31m-import { getAssignedTalentIds, isContractCompleted, getContractTime, getContractAmount } from "../../utility/contractUtils.js";[m
+[32m+[m[32mimport { getAssignedTalentIds, getContractStatus, getContractTime, getContractAmount } from "../../utility/contractUtils.js";[m
+ [m
+ [m
+ /**[m
+[36m@@ -107,8 +107,8 @@[m [mexport default function DashboardPage() {[m
+         }[m
+ [m
+         const totalContracts = cons.length;[m
+[31m-        const pendingAssignments = cons.filter((c) => !isContractCompleted(c) && getAssignedTalentIds(c).length === 0).length;[m
+[31m-        const completedProjects = cons.filter((c) => isContractCompleted(c)).length;[m
+[32m+[m[32m        const pendingAssignments = cons.filter((c) => getContractStatus(c) === "pending").length;[m
+[32m+[m[32m        const completedProjects = cons.filter((c) => getContractStatus(c) === "completed").length; // "Ready to Assign"[m
+ [m
+         // ---------- FIX: sort by newest first using getContractTime ----------[m
+         const sorted = cons.slice().sort((a, b) => getContractTime(b) - getContractTime(a));[m
+[36m@@ -122,9 +122,8 @@[m [mexport default function DashboardPage() {[m
+             client: c.clientName ?? c.companyName ?? c.name ?? "Unknown Client",[m
+             contact: c.email ?? "No email",[m
+             location: c.whereYouLive ?? c.city ?? c.region ?? c.state ?? c.country ?? "Location not specified",[m
+[31m-            statusAssigned: getAssignedTalentIds(c).length > 0,[m
+[32m+[m[32m            status: getContractStatus(c), // "pending" | "completed" | "assigned"[m
+             amount: getContractAmount(c),[m
+[31m-            // createdAt is shown in UI — use the same recency basis (prefer updatedAt then createdAt)[m
+             createdAt: ts ? new Date(ts).toISOString() : null,[m
+           };[m
+         });[m
+[36m@@ -181,7 +180,7 @@[m [mexport default function DashboardPage() {[m
+           value={developers.length}[m
+           subtitle="Current Value"[m
+         />[m
+[31m-        <StatCard icon={CheckCircle} title="Completed Projects" value={stats.completedProjects} subtitle="This month" />[m
+[32m+[m[32m        <StatCard icon={CheckCircle} title="Ready to Assign" value={stats.completedProjects} subtitle="This month" />[m
+       </div>[m
+ [m
+       <div className="bg-white rounded-lg border border-gray-200 mt-6">[m
+[36m@@ -204,8 +203,8 @@[m [mexport default function DashboardPage() {[m
+                     </p>[m
+                   </div>[m
+                   <div className="flex items-center gap-4">[m
+[31m-                    <span className={badge(contract.statusAssigned ? "assigned" : "pending")}>[m
+[31m-                      {contract.statusAssigned ? "assigned" : "pending"}[m
+[32m+[m[32m                    <span className={badge(contract.status)}>[m
+[32m+[m[32m                      {contract.status === "completed" ? "ready to assign" : contract.status}[m
+                     </span>[m
+                     <span className="font-semibold text-black">[m
+                       ${(Number(contract.amount) || 0).toLocaleString()}[m
+[1mdiff --git a/src/pages/admin/developers.jsx b/src/pages/admin/developers.jsx[m
+[1mindex 3f18d94..851090e 100644[m
+[1m--- a/src/pages/admin/developers.jsx[m
+[1m+++ b/src/pages/admin/developers.jsx[m
+[36m@@ -1,7 +1,7 @@[m
+ // src/pages/admin/developers.jsx[m
+ import { useEffect, useState } from "react";[m
+ import AdminLayout from "../../components/admin/common/AdminLayout";[m
+[31m-import { listDevelopers } from "../../utility/adminApi";[m
+[32m+[m[32mimport { listDevelopers, listContracts, unassignDeveloper, deleteDeveloper } from "../../utility/adminApi";[m
+ import {[m
+   MoreVertical,[m
+   Github,[m
+[36m@@ -11,8 +11,9 @@[m [mimport {[m
+   X,[m
+   Mail,[m
+   Phone,[m
+[31m-  Link as LinkIcon,[m
+[31m-  Copy[m
+[32m+[m[32m    Link as LinkIcon,[m
+[32m+[m[32m  Copy, UserMinus, Trash2, AlertTriangle,[m
+[32m+[m[32m  Linkedin, Twitter, Facebook, Instagram, Youtube, Dribbble[m
+ } from "lucide-react";[m
+ [m
+ export default function DevelopersPage() {[m
+[36m@@ -21,6 +22,12 @@[m [mexport default function DevelopersPage() {[m
+   const [selectedDev, setSelectedDev] = useState(null);[m
+   const [query, setQuery] = useState("");[m
+   const [error, setError] = useState(null);[m
+[32m+[m[32m  const [contracts, setContracts] = useState([]);[m
+[32m+[m[32m  const [openMenuId, setOpenMenuId] = useState(null);[m
+[32m+[m[32m  const [confirmUnassign, setConfirmUnassign] = useState(null); // { dev, contract }[m
+[32m+[m[32m  const [confirmDelete, setConfirmDelete] = useState(null);     // dev[m
+[32m+[m[32m  const [actionLoading, setActionLoading] = useState(false);[m
+[32m+[m[32m  const [actionError, setActionError] = useState(null);[m
+ [m
+   // Normalize whatever shape listDevelopers returns into an array[m
+   const normalizeResponse = (res) => {[m
+[36m@@ -39,7 +46,14 @@[m [mexport default function DevelopersPage() {[m
+ [m
+   // close modal on ESC[m
+   useEffect(() => {[m
+[31m-    const onKey = (e) => e.key === "Escape" && setSelectedDev(null);[m
+[32m+[m[32m    const onKey = (e) => {[m
+[32m+[m[32m      if (e.key === "Escape") {[m
+[32m+[m[32m        setSelectedDev(null);[m
+[32m+[m[32m        setOpenMenuId(null);[m
+[32m+[m[32m        setConfirmUnassign(null);[m
+[32m+[m[32m        setConfirmDelete(null);[m
+[32m+[m[32m      }[m
+[32m+[m[32m    };[m
+     window.addEventListener("keydown", onKey);[m
+     return () => window.removeEventListener("keydown", onKey);[m
+   }, []);[m
+[36m@@ -48,9 +62,9 @@[m [mexport default function DevelopersPa
