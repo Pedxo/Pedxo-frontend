@@ -143,8 +143,7 @@ export default function DashboardPage() {
           pendingAssignments,
           availableDevelopers: availableCount,
           busyDevelopers: busyCount,
-          readyContracts, // NEW
-          assignedContracts, // optional if you want it later
+          completedProjects,
         });
         setRecent(recentContracts);
 

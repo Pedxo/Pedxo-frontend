@@ -19,7 +19,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
     "formik": "^2.4.6",
-    "js-cookie": "^3.0.5",
+    "js-cookie": "^3.0.8",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.539.0",
     "nanoid": "^5.0.7",
