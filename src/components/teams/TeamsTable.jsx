@@ -16,6 +16,7 @@ import { formatCurrency } from "../../utility/helper";
 import SocialProfileModal from "../SocialProfileModal";
 import {FaUser, FaEnvelope, FaGithub, FaGlobe, FaPhoneAlt} from "react-icons/fa";
 import PhoneContactModal from "../PhoneContactModal";
+import RiderAddressCard from "../../components/RiderAddressCard.jsx";
 
 
 const TeamsTable = () => {
@@ -44,6 +45,8 @@ const TeamsTable = () => {
 const [showSocialModal, setShowSocialModal] = useState(false);
 const [selectedSocialEmployee, setSelectedSocialEmployee] = useState(null);
 
+// Rider Address Component
+const [selectedRider, setSelectedRider] = useState(null);
 
 /* ----------------------------------------------------
    PHONE CONTACT MODAL
@@ -344,8 +347,38 @@ const handleOpenPhoneModal = (employee) => {
     return () => clearTimeout(timer);
   }, []);
 
+
+
+  
+   // Opens Rider Address component.
+   // Only Riders are allowed.
+
+const handleOpenRiderAddress = (employee) => {
+
+  if (
+    employee.roleTitle?.trim().toLowerCase() !== "rider"
+  ) {
+    return;
+  }
+
+  setSelectedRider(employee);
+};
+
   // SINGLE SOURCE OF TRUTH
   const shouldShowLoader = !hasMounted || showLoader || loading;
+
+  // if (selectedRider) {
+  //   return (
+  //     <RiderAddressCard
+  //       employee={selectedRider}
+  //       onBack={() => setSelectedRider(null)}
+  //       profileImage={
+  //         profileMap[getEmployeeKey(selectedRider)] ||
+  //         profileImages[0]
+  //       }
+  //     />
+  //   );
+  // }
 
   return (
     <section>
@@ -364,12 +397,28 @@ const handleOpenPhoneModal = (employee) => {
           {/* Pass state + setter */}
           <SearchInput value={searchTerm} onChange={setSearchTerm} />
         </div>
-
         {/* ADDED: inline loader (header stays visible) */}
         {shouldShowLoader && (
           <div className="flex flex-col items-center justify-center py-10 gap-4">
             <div className="w-10 h-10 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
             <p className="text-[12px] text-gray-600">Loading page...</p>
+          </div>
+        )}
+
+         {/* =====================================================
+          RIDER ADDRESS PAGE
+          Appears BELOW the header/search input
+        ====================================================== */}
+        {!shouldShowLoader && selectedRider && (
+          <div className="mt-[21px]">
+            <RiderAddressCard
+              employee={selectedRider}
+              onBack={() => setSelectedRider(null)}
+              profileImage={
+                profileMap[getEmployeeKey(selectedRider)] ||
+                profileImages[0]
+              }
+            />
           </div>
         )}
 
@@ -401,11 +450,12 @@ const handleOpenPhoneModal = (employee) => {
                       profileMap[getEmployeeKey(employee)] || profileImages[0]
                     }
                     alt="profile"
-                    className="w-9 h-9 rounded-full object-cover"
+                    onClick={() => handleOpenRiderAddress(employee)}
+                    className="w-9 h-9 rounded-full object-cover cursor-pointer"
                   />
 
-                  <div className="flex flex-col">
-                    <div className="text-sm">{employee?.fullName}</div>
+                  <div className="flex flex-col" onClick={() => handleOpenRiderAddress(employee)}>
+                    <div className="text-sm hover:text-blue-600 cursor-pointer">{employee?.fullName}</div>
                     <a
                       href={`mailto:${employee?.email}`}
                       className="flex items-center gap-1 mt-1 text-sm text-black hover:underline"
@@ -538,10 +588,15 @@ const handleOpenPhoneModal = (employee) => {
                               profileImages[0]
                             }
                             alt="profile"
-                            className="w-9 h-9 rounded-full object-cover"
+                            onClick={() => handleOpenRiderAddress(employee)}
+                            className="w-9 h-9 rounded-full object-cover cursor-pointer"
                           />
                         </div>
-                        <div className="text-[12px]">{employee?.fullName}</div>
+                        <div 
+                        onClick={() => handleOpenRiderAddress(employee)} 
+                        className="text-[12px] cursor-pointer">
+                          {employee?.fullName}
+                        </div>
                       </div>
 
                       <a
