@@ -367,18 +367,18 @@ const handleOpenRiderAddress = (employee) => {
   // SINGLE SOURCE OF TRUTH
   const shouldShowLoader = !hasMounted || showLoader || loading;
 
-  // if (selectedRider) {
-  //   return (
-  //     <RiderAddressCard
-  //       employee={selectedRider}
-  //       onBack={() => setSelectedRider(null)}
-  //       profileImage={
-  //         profileMap[getEmployeeKey(selectedRider)] ||
-  //         profileImages[0]
-  //       }
-  //     />
-  //   );
-  // }
+  if (selectedRider) {
+    return (
+      <RiderAddressCard
+        employee={selectedRider}
+        onBack={() => setSelectedRider(null)}
+        profileImage={
+          profileMap[getEmployeeKey(selectedRider)] ||
+          profileImages[0]
+        }
+      />
+    );
+  }
 
   return (
     <section>
@@ -402,23 +402,6 @@ const handleOpenRiderAddress = (employee) => {
           <div className="flex flex-col items-center justify-center py-10 gap-4">
             <div className="w-10 h-10 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
             <p className="text-[12px] text-gray-600">Loading page...</p>
-          </div>
-        )}
-
-         {/* =====================================================
-          RIDER ADDRESS PAGE
-          Appears BELOW the header/search input
-        ====================================================== */}
-        {!shouldShowLoader && selectedRider && (
-          <div className="mt-[21px]">
-            <RiderAddressCard
-              employee={selectedRider}
-              onBack={() => setSelectedRider(null)}
-              profileImage={
-                profileMap[getEmployeeKey(selectedRider)] ||
-                profileImages[0]
-              }
-            />
           </div>
         )}
 
