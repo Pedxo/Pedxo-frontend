@@ -296,16 +296,29 @@ const getActionText = (type) => {
 };
 
 // ---------- UNASSIGNMENT ----------
-export const unassignDeveloper = async (talentIds, contractId) => {
+// Real endpoint is ContractController -> updateSingleContract, not an admin-specific route.
+// Backend requires performanceRating  terminationReason whenever removeTalentIds is non-empty.
+export const unassignDeveloper = async (talentIds, contractId, performanceRating, terminationReason) => {
   try {
     if (!talentIds || (Array.isArray(talentIds) && talentIds.length === 0)) {
       return { ok: false, error: "No talentIds provided" };
     }
+    if (!performanceRating || !terminationReason) {
+      return { ok: false, error: "performanceRating and terminationReason are required" };
+    }
+
     const tIds = Array.isArray(talentIds) ? talentIds.map(String) : [String(talentIds)];
-    const payload = { talentIds: tIds, contractId: String(contractId) };
+    const payload = {
+      removeTalentIds: tIds,
+      performanceRating,
+      terminationReason,
+    };
 
-    const res = await http.patch("/admin/unassign-talent", payload);
+    const res = await http.patch(`/contracts/${String(contractId)}`, payload);
 
+    if (res?.data?.error === true) {
+      return { ok: false, error: res.data.message || "Unassignment failed on the server." };
+    }
     if (res && res.status >= 200 && res.status < 300) {
       return { ok: true, data: res.data };
     }
@@ -323,6 +336,20 @@ export const deleteDeveloper = async (talentDetailsId) => {
     return { ok: true, data: res.data };
   } catch (err) {
     console.error("Error deleting developer:", err);
+    return { ok: false, error: normalizeError(err) };
+  }
+};
+
+// ---------- EDIT TALENT ----------
+export const updateTalentDetails = async (talentDetailsId, updates) => {
+  try {
+    const res = await http.patch(`/talent/details/${talentDetailsId}`, updates);
+    if (res?.data?.error === true) {
+      return { ok: false, error: res.data.message || "Update failed on the server." };
+    }
+    return { ok: true, data: res.data?.data || res.data };
+  } catch (err) {
+    console.error("Error updating talent:", err);
     return { ok: false, error: normalizeError(err) };
   }
 };
