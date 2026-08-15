@@ -13,6 +13,10 @@ import { useUser } from "../../context/UserContext";
 import authFetch from "../../api"; 
 import toast from "react-hot-toast";
 import { formatCurrency } from "../../utility/helper";
+import SocialProfileModal from "../SocialProfileModal";
+import {FaUser, FaEnvelope, FaGithub, FaGlobe, FaPhoneAlt} from "react-icons/fa";
+import PhoneContactModal from "../PhoneContactModal";
+import RiderAddressCard from "../../components/RiderAddressCard.jsx";
 
 
 const TeamsTable = () => {
@@ -36,6 +40,21 @@ const TeamsTable = () => {
 
   // prevents blank screen before effects run
   const [hasMounted, setHasMounted] = useState(false);
+
+  /* ---------------- SOCIAL PROFILE MODAL ---------------- */
+const [showSocialModal, setShowSocialModal] = useState(false);
+const [selectedSocialEmployee, setSelectedSocialEmployee] = useState(null);
+
+// Rider Address Component
+const [selectedRider, setSelectedRider] = useState(null);
+
+/* ----------------------------------------------------
+   PHONE CONTACT MODAL
+----------------------------------------------------- */
+
+const [showPhoneModal, setShowPhoneModal] = useState(false);
+
+const [selectedPhoneEmployee, setSelectedPhoneEmployee] = useState(null);
 
   /* ---------------- FETCH EMPLOYEES ---------------- */
 const fetchEmployees = async () => {
@@ -172,6 +191,24 @@ const fetchEmployees = async () => {
   /* ---------------- STATE FLAGS ---------------- */
   const showEmptyState = !loading && filteredEmployees.length === 0;
   const showTable = !loading && filteredEmployees.length > 0;
+
+
+  /* ---------------- OPEN SOCIAL PROFILE MODAL ---------------- */
+const handleOpenSocialProfiles = (employee) => {
+  setSelectedSocialEmployee(employee);
+  setShowSocialModal(true);
+};
+
+/* -----------------------------------------
+   OPEN PHONE CONTACT MODAL
+   Opens the mini popup that allows user
+   to Call or WhatsApp the talent.
+------------------------------------------- */
+
+const handleOpenPhoneModal = (employee) => {
+  setSelectedPhoneEmployee(employee);
+  setShowPhoneModal(true);
+};
 
   /* ---------------- TERMINATION ---------------- */
   const handleTerminate = (employee) => {
@@ -310,8 +347,38 @@ const fetchEmployees = async () => {
     return () => clearTimeout(timer);
   }, []);
 
+
+
+  
+   // Opens Rider Address component.
+   // Only Riders are allowed.
+
+const handleOpenRiderAddress = (employee) => {
+
+  if (
+    employee.roleTitle?.trim().toLowerCase() !== "rider"
+  ) {
+    return;
+  }
+
+  setSelectedRider(employee);
+};
+
   // SINGLE SOURCE OF TRUTH
   const shouldShowLoader = !hasMounted || showLoader || loading;
+
+  if (selectedRider) {
+    return (
+      <RiderAddressCard
+        employee={selectedRider}
+        onBack={() => setSelectedRider(null)}
+        profileImage={
+          profileMap[getEmployeeKey(selectedRider)] ||
+          profileImages[0]
+        }
+      />
+    );
+  }
 
   return (
     <section>
@@ -330,7 +397,6 @@ const fetchEmployees = async () => {
           {/* Pass state + setter */}
           <SearchInput value={searchTerm} onChange={setSearchTerm} />
         </div>
-
         {/* ADDED: inline loader (header stays visible) */}
         {shouldShowLoader && (
           <div className="flex flex-col items-center justify-center py-10 gap-4">
@@ -367,15 +433,18 @@ const fetchEmployees = async () => {
                       profileMap[getEmployeeKey(employee)] || profileImages[0]
                     }
                     alt="profile"
-                    className="w-9 h-9 rounded-full object-cover"
+                    onClick={() => handleOpenRiderAddress(employee)}
+                    className="w-9 h-9 rounded-full object-cover cursor-pointer"
                   />
 
-                  <div className="flex flex-col">
-                    <div className="text-sm">{employee?.fullName}</div>
+                  <div className="flex flex-col" onClick={() => handleOpenRiderAddress(employee)}>
+                    <div className="text-sm hover:text-blue-600 cursor-pointer">{employee?.fullName}</div>
                     <a
                       href={`mailto:${employee?.email}`}
-                      className="text-sm text-black hover:underline"
+                      className="flex items-center gap-1 mt-1 text-sm text-black hover:underline"
                     >
+                      {/* Email Icon */}
+                      <FaEnvelope className="text-black text-[12px]" />
                       {employee?.email}
                     </a>
                   </div>
@@ -399,26 +468,59 @@ const fetchEmployees = async () => {
                   {employee?.paymentFrequency}
                 </div>
 
-                {employee?.githubAccount && employee.portfolio && (
-                  <div className="flex flex-col">
+                <div className="flex flex-col">
+                  {employee?.githubAccount && (
                     <a
-                      href={employee?.githubAccount}
+                    href={employee.githubAccount}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-1 text-blue-600 underline text-[0.8rem] mt-2"
+                  >
+                    {/* Github Icon */}
+                    <FaGithub className="text-black text-[13px]" />
+                    Github 
+                  </a>
+                  )}
+                  {employee?.portfolio && (
+                    <a
+                      href={employee.portfolio}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-blue-600 underline text-[0.8rem] mt-2"
+                      className="flex items-center gap-1 text-blue-600 underline text-[0.8rem] mt-2"
                     >
-                      Github
+                      {/* Website Icon */}
+                    <FaGlobe className="text-black text-[13px]" />
+                      Portfolio 
                     </a>
-                    <a
-                      href={employee?.portfolio}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-600 underline text-[0.8rem] mt-2"
+                  )}
+                  <button
+                   type="button"
+                   onClick={()=> handleOpenSocialProfiles(employee)}
+                   className="flex items-center gap-1 text-blue-600 underline text-left text-[0.8rem] mt-2"
+                   >
+                    {/* User Icon */}
+                    <FaUser className="text-black text-[13px]" />
+                    Social Profiles 
+                  </button>
+
+                  {employee?.phoneNumber && (
+
+                    <button
+                        type="button"
+                        onClick={() => handleOpenPhoneModal(employee)}
+                        className="flex items-center gap-1 text-blue-600 underline text-left text-[0.8rem] mt-2"
                     >
-                      portfolio
-                    </a>
-                  </div>
-                )}
+                       <span className="flex items-center justify-center mt-1 w-4 h-4 bg-blue-800 rounded-full flex-shrink-0">
+                         <FaPhoneAlt className="text-white text-[8px] " />
+                        </span>
+
+                        {/* {employee.phoneNumber} */}
+                        Phone Number
+
+                    </button>
+
+                    )}
+                </div>
 
                 <div className="mt-4">
                   <button
@@ -469,44 +571,86 @@ const fetchEmployees = async () => {
                               profileImages[0]
                             }
                             alt="profile"
-                            className="w-9 h-9 rounded-full object-cover"
+                            onClick={() => handleOpenRiderAddress(employee)}
+                            className="w-9 h-9 rounded-full object-cover cursor-pointer"
                           />
                         </div>
-                        <div>{employee?.fullName}</div>
+                        <div 
+                        onClick={() => handleOpenRiderAddress(employee)} 
+                        className="text-[12px] cursor-pointer">
+                          {employee?.fullName}
+                        </div>
                       </div>
 
                       <a
                         href={`mailto:${employee?.email}`}
-                        className="break-words text-black hover:underline"
+                        className="flex items-start gap-1 text-black hover:underline mt-1 min-w-0"
                       >
-                        {employee?.email}
+                        {/* Prevent icon from shrinking */}
+                        <FaEnvelope className="text-black text-[12px] flex-shrink-0 mt-[4px]" />
+
+                        {/* Allow email text to shrink and wrap */}
+                        <span className="min-w-0 break-all text-[12px]">
+                          {employee?.email}
+                        </span>
                       </a>
 
-                      <div>{employee?.roleTitle}</div>
-                      <div>{employee?.country}</div>
-                      <div>{formatCurrency(employee.paymentRate, employee.currency)}</div>
-                      <div>{employee?.seniorityLevel}</div>
-                      <div>{employee?.paymentFrequency}</div>
+                      <div className="text-[12px]">{employee?.roleTitle}</div>
+                      <div className="text-[12px]">{employee?.country}</div>
+                      <div className="text-[12px]">{formatCurrency(employee.paymentRate, employee.currency)}</div>
+                      <div className="text-[12px]">{employee?.seniorityLevel}</div>
+                      <div className="text-[12px]">{employee?.paymentFrequency}</div>
 
-                      <div className="text-blue-600 underline">
-                        {employee?.githubAccount && employee.portfolio && (
-                          <div className="flex flex-col">
+                      <div className="flex flex-col text-blue-600 underline">
+                        {employee?.githubAccount &&  (
                             <a
                               href={employee?.githubAccount}
                               target="_blank"
                               rel="noreferrer"
+                              className="flex items-center gap-1 text-[12px]"
                             >
+                              <FaGithub className="text-black text-[14px]" />
                               Github
                             </a>
+                          )}
+                          {employee?.portfolio && (
                             <a
-                              href={employee?.portfolio}
+                              href={employee.portfolio}
                               target="_blank"
                               rel="noreferrer"
+                              className="flex items-center gap-1 text-[12px]"
                             >
-                              portfolio
+                              <FaGlobe className="text-black text-[14px]" />
+                              Portfolio
                             </a>
-                          </div>
-                        )}
+                          )}
+                          {/*New button for social modal display*/}
+                          <button
+                            type="button"
+                            onClick={() => handleOpenSocialProfiles(employee)}
+                            className="flex items-start gap-1 text-left underline mt-1 text-[12px]"
+                              >
+                            <FaUser className="text-black text-[14px] mt-[4px]" />
+                            Social Profiles
+                        </button>
+
+                        {employee?.phoneNumber && (
+
+                          <button
+                              type="button"
+                              onClick={() => handleOpenPhoneModal(employee)}
+                              className="flex items-start gap-1 text-left underline mt-1 text-[12px]"
+                          >
+
+                              <span className="flex items-center justify-center mt-1 w-4 h-4 bg-blue-800 rounded-full flex-shrink-0">
+                              <FaPhoneAlt className="text-white text-[8px] " />
+                              </span>
+
+                              Phone Number
+
+                          </button>
+
+                          )}
                       </div>
 
                       <div
@@ -536,6 +680,27 @@ const fetchEmployees = async () => {
           setShowModal(false);
         }}
         onConfirm={confirmTermination}
+      />
+
+      <SocialProfileModal
+        isOpen={showSocialModal}
+        employee={selectedSocialEmployee}
+        onClose={() => {
+          setShowSocialModal(false);
+          setSelectedSocialEmployee(null);
+        }}
+      />
+      {/* ----------------------------------------------------
+          PHONE CONTACT MODAL
+      ----------------------------------------------------- */}
+
+      <PhoneContactModal
+          isOpen={showPhoneModal}
+          employee={selectedPhoneEmployee}
+          onClose={() => {
+              setShowPhoneModal(false);
+              setSelectedPhoneEmployee(null);
+          }}
       />
     </section>
   );
