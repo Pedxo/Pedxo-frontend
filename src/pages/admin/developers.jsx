@@ -83,14 +83,15 @@ export default function DevelopersPage() {
 
   const handleUnassign = async () => {
     if (!confirmUnassign) return;
-    if (!performanceRating || !terminationReason.trim()) {
+    const ratingNum = Number(performanceRating);
+    if (!performanceRating || Number.isNaN(ratingNum) || !terminationReason.trim()) {
      setActionError("Please provide a performance rating and a reason.");
      return;
    }
     setActionLoading(true);
     setActionError(null);
     const { dev, contract } = confirmUnassign;
-    const res = await unassignDeveloper(dev.talentId, contract._id, performanceRating, terminationReason.trim());
+    const res = await unassignDeveloper(dev.talentId, contract._id, ratingNum, terminationReason.trim());
     setActionLoading(false);
     if (res.ok) {
       setConfirmUnassign(null);
