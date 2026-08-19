@@ -1,7 +1,7 @@
 // src/pages/admin/developers.jsx
 import { useEffect, useState } from "react";
 import AdminLayout from "../../components/admin/common/AdminLayout";
-import { listDevelopers, listContracts, unassignDeveloper, deleteDeveloper } from "../../utility/adminApi";
+import { listDevelopers, listContracts, unassignDeveloper, deleteDeveloper, updateTalentDetails } from "../../utility/adminApi";
 import {
   MoreVertical,
   Github,
@@ -12,7 +12,7 @@ import {
   Mail,
   Phone,
     Link as LinkIcon,
-  Copy, UserMinus, Trash2, AlertTriangle,
+  Copy, UserMinus, Trash2, AlertTriangle, Pencil,
   Linkedin, Twitter, Facebook, Instagram, Youtube, Dribbble
 } from "lucide-react";
 
@@ -25,6 +25,12 @@ export default function DevelopersPage() {
   const [contracts, setContracts] = useState([]);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [confirmUnassign, setConfirmUnassign] = useState(null); // { dev, contract }
+  const [editingDev, setEditingDev] = useState(null); // dev object being edited
+  const [editForm, setEditForm] = useState({});
+  const [editSaving, setEditSaving] = useState(false);
+  const [editError, setEditError] = useState(null)
+  const [performanceRating, setPerformanceRating] = useState("");
+  const [terminationReason, setTerminationReason] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(null);     // dev
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState(null);
@@ -52,6 +58,7 @@ export default function DevelopersPage() {
         setOpenMenuId(null);
         setConfirmUnassign(null);
         setConfirmDelete(null);
+        setEditingDev(null);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -76,13 +83,20 @@ export default function DevelopersPage() {
 
   const handleUnassign = async () => {
     if (!confirmUnassign) return;
+    const ratingNum = Number(performanceRating);
+    if (!performanceRating || Number.isNaN(ratingNum) || !terminationReason.trim()) {
+     setActionError("Please provide a performance rating and a reason.");
+     return;
+   }
     setActionLoading(true);
     setActionError(null);
     const { dev, contract } = confirmUnassign;
-    const res = await unassignDeveloper(dev.talentId, contract._id);
+    const res = await unassignDeveloper(dev.talentId, contract._id, ratingNum, terminationReason.trim());
     setActionLoading(false);
     if (res.ok) {
       setConfirmUnassign(null);
+      setPerformanceRating("");
+      setTerminationReason("");
       await loadDevelopers();
     } else {
       setActionError(res.error || "Failed to unassign talent");
@@ -169,6 +183,52 @@ const getSocialLinks = (dev) => {
     dev?.role ||
     dev?.YourTitle ||
     "Developer";
+  
+  const openEdit = (dev) => {
+    setEditError(null);
+    setEditForm({
+      firstName: dev?.firstName || "",
+      lastName: dev?.lastName || "",
+      email: dev?.email || "",
+      roleTitle: dev?.roleTitle || "",
+      country: dev?.country || "",
+      state: dev?.state || "",
+      city: dev?.city || "",
+      gender: dev?.gender || "",
+      bankName: dev?.bankName || "",
+      accountNumber: dev?.accountNumber || "",
+      experienceLevel: dev?.experienceLevel || "",
+      githubAccount: dev?.githubAccount || "",
+      portfolioLink: dev?.portfolioLink || "",
+      whatsappNumber: dev?.whatsappNumber || "",
+      homeAddress: dev?.homeAddress || "",
+    });
+    setEditingDev(dev);
+    setOpenMenuId(null);
+  };
+
+  const handleEditChange = (field, value) => {
+    setEditForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleEditSave = async () => {
+    if (!editingDev) return;
+    setEditSaving(true);
+    setEditError(null);
+    // strip empty strings so we don't overwrite existing values with blanks
+    const payload = Object.fromEntries(
+      Object.entries(editForm).filter(([, v]) => v !== "")
+    );
+    const talentDetailsId = editingDev._id || editingDev.talentId;
+    const res = await updateTalentDetails(talentDetailsId, payload);
+    setEditSaving(false);
+    if (res.ok) {
+      setEditingDev(null);
+      await loadDevelopers();
+    } else {
+      setEditError(res.error || "Failed to update talent");
+    }
+  };
 
   const getLocation = (dev) =>
     [dev?.city, dev?.state || dev?.region, dev?.country].filter(Boolean).join(", ") ||
@@ -280,6 +340,14 @@ const getSocialLinks = (dev) => {
             <hr className="my-1" />
 
             <button
+              className="w-full text-left px-3 py-2 text-sm flex items-center gap-2 text-gray-700 hover:bg-gray-50"
+              onClick={() => openEdit(dev)}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              Edit talent
+            </button>
+
+            <button
               disabled={isAssigned}
               className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 ${
                 isAssigned ? "text-gray-300 cursor-not-allowed" : "text-red-600 hover:bg-red-50"
@@ -382,6 +450,28 @@ const getSocialLinks = (dev) => {
         Unassign <strong>{getFullName(confirmUnassign.dev)}</strong> from{" "}
         <strong>{confirmUnassign.contract.companyName || confirmUnassign.contract.clientName}</strong>?
       </p>
+      <div className="space-y-3 mb-4">
+        <div>
+          <label className="text-xs text-gray-500 block mb-1">Performance rating (1–5)</label>
+          <input
+            type="number"
+            min="1"
+            max="5"
+            value={performanceRating}
+            onChange={(e) => setPerformanceRating(e.target.value)}
+            className="w-full border px-3 py-2 rounded text-sm"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-gray-500 block mb-1">Termination reason</label>
+          <textarea
+            value={terminationReason}
+            onChange={(e) => setTerminationReason(e.target.value)}
+            rows="3"
+            className="w-full border px-3 py-2 rounded text-sm"
+          />
+        </div>
+      </div>
       {actionError && <p className="text-sm text-red-600 mb-3">{actionError}</p>}
       <div className="flex justify-end gap-2">
         <button className="px-4 py-2 rounded border border-gray-300" onClick={() => setConfirmUnassign(null)} disabled={actionLoading}>
@@ -413,6 +503,83 @@ const getSocialLinks = (dev) => {
         </button>
         <button className="px-4 py-2 rounded bg-red-600 text-white disabled:opacity-50" onClick={handleDelete} disabled={actionLoading}>
           {actionLoading ? "Deleting…" : "Delete"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+      {/* EDIT TALENT MODAL */}
+{editingDev && (
+  <div
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+    onClick={() => !editSaving && setEditingDev(null)}
+  >
+    <div
+      className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto relative p-6"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex items-start justify-between mb-4">
+        <h3 className="text-lg font-bold">Edit {getFullName(editingDev)}</h3>
+        <button className="p-2 rounded hover:bg-gray-100" onClick={() => setEditingDev(null)}>
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+
+      {editError && <p className="text-sm text-red-600 mb-3">{editError}</p>}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {[
+          ["firstName", "First Name"],
+          ["lastName", "Last Name"],
+          ["email", "Email"],
+          ["roleTitle", "Role Title"],
+          ["country", "Country"],
+          ["state", "State"],
+          ["city", "City"],
+          ["gender", "Gender"],
+          ["bankName", "Bank Name"],
+          ["accountNumber", "Account Number"],
+          ["experienceLevel", "Experience Level"],
+          ["githubAccount", "GitHub Account"],
+          ["portfolioLink", "Portfolio Link"],
+          ["whatsappNumber", "WhatsApp Number"],
+        ].map(([field, label]) => (
+          <div key={field}>
+            <label className="text-xs text-gray-500 block mb-1">{label}</label>
+            <input
+              className="w-full border px-3 py-2 rounded text-sm"
+              value={editForm[field] || ""}
+              onChange={(e) => handleEditChange(field, e.target.value)}
+            />
+          </div>
+        ))}
+
+        <div className="sm:col-span-2">
+          <label className="text-xs text-gray-500 block mb-1">Home Address</label>
+          <textarea
+            className="w-full border px-3 py-2 rounded text-sm"
+            rows="2"
+            value={editForm.homeAddress || ""}
+            onChange={(e) => handleEditChange("homeAddress", e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="mt-6 flex justify-end gap-2">
+        <button
+          className="px-4 py-2 rounded border"
+          onClick={() => setEditingDev(null)}
+          disabled={editSaving}
+        >
+          Cancel
+        </button>
+        <button
+          className="px-4 py-2 rounded bg-black text-white disabled:opacity-50"
+          onClick={handleEditSave}
+          disabled={editSaving}
+        >
+          {editSaving ? "Saving..." : "Save Changes"}
         </button>
       </div>
     </div>
