@@ -107,7 +107,7 @@ const fetchEmployees = async () => {
       return;
     }
 
-    console.log("normalized Contract fetched:", normalizedContracts); //This should display on console
+    console.log("normalized Contract fetched:", normalizedContracts); 
 
     /* FETCH ASSIGNED TALENTS */
     const assignedResults = await Promise.all(
@@ -126,17 +126,25 @@ const fetchEmployees = async () => {
             assignedRes.data
           );
     
-          const assignedJson = assignedRes.data;
-    
-          if (!Array.isArray(assignedJson?.data)) return [];
-    
-          const ids = contract.talentAssignedIds || [];
-    
-          return assignedJson.data.map((emp, index) => ({
-            ...emp,
-            contractId: contract.contractId,
-            talentAssignedId: ids[index] || null,
-          }));
+      const assignedJson = assignedRes.data;
+
+      if (!Array.isArray(assignedJson?.data)) return [];
+      const ids = contract.talentAssignedIds || [];
+      return assignedJson.data.map((emp, index) => ({
+        ...emp,
+        contractId: contract.contractId,
+
+        // Keep the ID already returned by the backend.
+        // Only fall back to the contract ID ordering when
+        // the backend does not provide one.
+        talentAssignedId:
+          emp?.talentAssignedId ||
+          ids[index] ||
+          null,
+
+        // Keep the original assignment position.
+        assignmentIndex: index,
+      }));
         } catch (err) {
           console.error(
             "Failed fetching assigned devs for contract:",
@@ -148,16 +156,47 @@ const fetchEmployees = async () => {
         }
       })
     );
-    
+
     const assigned = assignedResults.flat();
 
-      const sorted = assigned.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-      );
-      console.log("Fetch Assigned Sorted", sorted);
+    /* ---------------------------------------------------------
+      SORT NEWLY ASSIGNED TALENTS ABOVE PREVIOUS TALENTS
+    ---------------------------------------------------------- */
+    const assignmentOrder = new Map();
+    normalizedContracts.forEach((contract) => {
+      contract.talentAssignedIds.forEach((talentId, index) => {
+        assignmentOrder.set(
+          `${contract.contractId}-${talentId}`,
+          index
+        );
+      });
+    });
 
-      setEmployees(sorted);
-      setProfileMap(getProfileImagesMapping(sorted));
+    const sorted = [...assigned].sort((a, b) => {
+      const indexA =
+        assignmentOrder.get(
+          `${a.contractId}-${a.talentAssignedId}`
+        ) ?? -1;
+
+      const indexB =
+        assignmentOrder.get(
+          `${b.contractId}-${b.talentAssignedId}`
+        ) ?? -1;
+
+      // Highest assignment index = newest assignment
+      if (indexA !== indexB) {
+        return indexB - indexA;
+      }
+
+      // Keep the original API order when assignment
+      // indexes are identical.
+      return (a.assignmentIndex ?? 0) - (b.assignmentIndex ?? 0);
+    });
+
+    console.log("Fetch Assigned Sorted:", sorted);
+
+    setEmployees(sorted);
+    setProfileMap(getProfileImagesMapping(sorted));
     } catch (err) {
       console.error("Fetch error:", err);
       setError("Failed to load employees");
@@ -349,18 +388,13 @@ const handleOpenPhoneModal = (employee) => {
 
 
 
-  
-   // Opens Rider Address component.
-   // Only Riders are allowed.
-
+ 
+// Opens Rider Address component.
 const handleOpenRiderAddress = (employee) => {
-
-  if (
-    employee.roleTitle?.trim().toLowerCase() !== "rider"
-  ) {
+  if (!employee?.isRider) {
     return;
   }
-
+  console.log("Opening Rider Address Card:", employee);
   setSelectedRider(employee);
 };
 
