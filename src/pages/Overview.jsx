@@ -258,7 +258,7 @@ useEffect(() => {
     <section>
           <div>
             <header className="text-center py-2 overflow-banner text-sm font-medium px-[17px] xl:text-[18px]">
-              Onboard the right prompt engineers autonomously
+              Onboard the right Loop engineers autonomously
             </header>
     
             <div className="mx-[19px] mt-10">
