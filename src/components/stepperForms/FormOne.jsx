@@ -18,7 +18,7 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
   const [isStateLocked, setIsStateLocked] = useState(false);
 
   const selectedIso = savedState
-    ? countries?.find((el) => el.name === savedState?.country).iso2
+    ? countries?.find((el) => el.name === savedState?.country)?.iso2
     : null;
   const [selectedCountry, setSelectedCountry] = useState(selectedIso || "");
   const { states, isLoading: loadingStates } = useGetStates(selectedCountry);
@@ -98,6 +98,24 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
     if (stateLocked) setIsStateLocked(true);
   }, [username]);
 
+
+  useEffect(() => {
+    if (!countries?.length) return;
+  
+    const countryName = formik.values?.country;
+  
+    if (!countryName) return;
+  
+    const selected = countries.find(
+      (country) => country.name === countryName
+    );
+  
+    if (selected) {
+      setSelectedCountry(selected.iso2);
+    }
+  }, [countries, formik.values?.country]);
+  
+
   useEffect(() => {
     const changesDetected = Object.keys(initialValues).some(
       (key) => formik.values[key] !== initialValues[key],
@@ -105,29 +123,44 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
     setHasChanges(changesDetected);
   }, [formik.values, initialValues]);
 
+  
+  // change country
   const handleCountryChange = (e) => {
-    if (isCountryLocked) return;
     const selectedIso = e.target.value;
     const selected = countries?.find((c) => c.iso2 === selectedIso);
+  
     if (selected) {
       setSelectedCountry(selectedIso);
       formik.setFieldValue("country", selected.name);
+  
+      // Reset state because the country has changed
+      formik.setFieldValue("state", "");
+  
+      // Keep state editable
+      setIsStateLocked(false);
+      localStorage.setItem(`${username}_stateLocked`, "false");
+  
       queryClient.invalidateQueries(["states"]);
-
+  
       const isNigerian = selected.name.toLowerCase() === "nigeria";
+  
       localStorage.setItem(
         `${username}_userCurrencyCode`,
         isNigerian ? "NGN" : "USD",
       );
-
+  
+      // Keep the lock icon visible as an indicator.
+      // It does NOT disable the select.
       setIsCountryLocked(true);
       localStorage.setItem(`${username}_countryLocked`, "true");
     }
   };
 
-  const handleStateChange = (e) => {
-    if (isStateLocked) return;
+ // select country state
+ const handleStateChange = (e) => {
     formik.setFieldValue("state", e.target.value);
+  
+    // Keep the lock icon visible, but DO NOT lock the field.
     setIsStateLocked(true);
     localStorage.setItem(`${username}_stateLocked`, "true");
   };
@@ -194,8 +227,8 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
               disabled={
                 isLoading ||
                 formik.isSubmitting ||
-                sendingForm ||
-                isCountryLocked
+                sendingForm 
+                //isCountryLocked
               }
               onChange={handleCountryChange}
               value={
@@ -247,7 +280,8 @@ const FormOne = ({ nextStep, savedState, contractType, username, userId }) => {
                 !selectedCountry
               }
               id="state"
-              onChange={(e) => formik.setFieldValue("state", e.target.value)}
+              // onChange={(e) => formik.setFieldValue("state", e.target.value)}
+              onChange={handleStateChange}
               value={formik.values.state}
 
               className="appearance-none w-full disabled:ring-gray-300 border overview-expense-bgs bg-transparent ring-1 ring-[#00000033] outline-none rounded-lg  p-3 text-sm "
