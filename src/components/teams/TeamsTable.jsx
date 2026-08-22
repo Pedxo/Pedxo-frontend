@@ -56,6 +56,29 @@ const [showPhoneModal, setShowPhoneModal] = useState(false);
 
 const [selectedPhoneEmployee, setSelectedPhoneEmployee] = useState(null);
 
+
+
+  /* ---------------- SOCIAL PROFILE CHECK ---------------- */
+  const hasSocialProfiles = (employee) => {
+    const socialProfiles = employee?.socialProfiles;
+
+    if (
+      !socialProfiles ||
+      typeof socialProfiles !== "object" ||
+      Array.isArray(socialProfiles)
+    ) {
+      return false;
+    }
+
+    return Object.values(socialProfiles).some(
+      (value) =>
+        typeof value === "string"
+          ? value.trim() !== ""
+          : Boolean(value)
+    );
+  };
+  
+
   /* ---------------- FETCH EMPLOYEES ---------------- */
 const fetchEmployees = async () => {
   setLoading(true);
@@ -527,16 +550,17 @@ const handleOpenRiderAddress = (employee) => {
                       Portfolio 
                     </a>
                   )}
-                  <button
-                   type="button"
-                   onClick={()=> handleOpenSocialProfiles(employee)}
-                   className="flex items-center gap-1 text-blue-600 underline text-left text-[0.8rem] mt-2"
-                   >
-                    {/* User Icon */}
-                    <FaUser className="text-black text-[13px]" />
-                    Social Profiles 
-                  </button>
-
+                  {hasSocialProfiles(employee) && (
+                    <button
+                      type="button"
+                      onClick={() => handleOpenSocialProfiles(employee)}
+                      className="flex items-center gap-1 text-blue-600 underline text-left text-[0.8rem] mt-2"
+                    >
+                      {/* User Icon */}
+                      <FaUser className="text-black text-[13px]" />
+                      Social Profiles
+                    </button>
+                  )}
                   {employee?.phoneNumber && (
 
                     <button
@@ -659,14 +683,17 @@ const handleOpenRiderAddress = (employee) => {
                             </a>
                           )}
                           {/*New button for social modal display*/}
-                          <button
-                            type="button"
-                            onClick={() => handleOpenSocialProfiles(employee)}
-                            className="flex items-start gap-1 text-left underline mt-1 text-[12px]"
-                              >
-                            <FaUser className="text-black text-[14px] mt-[4px]" />
-                            Social Profiles
-                        </button>
+                          {/* Social profile button - only shown when profiles exist */}
+                          {hasSocialProfiles(employee) && (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenSocialProfiles(employee)}
+                              className="flex items-start gap-1 text-left underline mt-1 text-[12px]"
+                            >
+                              <FaUser className="text-black text-[14px] mt-[4px]" />
+                              Social Profiles
+                            </button>
+                          )}
 
                         {employee?.phoneNumber && (
 
@@ -709,6 +736,7 @@ const handleOpenRiderAddress = (employee) => {
         isOpen={showModal}
         loading={terminating}
         resetKey={modalResetKey} // ADDED
+        employeeName={selectedEmployee?.fullName} // newly added
         onClose={() => {
           setModalResetKey((prev) => prev + 1); // ADDED
           setShowModal(false);

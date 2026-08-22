@@ -7,6 +7,7 @@ const PerformanceReviewModal = ({
   onConfirm,
   loading,
   resetKey, // ADDED
+  employeeName, // ADDED
 }) => {
     const [rating, setRating] = useState(0);
     const [note, setNote] = useState("");
@@ -32,7 +33,10 @@ const PerformanceReviewModal = ({
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
         <div className='bg-white w-[90%] max-w-md rounded-lg p-6'>
-            <h2 className='text-lg font-bold text-black mb-4 text-center'>
+          <h3 className="text-base font-semibold text-black mb-4 text-red-500">
+            Terminate {employeeName}?
+          </h3>
+            <h2 className='text-lg font-bold text-black mb-2 text-center'>
                  Performance Review
             </h2>
             {/* Rating */}
