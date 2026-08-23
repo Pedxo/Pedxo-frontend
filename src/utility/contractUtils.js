@@ -54,14 +54,18 @@ export const getContractAmount = (c = {}) => {
 export const getContractStatus = (contract) => {
   if (!contract) return "pending";
 
-  // 1. Assigned takes priority — source of truth is talentAssignedId, not the raw status field.
+  // 1. Assigned takes priority
   const assignedIds = getAssignedTalentIds(contract);
   if (assignedIds.length > 0) return "assigned";
 
-  // 2. Not assigned — route by whether the admin has enough info to assign it.
+  // 2. Backend is the source of truth for "completed" — if isCompleted isn't true,
+  //    it stays in Pending no matter how filled-in the fields look.
+  if (!contract.isCompleted) return "pending";
+
+  // 3. Belt-and-suspenders: even if backend says completed, don't let it into
+  //    "Ready to Assign" if required fields are actually missing.
   if (!isContractDataComplete(contract)) return "pending";
 
-  // 3. Fully filled, no dev yet.
   return "completed";
 };
 
