@@ -80,16 +80,21 @@ const FormFour = ({
     return;
   }
 
+  const resolvedContractId = contractId || sessionStorage.getItem("currentContractId");
+
+  if (!resolvedContractId) {
+    toast.error("Contract ID missing. Please restart the contract process.");
+    return;
+  }
+
   try {
-    // Step 1: upload the signature via the endpoint that actually saves it to Cloudinary
     const sigFormData = new FormData();
     sigFormData.append("signature", signatureFile);
-    await postSignature({ contractId, signature: sigFormData });
+    await postSignature({ contractId: resolvedContractId, signature: sigFormData });
 
-    // Step 2: finalize the contract (flips isCompleted → true)
     finalize({
-      contractId: contractId,
-      data: {},              // finalize's controller ignores the body anyway
+      contractId: resolvedContractId,
+      data: {},
       username: username,
     });
   } catch (err) {
