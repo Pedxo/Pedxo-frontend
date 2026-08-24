@@ -32,6 +32,7 @@ const SignUp = () => {
     captchaAnswer: "",
     verified: false,
   });
+  const [captchaVerificationStatus, setCaptchaVerificationStatus] = useState("idle");
 
   const navigate = useNavigate();
 
@@ -67,11 +68,6 @@ const SignUp = () => {
     }
 
     /* ---------------- CAPTCHA VALIDATION ---------------- */
-    if (!captchaData.verified) {
-      toast.error("Please complete the CAPTCHA verification.");
-      return false;
-    }
-
     if (!captchaData.captchaId) {
       toast.error("CAPTCHA verification is missing. Please try again.");
       return false;
@@ -96,18 +92,26 @@ const SignUp = () => {
 
   const handleCaptchaChange = (data) => {
     setCaptchaData(data);
+  
+    /*
+     * Once the CAPTCHA changes, any previous backend
+     * verification result is no longer valid.
+     */
+    if (captchaVerificationStatus !== "idle") {
+      setCaptchaVerificationStatus("idle");
+    }
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (socialLoading.loading) return;
-
+  
     setIsLoading(true);
-
+  
     if (validateForm()) {
       try {
-
+  
         /*
          * CAPTCHA values are added only when sending
          * the request to the backend.
@@ -115,66 +119,101 @@ const SignUp = () => {
         const signupData = {
           ...formData,
           captchaId: captchaData.captchaId,
-          captchaAnswer: captchaData.captchaAnswer,
+          captchaInput: captchaData.captchaAnswer.trim(),
         };
 
-        const response = await authFetch.post(
-          "/auth",
-          JSON.stringify(signupData)
-        );
-
+        console.log("Signup CAPTCHA payload:", {
+          captchaId: signupData.captchaId,
+          captchaInput: signupData.captchaInput,
+        });
+  
+        const response = await authFetch.post("/auth", signupData);
+  
+        /*
+         * CAPTCHA + SIGNUP SUCCESS
+         */
         if (response.data === "success" || response.status === 201) {
+          setCaptchaVerificationStatus("success");
+  
           const userBio = response.data.result;
+  
           setUserBio(userBio);
-          toast.success("Check mail for otp");
+  
+          toast.success(
+            "CAPTCHA verified successfully. Check mail for OTP."
+          );
+  
           setTimeout(() => {
             navigate("/account-verification", {
               state: { email: formData.email },
             });
           }, 2000);
         }
-
-        const tokenResp = response.data.result;
+  
+        
+        const tokenResp = response?.data?.result;
+  
         const accessTokenExpiration = Date.now() + 1200000;
         const refreshTokenExpiration = Date.now() + 604800000;
-
+  
         const tokenData = {
-          accessToken: tokenResp.accessToken,
-          refreshToken: tokenResp.refreshToken,
+          accessToken: tokenResp?.accessToken,
+          refreshToken: tokenResp?.refreshToken,
           accessTokenExpiration,
           refreshTokenExpiration,
         };
-
+  
         localStorage.setItem("user", JSON.stringify(tokenData));
-
+  
       } catch (error) {
-
+  
         /*
-         * CAPTCHA FAILED / EXPIRED
+         * =====================================================
+         * CAPTCHA FAILED / EXPIRED / VALIDATION ERROR
+         * =====================================================
+         */
+        const errorMessage = error.response?.data?.message;
+  
+        const captchaError =
+          Array.isArray(errorMessage)
+            ? errorMessage.join(", ")
+            : errorMessage || "";
+  
+        /*
+         * Detect all CAPTCHA-related backend errors.
          */
         if (
           error.response?.status === 400 &&
           (
-            error.response?.data?.message === "Invalid CAPTCHA" ||
-            error.response?.data?.message === "CAPTCHA expired" ||
-            error.response?.data?.message === "CAPTCHA verification failed"
+            captchaError.toLowerCase().includes("captcha") ||
+            captchaError.toLowerCase().includes("invalid")
           )
         ) {
-          toast.error(error.response?.data?.message || "CAPTCHA verification failed. Please try again.");
-
+          setCaptchaVerificationStatus("error");
+  
+          toast.error(
+            captchaError ||
+              "CAPTCHA verification failed. Please try again."
+          );
+  
           /*
-           * Clear the old CAPTCHA so the user is
-           * required to complete a fresh challenge.
+           * Clear the old CAPTCHA because the backend
+           * CAPTCHA is single-use.
            */
           setCaptchaData({
             captchaId: "",
             captchaAnswer: "",
             verified: false,
           });
-
+  
           return false;
         }
-
+  
+        /*
+         * =====================================================
+         * EMAIL ALREADY EXISTS
+         * =====================================================
+         */
         if (
           error.response &&
           error.response.data &&
@@ -183,18 +222,28 @@ const SignUp = () => {
           toast.error("email already exists.");
           return false;
         }
-
-        toast.error(error.response?.data?.message || "Unable to create account. Please try again.");
+  
+        /*
+         * =====================================================
+         * OTHER BACKEND ERRORS
+         * =====================================================
+         */
+        toast.error(
+          error.response?.data?.message ||
+            "Unable to create account. Please try again."
+        );
+  
         console.log(error);
-
+  
       } finally {
         setIsLoading(false);
       }
-
+  
     } else {
       setIsLoading(false);
     }
   };
+
 
   const handleSocialLoadingChange = ({ loading, provider }) => {
     setSocialLoading({ loading, provider });
@@ -356,6 +405,7 @@ const SignUp = () => {
             isLoading ||
             socialLoading.loading
           }
+          verificationStatus={captchaVerificationStatus}
           onCaptchaChange={handleCaptchaChange}
         />
       </div>
