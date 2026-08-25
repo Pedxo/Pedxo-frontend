@@ -3,6 +3,7 @@ import sendContract from "../../assets/svg/sendcontract.svg";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { formatCurrency, formatDate } from "../../utility/helper";
 import useFinalizeContract from "../../features/contracts/useFinalizeContract";
+import { postSignature } from "../../services/apiContract";
 import Button from "../Button";
 import { useState } from "react";
 import FormFive from "./FormFive";
@@ -73,26 +74,29 @@ const FormFour = ({
     { title: "Payment Frequency", data: safeState.paymentFrequency ?? "-" },
   ];
 
-  const sendFinalForm = () => {
-    if (!signatureFile) {
-      toast.error("Please sign the contract before sending.");
-      return;
-    }
+  const sendFinalForm = async () => {
+  if (!signatureFile) {
+    toast.error("Please sign the contract before sending.");
+    return;
+  }
 
-    const formData = new FormData();
-    for (const key in safeState) {
-      formData.append(key, safeState[key]);
-    }
-    formData.append("userId", userId);
-    formData.append("signature", signatureFile);
+  try {
+    // Step 1: upload the signature via the endpoint that actually saves it to Cloudinary
+    const sigFormData = new FormData();
+    sigFormData.append("signature", signatureFile);
+    await postSignature({ contractId, signature: sigFormData });
 
-    // Pass username along with formData
+    // Step 2: finalize the contract (flips isCompleted → true)
     finalize({
       contractId: contractId,
-      data: formData,
+      data: {},              // finalize's controller ignores the body anyway
       username: username,
     });
-  };
+  } catch (err) {
+    toast.error("Failed to upload signature. Please try again.");
+    console.error(err);
+  }
+};
 
   return (
     <div className="flex flex-col gap-[18px]">
