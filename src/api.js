@@ -68,6 +68,7 @@ authFetch.interceptors.request.use((config) => {
   if (
   config.url?.includes("/contracts/") ||
   config.url?.includes("/hire/assigned-by-contract") ||
+  config.url?.includes("/captcha/") ||
   config.baseURL === paymentBaseURL
   ) {
     config.params = { ...config.params, _t: Date.now() };
@@ -132,7 +133,8 @@ authFetch.interceptors.response.use(
     // CACHE GET RESPONSES
     if (
       !response.config.url?.includes("/contracts/") &&
-      response.config.method?.toLowerCase() === "get"
+      response.config.method?.toLowerCase() === "get" &&
+      !response.config.url?.includes("/captcha/")
     ) {
       const cacheKey = JSON.stringify({
         url: response.config.url,

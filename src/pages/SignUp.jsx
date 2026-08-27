@@ -5,13 +5,13 @@ import { useGlobalContext } from "../Context";
 import toast from "react-hot-toast";
 import authFetch from "../api";
 import Socials from "../components/Socials";
+import Captcha from "../components/Captcha";
 
 const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
-    useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const [socialLoading, setSocialLoading] = useState({ 
     loading: false, 
     provider: null 
@@ -24,6 +24,15 @@ const SignUp = () => {
     email: "",
     password: "",
   });
+
+  /* ---------------- CAPTCHA STATE ---------------- */
+
+  const [captchaData, setCaptchaData] = useState({
+    captchaId: "",
+    captchaAnswer: "",
+    verified: false,
+  });
+  const [captchaVerificationStatus, setCaptchaVerificationStatus] = useState("idle");
 
   const navigate = useNavigate();
 
@@ -57,6 +66,18 @@ const SignUp = () => {
       toast.error("passwords do not match.");
       return false;
     }
+
+    /* ---------------- CAPTCHA VALIDATION ---------------- */
+    if (!captchaData.captchaId) {
+      toast.error("CAPTCHA verification is missing. Please try again.");
+      return false;
+    }
+
+    if (!captchaData.captchaAnswer.trim()) {
+      toast.error("Please enter the CAPTCHA.");
+      return false;
+    }
+
     return true;
   };
 
@@ -67,42 +88,132 @@ const SignUp = () => {
     });
   };
 
+  /* ---------------- CAPTCHA CHANGE ---------------- */
+
+  const handleCaptchaChange = (data) => {
+    setCaptchaData(data);
+  
+    /*
+     * Once the CAPTCHA changes, any previous backend
+     * verification result is no longer valid.
+     */
+    if (captchaVerificationStatus !== "idle") {
+      setCaptchaVerificationStatus("idle");
+    }
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (socialLoading.loading) return; // Prevent form submission during social loading
-    
+  
+    if (socialLoading.loading) return;
+  
     setIsLoading(true);
-
+  
     if (validateForm()) {
       try {
-        const response = await authFetch.post(
-          "/auth",
-          JSON.stringify(formData)
-        );
+  
+        /*
+         * CAPTCHA values are added only when sending
+         * the request to the backend.
+         */
+        const signupData = {
+          ...formData,
+          captchaId: captchaData.captchaId,
+          captchaInput: captchaData.captchaAnswer.trim(),
+        };
+
+        console.log("Signup CAPTCHA payload:", {
+          captchaId: signupData.captchaId,
+          captchaInput: signupData.captchaInput,
+        });
+  
+        const response = await authFetch.post("/auth", signupData);
+  
+        /*
+         * CAPTCHA + SIGNUP SUCCESS
+         */
         if (response.data === "success" || response.status === 201) {
+          setCaptchaVerificationStatus("success");
+  
           const userBio = response.data.result;
+  
           setUserBio(userBio);
-          toast.success("Check mail for otp");
+  
+          toast.success(
+            "CAPTCHA verified successfully. Check mail for OTP."
+          );
+  
           setTimeout(() => {
             navigate("/account-verification", {
               state: { email: formData.email },
             });
           }, 2000);
         }
-
-        const tokenResp = response.data.result;
+  
+        
+        const tokenResp = response?.data?.result;
+  
         const accessTokenExpiration = Date.now() + 1200000;
         const refreshTokenExpiration = Date.now() + 604800000;
-
+  
         const tokenData = {
-          accessToken: tokenResp.accessToken,
-          refreshToken: tokenResp.refreshToken,
+          accessToken: tokenResp?.accessToken,
+          refreshToken: tokenResp?.refreshToken,
           accessTokenExpiration,
           refreshTokenExpiration,
         };
+  
         localStorage.setItem("user", JSON.stringify(tokenData));
-       
+  
       } catch (error) {
+  
+        /*
+         * =====================================================
+         * CAPTCHA FAILED / EXPIRED / VALIDATION ERROR
+         * =====================================================
+         */
+        const errorMessage = error.response?.data?.message;
+  
+        const captchaError =
+          Array.isArray(errorMessage)
+            ? errorMessage.join(", ")
+            : errorMessage || "";
+  
+        /*
+         * Detect all CAPTCHA-related backend errors.
+         */
+        if (
+          error.response?.status === 400 &&
+          (
+            captchaError.toLowerCase().includes("captcha") ||
+            captchaError.toLowerCase().includes("invalid")
+          )
+        ) {
+          setCaptchaVerificationStatus("error");
+  
+          toast.error(
+            captchaError ||
+              "CAPTCHA verification failed. Please try again."
+          );
+  
+          /*
+           * Clear the old CAPTCHA because the backend
+           * CAPTCHA is single-use.
+           */
+          setCaptchaData({
+            captchaId: "",
+            captchaAnswer: "",
+            verified: false,
+          });
+  
+          return false;
+        }
+  
+        /*
+         * =====================================================
+         * EMAIL ALREADY EXISTS
+         * =====================================================
+         */
         if (
           error.response &&
           error.response.data &&
@@ -111,15 +222,28 @@ const SignUp = () => {
           toast.error("email already exists.");
           return false;
         }
-        toast.error(error.response.data.message);
+  
+        /*
+         * =====================================================
+         * OTHER BACKEND ERRORS
+         * =====================================================
+         */
+        toast.error(
+          error.response?.data?.message ||
+            "Unable to create account. Please try again."
+        );
+  
         console.log(error);
+  
       } finally {
         setIsLoading(false);
       }
+  
     } else {
       setIsLoading(false);
     }
   };
+
 
   const handleSocialLoadingChange = ({ loading, provider }) => {
     setSocialLoading({ loading, provider });
@@ -272,6 +396,18 @@ const SignUp = () => {
             Login
           </Link>
         </div>
+        {/* ------------------------------
+            SERVER-GENERATED CAPTCHA
+        -------------------------------- */}
+
+        <Captcha
+          disabled={
+            isLoading ||
+            socialLoading.loading
+          }
+          verificationStatus={captchaVerificationStatus}
+          onCaptchaChange={handleCaptchaChange}
+        />
       </div>
     </section>
   );

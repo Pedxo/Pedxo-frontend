@@ -56,6 +56,29 @@ const [showPhoneModal, setShowPhoneModal] = useState(false);
 
 const [selectedPhoneEmployee, setSelectedPhoneEmployee] = useState(null);
 
+
+
+  /* ---------------- SOCIAL PROFILE CHECK ---------------- */
+  const hasSocialProfiles = (employee) => {
+    const socialProfiles = employee?.socialProfiles;
+
+    if (
+      !socialProfiles ||
+      typeof socialProfiles !== "object" ||
+      Array.isArray(socialProfiles)
+    ) {
+      return false;
+    }
+
+    return Object.values(socialProfiles).some(
+      (value) =>
+        typeof value === "string"
+          ? value.trim() !== ""
+          : Boolean(value)
+    );
+  };
+  
+
   /* ---------------- FETCH EMPLOYEES ---------------- */
 const fetchEmployees = async () => {
   setLoading(true);
@@ -107,7 +130,7 @@ const fetchEmployees = async () => {
       return;
     }
 
-    console.log("normalized Contract fetched:", normalizedContracts); //This should display on console
+    console.log("normalized Contract fetched:", normalizedContracts); 
 
     /* FETCH ASSIGNED TALENTS */
     const assignedResults = await Promise.all(
@@ -126,17 +149,25 @@ const fetchEmployees = async () => {
             assignedRes.data
           );
     
-          const assignedJson = assignedRes.data;
-    
-          if (!Array.isArray(assignedJson?.data)) return [];
-    
-          const ids = contract.talentAssignedIds || [];
-    
-          return assignedJson.data.map((emp, index) => ({
-            ...emp,
-            contractId: contract.contractId,
-            talentAssignedId: ids[index] || null,
-          }));
+      const assignedJson = assignedRes.data;
+
+      if (!Array.isArray(assignedJson?.data)) return [];
+      const ids = contract.talentAssignedIds || [];
+      return assignedJson.data.map((emp, index) => ({
+        ...emp,
+        contractId: contract.contractId,
+
+        // Keep the ID already returned by the backend.
+        // Only fall back to the contract ID ordering when
+        // the backend does not provide one.
+        talentAssignedId:
+          emp?.talentAssignedId ||
+          ids[index] ||
+          null,
+
+        // Keep the original assignment position.
+        assignmentIndex: index,
+      }));
         } catch (err) {
           console.error(
             "Failed fetching assigned devs for contract:",
@@ -148,16 +179,47 @@ const fetchEmployees = async () => {
         }
       })
     );
-    
+
     const assigned = assignedResults.flat();
 
-      const sorted = assigned.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-      );
-      console.log("Fetch Assigned Sorted", sorted);
+    /* ---------------------------------------------------------
+      SORT NEWLY ASSIGNED TALENTS ABOVE PREVIOUS TALENTS
+    ---------------------------------------------------------- */
+    const assignmentOrder = new Map();
+    normalizedContracts.forEach((contract) => {
+      contract.talentAssignedIds.forEach((talentId, index) => {
+        assignmentOrder.set(
+          `${contract.contractId}-${talentId}`,
+          index
+        );
+      });
+    });
 
-      setEmployees(sorted);
-      setProfileMap(getProfileImagesMapping(sorted));
+    const sorted = [...assigned].sort((a, b) => {
+      const indexA =
+        assignmentOrder.get(
+          `${a.contractId}-${a.talentAssignedId}`
+        ) ?? -1;
+
+      const indexB =
+        assignmentOrder.get(
+          `${b.contractId}-${b.talentAssignedId}`
+        ) ?? -1;
+
+      // Highest assignment index = newest assignment
+      if (indexA !== indexB) {
+        return indexB - indexA;
+      }
+
+      // Keep the original API order when assignment
+      // indexes are identical.
+      return (a.assignmentIndex ?? 0) - (b.assignmentIndex ?? 0);
+    });
+
+    console.log("Fetch Assigned Sorted:", sorted);
+
+    setEmployees(sorted);
+    setProfileMap(getProfileImagesMapping(sorted));
     } catch (err) {
       console.error("Fetch error:", err);
       setError("Failed to load employees");
@@ -349,18 +411,13 @@ const handleOpenPhoneModal = (employee) => {
 
 
 
-  
-   // Opens Rider Address component.
-   // Only Riders are allowed.
-
+ 
+// Opens Rider Address component.
 const handleOpenRiderAddress = (employee) => {
-
-  if (
-    employee.roleTitle?.trim().toLowerCase() !== "rider"
-  ) {
+  if (!employee?.isRider) {
     return;
   }
-
+  console.log("Opening Rider Address Card:", employee);
   setSelectedRider(employee);
 };
 
@@ -493,16 +550,17 @@ const handleOpenRiderAddress = (employee) => {
                       Portfolio 
                     </a>
                   )}
-                  <button
-                   type="button"
-                   onClick={()=> handleOpenSocialProfiles(employee)}
-                   className="flex items-center gap-1 text-blue-600 underline text-left text-[0.8rem] mt-2"
-                   >
-                    {/* User Icon */}
-                    <FaUser className="text-black text-[13px]" />
-                    Social Profiles 
-                  </button>
-
+                  {hasSocialProfiles(employee) && (
+                    <button
+                      type="button"
+                      onClick={() => handleOpenSocialProfiles(employee)}
+                      className="flex items-center gap-1 text-blue-600 underline text-left text-[0.8rem] mt-2"
+                    >
+                      {/* User Icon */}
+                      <FaUser className="text-black text-[13px]" />
+                      Social Profiles
+                    </button>
+                  )}
                   {employee?.phoneNumber && (
 
                     <button
@@ -625,14 +683,17 @@ const handleOpenRiderAddress = (employee) => {
                             </a>
                           )}
                           {/*New button for social modal display*/}
-                          <button
-                            type="button"
-                            onClick={() => handleOpenSocialProfiles(employee)}
-                            className="flex items-start gap-1 text-left underline mt-1 text-[12px]"
-                              >
-                            <FaUser className="text-black text-[14px] mt-[4px]" />
-                            Social Profiles
-                        </button>
+                          {/* Social profile button - only shown when profiles exist */}
+                          {hasSocialProfiles(employee) && (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenSocialProfiles(employee)}
+                              className="flex items-start gap-1 text-left underline mt-1 text-[12px]"
+                            >
+                              <FaUser className="text-black text-[14px] mt-[4px]" />
+                              Social Profiles
+                            </button>
+                          )}
 
                         {employee?.phoneNumber && (
 
@@ -675,6 +736,7 @@ const handleOpenRiderAddress = (employee) => {
         isOpen={showModal}
         loading={terminating}
         resetKey={modalResetKey} // ADDED
+        employeeName={selectedEmployee?.fullName} // newly added
         onClose={() => {
           setModalResetKey((prev) => prev + 1); // ADDED
           setShowModal(false);

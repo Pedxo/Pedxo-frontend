@@ -9,6 +9,7 @@ import Button from "../Button";
 import useJobDetailsForm from "../../features/contracts/useJobDetailsForm";
 import { useSearchParams } from "react-router-dom";
 import { formatISO } from "date-fns";
+import AutocompleteTextarea from "../../components/AutocompleteTextarea";
 
 const FormTwo = ({ nextStep, savedState, username, userId }) => {
   const [searchParams] = useSearchParams();
@@ -231,16 +232,17 @@ const FormTwo = ({ nextStep, savedState, username, userId }) => {
           >
             Scope of work explanation and tech stack requirements
           </label>
-          <textarea
+          <AutocompleteTextarea
             name="explanationOfScopeOfWork"
             onBlur={formik.handleBlur}
             id="scope of work"
             rows="7"
+            placeholder="Write your detailed prompt describing the type of talent you want to hire."
             value={formik.values.explanationOfScopeOfWork}
             onChange={formik.handleChange}
-            className="bg-transparent border outline-gray-400 rounded-lg px-4 py-2 caret-black font-medium focus:ring-2 focus:ring-blue-500"
+            className="bg-transparent border outline-gray-400 w-full rounded-lg px-4 py-2 caret-black font-medium focus:ring-2 focus:ring-blue-500"
             style={{ borderColor: "rgba(0, 0, 0, 0.20)" }}
-          ></textarea>
+          />
           <p className="text-xs text-gray-500 italic mt-1">
             You can edit the generated scope of work. Just click and start
             typing.
