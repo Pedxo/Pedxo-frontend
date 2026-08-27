@@ -202,6 +202,18 @@ const getSocialLinks = (dev) => {
       portfolioLink: dev?.portfolioLink || "",
       whatsappNumber: dev?.whatsappNumber || "",
       homeAddress: dev?.homeAddress || "",
+      socialProfiles: {
+        linkedinAccount: dev?.socialProfiles?.linkedinAccount || "",
+        gitlabAccount: dev?.socialProfiles?.gitlabAccount || "",
+        twitterAccount: dev?.socialProfiles?.twitterAccount || "",
+        facebookAccount: dev?.socialProfiles?.facebookAccount || "",
+        instagramAccount: dev?.socialProfiles?.instagramAccount || "",
+        tiktokAccount: dev?.socialProfiles?.tiktokAccount || "",
+        youtubeAccount: dev?.socialProfiles?.youtubeAccount || "",
+        behanceAccount: dev?.socialProfiles?.behanceAccount || "",
+        dribbbleAccount: dev?.socialProfiles?.dribbbleAccount || "",
+        other: dev?.socialProfiles?.other || "",
+      },
     });
     setEditingDev(dev);
     setOpenMenuId(null);
@@ -210,15 +222,33 @@ const getSocialLinks = (dev) => {
   const handleEditChange = (field, value) => {
     setEditForm((prev) => ({ ...prev, [field]: value }));
   };
+  const handleSocialChange = (field, value) => {
+    setEditForm((prev) => ({
+      ...prev,
+      socialProfiles: { ...prev.socialProfiles, [field]: value },
+    }));
+  };
 
   const handleEditSave = async () => {
     if (!editingDev) return;
     setEditSaving(true);
     setEditError(null);
-    // strip empty strings so we don't overwrite existing values with blanks
+
+    // separate socialProfiles out so it isn't filtered by the empty-string check below
+    const { socialProfiles, ...rest } = editForm;
+
+    // strip empty strings so we don't overwrite existing top-level values with blanks
     const payload = Object.fromEntries(
-      Object.entries(editForm).filter(([, v]) => v !== "")
+      Object.entries(rest).filter(([, v]) => v !== "")
     );
+
+    // always send the full socialProfiles object, even fields left blank —
+    // the backend replaces the whole object, so sending only the changed
+    // field would silently delete the others
+    payload.socialProfiles = Object.fromEntries(
+      Object.entries(socialProfiles || {}).filter(([, v]) => v !== "")
+    );
+
     const talentDetailsId = editingDev._id || editingDev.talentId;
     const res = await updateTalentDetails(talentDetailsId, payload);
     setEditSaving(false);
@@ -555,7 +585,7 @@ const getSocialLinks = (dev) => {
           </div>
         ))}
 
-        <div className="sm:col-span-2">
+                <div className="sm:col-span-2">
           <label className="text-xs text-gray-500 block mb-1">Home Address</label>
           <textarea
             className="w-full border px-3 py-2 rounded text-sm"
@@ -563,6 +593,33 @@ const getSocialLinks = (dev) => {
             value={editForm.homeAddress || ""}
             onChange={(e) => handleEditChange("homeAddress", e.target.value)}
           />
+        </div>
+
+        <div className="sm:col-span-2 mt-2">
+          <h4 className="text-sm font-semibold text-gray-700 mb-2">Social Profiles</h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[
+              ["linkedinAccount", "LinkedIn"],
+              ["gitlabAccount", "GitLab"],
+              ["twitterAccount", "Twitter / X"],
+              ["facebookAccount", "Facebook"],
+              ["instagramAccount", "Instagram"],
+              ["tiktokAccount", "TikTok"],
+              ["youtubeAccount", "YouTube"],
+              ["behanceAccount", "Behance"],
+              ["dribbbleAccount", "Dribbble"],
+              ["other", "Other"],
+            ].map(([field, label]) => (
+              <div key={field}>
+                <label className="text-xs text-gray-500 block mb-1">{label}</label>
+                <input
+                  className="w-full border px-3 py-2 rounded text-sm"
+                  value={editForm.socialProfiles?.[field] || ""}
+                  onChange={(e) => handleSocialChange(field, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
