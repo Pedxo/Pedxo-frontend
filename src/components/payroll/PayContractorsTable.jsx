@@ -13,7 +13,13 @@ import DepositModal from "../DepositModal";
 import SearchingDoc from "../SearchingDoc";
 import { NavLink } from "react-router-dom";
 import { formatCurrency } from "../../utility/helper";
-import { getPaymentStatus } from "../../utility/paymentStatus";
+
+
+import {
+  getPaymentStatus,
+  calculateNextPaymentDate,
+  normalizePaymentFrequency,
+} from "../../utility/paymentStatus";
 
 const PayContractorsTable = () => {
   const {userId} = useUser();
@@ -225,6 +231,7 @@ const generateReference = (contractId, talentAssignedId) => {
 };
 
 
+
 /* ================= AUTOMATIC DEDUCTION ================= */
 
 const handleAutoPayments = async () => {
@@ -232,59 +239,138 @@ const handleAutoPayments = async () => {
     if (!employees.length) return;
 
     const accountNumber = localStorage.getItem("accountNumber");
-    if (!accountNumber) return;
 
+    if (!accountNumber) {
+      console.warn("No payment account available.");
+      return;
+    }
+
+    /*
+     * Fetch the latest transactions before deciding
+     * whether anyone should be paid.
+     */
     const trxRes = await getUserTransactions(accountNumber);
     const transactions = trxRes?.items || [];
-
-    const now = new Date();
 
     for (const emp of employees) {
       if (!emp.paymentRate) continue;
 
-      const key = `${emp.contractId}_${emp.talentAssignedId}`;
-
-      const empTransactions = transactions.filter((trx) =>
-        trx.type === "payout" &&
-        trx.ini_reference?.includes(`PAY-${key}`)
+      /*
+       * Use the SAME payment-status logic used by
+       * fetchEmployees().
+       *
+       * This prevents paymentStatus.js and automatic
+       * payment from disagreeing.
+       */
+      const paymentStatus = getPaymentStatus(
+        emp,
+        transactions
       );
 
-      let shouldPay = false;
-
-      if (!empTransactions.length) {
-        shouldPay = true;
-      } else {
-        const lastPayment = new Date(
-          Math.max(...empTransactions.map(trx => new Date(trx.created_at)))
-        );
-
-        const diffDays =
-          (now - lastPayment) / (1000 * 60 * 60 * 24);
-
-        const freq = emp.paymentFrequency?.toLowerCase() || "";
-
-        if (freq.includes("weekly")) shouldPay = diffDays >= 7;
-        else if (freq.includes("bi-weekly")) shouldPay = diffDays >= 14;
-        else if (freq.includes("monthly")) shouldPay = diffDays >= 30;
+      if (paymentStatus !== "due") {
+        continue;
       }
 
-      if (!shouldPay) continue;
+      const frequency = normalizePaymentFrequency(
+        emp.paymentFrequency
+      );
+
+      if (!frequency) {
+        console.warn(
+          "Skipping automatic payment because payment frequency is invalid:",
+          emp.paymentFrequency,
+          emp
+        );
+
+        continue;
+      }
+
+      /*
+       * Get the last successful payment for this employee.
+       */
+      const key = `${emp.contractId}_${emp.talentAssignedId}`;
+
+      const empTransactions = transactions.filter((trx) => {
+        return (
+          trx.type === "payout" &&
+          trx.status === "successful" &&
+          trx.ini_reference?.includes(`PAY-${key}`)
+        );
+      });
+
+      /*
+       * If there is already a successful payment,
+       * calculate the next payment date from it.
+       */
+      if (empTransactions.length) {
+        const validDates = empTransactions
+          .map((trx) => new Date(trx.created_at))
+          .filter((date) => !Number.isNaN(date.getTime()));
+
+        if (!validDates.length) {
+          continue;
+        }
+
+        const lastPayment = new Date(
+          Math.max(
+            ...validDates.map((date) => date.getTime())
+          )
+        );
+
+        const nextPaymentDate =
+          calculateNextPaymentDate(
+            lastPayment,
+            frequency
+          );
+
+        if (!nextPaymentDate) {
+          continue;
+        }
+
+        /*
+         * Extra protection:
+         * Do not pay before the calculated next payment date.
+         */
+        if (new Date() < nextPaymentDate) {
+          continue;
+        }
+      }
+
+      /*
+       * Generate a unique payment reference.
+       */
+      const reference = generateReference(
+        emp.contractId,
+        emp.talentAssignedId
+      );
+
+      console.log("Automatic payment:", {
+        employee: emp.fullName,
+        frequency,
+        amount: emp.paymentRate,
+        reference,
+      });
 
       await payoutFunds({
         account_number: accountNumber,
         amount: Number(emp.paymentRate),
         narration: `Salary payment to ${emp.fullName}`,
         type: "payout",
-        ini_reference: generateReference(emp.contractId, emp.talentAssignedId),
+        ini_reference: reference,
       });
     }
 
-    
+    /*
+     * Refresh the UI after all automatic payments finish.
+     */
     await fetchEmployees();
     await fetchBalance();
 
   } catch (err) {
-    console.error("Auto payment failed:", err);
+    console.error(
+      "Auto payment failed:",
+      err?.response?.data || err.message || err
+    );
   }
 };
 
