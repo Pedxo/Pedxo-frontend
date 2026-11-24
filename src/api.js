@@ -29,7 +29,7 @@ export const paymentFetch = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 4000,
+  timeout: 60000,
 });
 
 
@@ -331,6 +331,39 @@ export const initializePaymentAccount = async (user) => {
   }
 };
 
+export const getUserAccountNumber = async (email) => {
+  if (!email) throw new Error("Missing user email");
+
+  const res = await paymentFetch.get(
+    `/account/users/?email=${encodeURIComponent(email)}`
+  );
+  const responseData = res?.data;
+  const payload = responseData?.data || responseData;
+  const users = Array.isArray(payload?.items)
+    ? payload.items
+    : Array.isArray(payload)
+      ? payload
+      : [payload];
+  const accountUser =
+    users.find((item) => item?.email === email) || users[0];
+  const accounts = Array.isArray(accountUser?.accounts)
+    ? accountUser.accounts
+    : [];
+  const bestAccount = accounts.reduce((best, account) => {
+    if (!best || Number(account.balance) > Number(best.balance)) return account;
+    return best;
+  }, null);
+  const accountNumber =
+    accountUser?.account_number || bestAccount?.account_number;
+
+  if (!accountNumber) {
+    throw new Error(`Account number not found for ${email}`);
+  }
+
+  localStorage.setItem("accountNumber", accountNumber);
+  return accountNumber;
+};
+
 /* =========================================================
    MAIN BACKEND APIs
 ========================================================= */
@@ -372,6 +405,15 @@ export const getUserTransactions = async (accountNumber) => {
   if (!accountNumber) throw new Error("Missing account number");
 
   const res = await paymentFetch.get(`/transaction/${accountNumber}`);
+  return res?.data;
+};
+
+export const getUserAccountSummary = async (accountNumber) => {
+  if (!accountNumber) throw new Error("Missing account number");
+
+  const res = await paymentFetch.get(
+    `/transaction/user-account-summary/${accountNumber}`
+  );
   return res?.data;
 };
 
