@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getUserContracts, getUserTransactions } from "../api";
+import {
+  getUserAccountNumber,
+  getUserContracts,
+  getUserTransactions,
+  getUserAccountSummary,
+} from "../api";
 import moneybag from "../assets/svg/moneybag.svg";
 import people from "../assets/svg/people.svg";
 import telegram from "../assets/svg/telegram.svg";
@@ -22,6 +27,64 @@ const onboardingSteps = [
   { id: 6, name: "searching engineer", duration: 30000 },
   { id: 7, name: "onboarding engineer", duration: null },
 ];
+
+const parseExpensesFromSummary = (summary) => {
+  if (summary === null || summary === undefined) return null;
+  const data = summary?.data !== undefined ? summary.data : summary;
+
+  if (typeof data === "number" && !isNaN(data)) {
+    return Math.abs(data);
+  }
+
+  // Exact property match for /transaction/user-account-summary
+  if (data?.total_expense !== undefined && data?.total_expense !== null && data?.total_expense !== "") {
+    const val = Number(data.total_expense);
+    if (!isNaN(val)) return Math.abs(val);
+  }
+
+  const possibleKeys = [
+    "total_expense",
+    "total_expenses",
+    "totalExpense",
+    "totalExpenses",
+    "total_payout",
+    "total_payouts",
+    "totalPayout",
+    "totalPayouts",
+    "total_spent",
+    "totalSpent",
+    "expenses",
+    "expense",
+    "spent",
+    "payout",
+    "payouts",
+    "total",
+    "total_amount",
+    "totalAmount",
+    "amount",
+  ];
+
+  if (typeof data === "object" && data !== null) {
+    for (const key of possibleKeys) {
+      if (data[key] !== undefined && data[key] !== null && data[key] !== "") {
+        const val = Number(data[key]);
+        if (!isNaN(val)) return Math.abs(val);
+      }
+    }
+
+    const nested = data.summary || data.account_summary || data.user_summary;
+    if (typeof nested === "object" && nested !== null) {
+      for (const key of possibleKeys) {
+        if (nested[key] !== undefined && nested[key] !== null && nested[key] !== "") {
+          const val = Number(nested[key]);
+          if (!isNaN(val)) return Math.abs(val);
+        }
+      }
+    }
+  }
+
+  return null;
+};
 
 const Overview = () => {
   const { username, userId, user } = useUser();
@@ -62,6 +125,62 @@ const Overview = () => {
     retry: 1,
   });
 
+  const {
+    data: accountNumber,
+    error: accountNumberError,
+  } = useQuery({
+    queryKey: ["user-account-number", user?.email],
+    queryFn: () => getUserAccountNumber(user.email),
+    enabled: !!user?.email,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (accountNumberError) {
+      console.error("Account number fetch failed:", accountNumberError);
+    }
+  }, [accountNumberError]);
+
+  const activeAccountNumber =
+    accountNumber || localStorage.getItem("accountNumber");
+
+  const {
+    data: accountSummary,
+    error: accountSummaryError,
+  } = useQuery({
+    queryKey: ["user-account-summary", activeAccountNumber],
+    queryFn: () => getUserAccountSummary(activeAccountNumber),
+    enabled: !!activeAccountNumber,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (accountSummaryError) {
+      console.error("Account summary fetch failed:", accountSummaryError);
+    }
+  }, [accountSummaryError]);
+
+  useEffect(() => {
+    if (accountSummary) {
+      console.log("User account summary response:", accountSummary);
+      const summaryData = accountSummary?.data !== undefined ? accountSummary.data : accountSummary;
+
+      if (summaryData?.currency) {
+        setCurrencyCode(summaryData.currency);
+        setLocale(summaryData.currency === "NGN" ? "en-NG" : "en-US");
+      }
+
+      const parsedExpenses = parseExpensesFromSummary(accountSummary);
+      if (parsedExpenses !== null) {
+        console.log("Setting totalExpenses from user-account-summary:", parsedExpenses);
+        setTotalExpenses(parsedExpenses);
+      }
+    }
+  }, [accountSummary]);
   
 
 //   useEffect(() => {
@@ -105,44 +224,44 @@ useEffect(() => {
     });
 
     try {
-      let accountNumber = localStorage.getItem("accountNumber");
+      const currentAccountNumber =
+        accountNumber || localStorage.getItem("accountNumber");
 
-      if (!accountNumber && user) {
-        const { initializePaymentAccount } = await import("../api");
-        accountNumber = await initializePaymentAccount(user);
-      }
+      if (currentAccountNumber) {
+        const summaryExpenses = parseExpensesFromSummary(accountSummary);
 
-      if (accountNumber) {
-        let transactions = [];
+        if (summaryExpenses !== null) {
+          expenses = summaryExpenses;
+          setTotalExpenses(expenses);
+          console.log("Expenses set from account summary:", expenses);
+        } else if (accountSummaryError) {
+          let transactions = [];
 
-        try {
-          const trxRes = await getUserTransactions(accountNumber);
+          try {
+            const trxRes = await getUserTransactions(currentAccountNumber);
 
-          transactions =
-            trxRes?.items ||
-            trxRes?.data?.items ||
-            [];
+            transactions =
+              trxRes?.items ||
+              trxRes?.data?.items ||
+              [];
 
-          console.log("User transactions:", transactions);
+            console.log("User transactions:", transactions);
 
-        } catch (err) {
-          console.error("Transaction fetch failed:", err.message);
-          transactions = [];
+          } catch (err) {
+            console.error("Transaction fetch failed:", err.message);
+            transactions = [];
+          }
+
+          // FIXED TOTAL EXPENSE CALCULATION
+          transactions.forEach((trx) => {
+            if (trx.type === "payout" && Number(trx.amount) < 0) {
+              expenses += Math.abs(Number(trx.amount));
+            }
+          });
+
+          setTotalExpenses(expenses);
+          console.log("TOTAL SPENT CALCULATED FROM TRANSACTIONS:", expenses);
         }
-
-        // FIXED TOTAL EXPENSE CALCULATION
-        transactions.forEach((trx) => {
-        if (trx.type === "payout" && Number(trx.amount) < 0) {
-          expenses += Math.abs(Number(trx.amount));
-        }
-       });
-
-        console.log("TOTAL SPENT CALCULATED:", expenses);
-        console.log("TRANSACTION COUNT:", transactions.length);
-        console.log("VALID PAYOUTS:",
-          transactions.filter(trx => trx.type === "payout")
-        );
-
       }
     } catch (err) {
       console.error("Summary fetch error:", err);
@@ -158,12 +277,11 @@ useEffect(() => {
 
     setActiveContractors(activeTalents);
     setOnboardingCount(onboardingContracts);
-    setTotalExpenses(expenses);
     setIsOnboardingComplete(onboardingContracts === 0);
   };
 
   fetchSummary();
-}, [contracts, user]);
+}, [contracts, user, accountNumber, accountSummary, accountSummaryError, activeAccountNumber]);
 
   // ----------------- ONBOARDING COUNT ANIMATION -----------------
   useEffect(() => {
@@ -283,7 +401,7 @@ useEffect(() => {
                       <Link to="/dashboard/expenses" className="flex items-center gap-4 cursor-pointer">                     
                       <img src={moneybag} alt="" />
                       <span className="text-2xl font-semibold xl:text-[40px] overview-text">
-                        {formatCurrency(displayTotalExpenses)}
+                        {formatCurrency(displayTotalExpenses, currencyCode, locale)}
                       </span>
                       </Link>
                     </div>
