@@ -30,6 +30,7 @@ export const paymentFetch = axios.create({
     "Content-Type": "application/json",
   },
   timeout: 60000,
+  timeout: 60000,
 });
 
 
@@ -236,41 +237,37 @@ export const initializePaymentAccount = async (user) => {
 
     /* ================= STEP 1: FETCH ACCOUNT USING EMAIL ================= */
 
-    const res = await paymentFetch.get(
-      `/account/users/?email=${user.email}`
-    );
+    try {
+      const res = await paymentFetch.get(
+        `/account/users/${encodeURIComponent(user.email)}`
+      );
 
-    console.log("Get existing account:", res);
+      console.log("Get existing account:", res);
 
-    /* FIXED PATH */
-    const items = res?.data?.items || [];
+      const responseData = res?.data;
+      const matchedUser = responseData?.data || responseData;
 
-    /* ================= STEP 2: FIND MATCHING ACCOUNT BY EMAIL ================= */
+      if (matchedUser && matchedUser.accounts?.length) {
+        const bestAccount = matchedUser.accounts.reduce((prev, current) => {
+          return Number(current.balance) > Number(prev.balance)
+            ? current
+            : prev;
+        });
 
-    const matchedUser = items.find(
-      (item) => item.email === user.email
-    );
-
-    if (matchedUser && matchedUser.accounts?.length) {
-
-    const bestAccount = matchedUser.accounts.reduce((prev, current) => {
-      return Number(current.balance) > Number(prev.balance)
-        ? current
-        : prev;
-    });
-
-    const accountNumber = bestAccount.account_number;
-
-    console.log("Selected Best Account:", accountNumber);
-
-    localStorage.setItem("accountNumber", accountNumber);
-
-    return accountNumber;
-  }
+        const accountNumber = bestAccount.account_number;
+        console.log("Selected Best Account:", accountNumber);
+        localStorage.setItem("accountNumber", accountNumber);
+        return accountNumber;
+      }
+    } catch (err) {
+      if (err?.response?.status !== 404) {
+        console.warn("User lookup error:", err?.response?.data || err.message);
+      }
+    }
 
     console.log("No account found for email, creating user...");
 
-    /* ================= STEP 3: CREATE USER IF ACCOUNT NOT FOUND ================= */
+    /* ================= STEP 2: CREATE USER IF ACCOUNT NOT FOUND ================= */
 
     const fullName = user.userName || "User Default";
 
@@ -287,24 +284,18 @@ export const initializePaymentAccount = async (user) => {
     console.log("Payment user created");
 
     const userRes = await paymentFetch.get(
-      `/account/users/?email=${user.email}`
+      `/account/users/${encodeURIComponent(user.email)}`
     );
 
-    /* FIXED PATH AGAIN */
-    const newItems = userRes?.data?.items || [];
-
-    const newMatchedUser = newItems.find(
-      (item) => item.email === user.email
-    );
-
-    const userId = newMatchedUser?.id;
+    const newUserData = userRes?.data?.data || userRes?.data;
+    const userId = newUserData?.id;
 
     if (!userId) {
-      console.error("User ID missing from:", newMatchedUser);
+      console.error("User ID missing from:", newUserData);
       throw new Error("User ID not found");
     }
 
-    /* ================= STEP 4: CREATE ACCOUNT ================= */
+    /* ================= STEP 3: CREATE ACCOUNT ================= */
 
     const accountRes = await paymentFetch.post("/account/account", {
       account_name: fullName,
@@ -335,7 +326,7 @@ export const getUserAccountNumber = async (email) => {
   if (!email) throw new Error("Missing user email");
 
   const res = await paymentFetch.get(
-    `/account/users/?email=${encodeURIComponent(email)}`
+    `/account/users/${encodeURIComponent(email)}`
   );
   const responseData = res?.data;
   const payload = responseData?.data || responseData;
@@ -416,6 +407,8 @@ export const getUserAccountSummary = async (accountNumber) => {
   );
   return res?.data;
 };
+
+
 
 export const depositFunds = async (payload) => {
   const res = await paymentFetch.post("/transaction/deposit", payload);
