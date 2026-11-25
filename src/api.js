@@ -30,6 +30,7 @@ export const paymentFetch = axios.create({
     "Content-Type": "application/json",
   },
   timeout: 60000,
+  timeout: 60000,
 });
 
 
@@ -406,6 +407,8 @@ export const getUserAccountSummary = async (accountNumber) => {
   );
   return res?.data;
 };
+
+
 
 export const depositFunds = async (payload) => {
   const res = await paymentFetch.post("/transaction/deposit", payload);
